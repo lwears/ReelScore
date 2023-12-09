@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  postgres:
+    image: docker.io/library/postgres:15.5
+    ports: 5432:5432
+    environment:
+      - POSTGRES_USER=psql
+      - POSTGRES_PASSWORD=psql
+      - POSTGRES_DB=moviedb
+    volumes:
+      - /var/lib/postgresql/data
