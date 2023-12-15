@@ -1,26 +1,29 @@
-import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
+import fs from 'fs'
 import fastify from 'fastify'
+import { Authenticator } from '@fastify/passport'
+import { fastifySecureSession } from '@fastify/secure-session'
+import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
+import fastifySwagger from '@fastify/swagger'
+import fastifySwaggerUi from '@fastify/swagger-ui'
+// import cors from '@fastify/cors'
 import { createContext } from './context'
-import { appRouter } from './router'
-import cors from '@fastify/cors'
 import pretty from 'pino-pretty'
 import pino from 'pino'
 import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi'
-import fastifySwagger from '@fastify/swagger'
-import fastifySwaggerUi from '@fastify/swagger-ui'
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+
+import { appRouter } from './router'
 import { openApiDocument } from './openapi'
+import type { ServerConfig } from '@api/configs/env.config'
 
-export type ServerOptions = {
-  dev?: boolean
-  port?: number
-  prefix?: string
-  environment: 'development' | 'production' | 'test' | 'local'
-}
-
-export function createServer(opts: ServerOptions) {
-  const port = opts.port ?? 3000
-  const prefix = opts.prefix ?? '/trpc'
-
+export function createServer({
+  port,
+  environment,
+  prefix,
+  googleClientId,
+  googleClientSecret,
+}: ServerConfig) {
+  const fastifyPassport = new Authenticator()
   const stream = pretty({
     colorize: true,
     translateTime: 'HH:MM:ss Z',
@@ -29,16 +32,61 @@ export function createServer(opts: ServerOptions) {
   const prettyLogger = pino({ level: 'debug' }, stream)
 
   const server = fastify({
-    logger:
-      opts.environment === 'local' || opts.environment === 'test'
-        ? prettyLogger
-        : true,
+    logger: ['local', 'test'].includes(environment) ? prettyLogger : true,
   })
 
-  server.register(cors, {
-    origin: '*',
-    methods: '*',
+  server.register(fastifySecureSession, {
+    key: fs.readFileSync('key.bin'),
+    cookie: { path: '/' },
   })
+
+  server.register(fastifyPassport.initialize())
+  server.register(fastifyPassport.secureSession())
+
+  fastifyPassport.use(
+    'google',
+    new GoogleStrategy(
+      {
+        clientID: googleClientId,
+        clientSecret: googleClientSecret,
+        callbackURL: 'http://localhost:4000/auth/google/callback',
+      },
+      (_token, _refresh, profile, cb) => {
+        cb(undefined, profile)
+      },
+    ),
+  )
+
+  fastifyPassport.registerUserDeserializer(async (user) => {
+    return user
+  })
+
+  fastifyPassport.registerUserSerializer(async (user) => {
+    return user
+  })
+
+  server.get('/', async (req) => {
+    return `👋 Hello ${JSON.stringify(req.user)} 👋`
+  })
+
+  server.get(
+    '/auth/google/callback',
+    {
+      preValidation: fastifyPassport.authenticate('google', {
+        scope: ['profile'],
+      }),
+    },
+    async (_req, res) => {
+      res.redirect('/')
+    },
+  )
+
+  server.get('/login', fastifyPassport.authenticate('google', { scope: ['profile'] }))
+
+  // server.register(cors, {
+  //   origin: '*',
+  //   methods: '*',
+  // })
 
   server.register(fastifyTRPCPlugin, {
     prefix,

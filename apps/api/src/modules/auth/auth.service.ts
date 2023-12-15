@@ -2,39 +2,30 @@ import type { User } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
 import type { SignInDto, SignUpDto } from './auth.dtos'
 import { sign } from 'jsonwebtoken'
-import { authConfig } from '../../configs/auth.config'
-import { hash, compare } from 'bcryptjs'
 import type { Context } from '../../server/context'
+import { hash, compare } from 'bcrypt'
+import { authConfig } from '@api/configs/env.config'
 
 type UserResponse = Omit<User, 'password'>
 type SignUpResult = UserResponse & { accessToken: string }
 
-export const signUp = async (
-  input: SignUpDto,
-  ctx: Context,
-): Promise<UserResponse> => {
+export const signUp = async (input: SignUpDto, ctx: Context): Promise<UserResponse> => {
   const bcryptHash = await hash(input.password, 10)
 
   const user = await ctx.prisma.user.create({
     data: {
       email: input.email,
       password: bcryptHash,
-      role: 'user',
     },
   })
   return {
     id: user.id,
+    name: user.name,
     email: user.email,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-    role: user.role,
   }
 }
 
-export const signIn = async (
-  input: SignInDto,
-  ctx: Context,
-): Promise<SignUpResult> => {
+export const signIn = async (input: SignInDto, ctx: Context): Promise<SignUpResult> => {
   const user = await ctx.prisma.user.findUnique({
     where: {
       email: input.email,
@@ -59,7 +50,6 @@ export const signIn = async (
   const token = sign(
     {
       id: user.id,
-      roles: user.role,
     },
     authConfig.secretKey,
     { expiresIn: authConfig.jwtExpiresIn },
@@ -67,10 +57,8 @@ export const signIn = async (
 
   return {
     id: user.id,
+    name: user.name,
     email: user.email,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-    role: user.role,
     accessToken: token,
   }
 }

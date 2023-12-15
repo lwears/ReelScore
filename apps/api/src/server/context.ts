@@ -1,40 +1,39 @@
+import { TRPCError } from '@trpc/server'
+import type { inferAsyncReturnType } from '@trpc/server'
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify'
-import jwt from 'jsonwebtoken'
-import { v4 as uuid } from 'uuid'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { jwtSecret } from '../routers/auth'
-import type { User } from '@prisma/client'
-import { userService } from '@/services/users'
+import { verify } from 'jsonwebtoken'
+import { PrismaClient } from '@prisma/client'
 
-export type Context = {
-  user: User | null
-  requestId: string
-  req: FastifyRequest
-  res: FastifyReply
+import { get } from 'env-var'
+
+export const authConfig = {
+  secretKey: get('SECRET_KEY').required().asString(),
+  jwtExpiresIn: get('JWT_EXPIRES_IN').required().asString(),
 }
 
-export const createContext = async ({
-  req,
-  res,
-}: CreateFastifyContextOptions): Promise<Context> => {
-  const requestId = uuid()
-  res.header('x-request-id', requestId)
+export const prisma = new PrismaClient()
 
-  let user: User | null = null
+export interface User {
+  email: string
+  role: 'user' | 'admin'
+}
 
-  try {
-    if (req.headers.authorization) {
-      const token = req.headers.authorization.split(' ')[1]
-      const userId = jwt.verify(token, jwtSecret) as string
-      if (userId) {
-        user = (await userService.get(userId)) ?? null
-      }
+async function decodeAndVerifyJwtToken(token: string): Promise<User> {
+  const decoded = verify(token, authConfig.secretKey)
+  return decoded as User
+}
+
+export async function createContext({ req, res }: CreateFastifyContextOptions) {
+  if (req.headers.authorization) {
+    try {
+      const user = await decodeAndVerifyJwtToken(req.headers.authorization.split(' ')[1])
+      return { req, res, prisma, user }
+    } catch (err) {
+      throw new TRPCError({ message: 'Unauthorized', code: 'UNAUTHORIZED' })
     }
-  } catch (cause) {
-    console.error(cause)
   }
 
-  return { req, res, user, requestId }
+  return { req, res, prisma }
 }
 
-export default createContext
+export type Context = inferAsyncReturnType<typeof createContext>

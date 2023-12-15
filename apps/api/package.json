@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev src/main.ts",
+    "dev": "tsx src/main.ts",
     "test": "npm run build:ts && tsc -p test/tsconfig.json && tap --ts \"test/**/*.test.ts\"",
     "start": "npm run build && fastify start -l info dist/index.js",
     "build": "tsc"
@@ -14,27 +14,33 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^8.4.2",
+    "@fastify/passport": "^2.4.0",
+    "@fastify/secure-session": "^7.1.0",
     "@fastify/swagger": "^8.12.1",
     "@fastify/swagger-ui": "^2.0.1",
     "@prisma/client": "^5.7.0",
     "@trpc/server": "^10.44.1",
-    "fastify": "^4.24.3",
+    "bcrypt": "^5.1.1",
+    "fastify": "^4.25.1",
     "jsonwebtoken": "^9.0.2",
-    "pino": "^8.16.2",
+    "passport-google-oauth20": "^2.0.0",
+    "pino": "^8.17.1",
     "prisma": "^5.7.0",
-    "superjson": "^2.2.1",
+    "superjson": "2.2.1",
     "trpc-openapi": "^1.2.0",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
-    "@types/node": "^20",
+    "@types/node": "^20.10.4",
+    "@types/passport-google-oauth20": "^2.0.14",
     "@types/uuid": "^9.0.7",
     "fastify-tsconfig": "^2.0.0",
-    "pino-pretty": "^10.2.3",
+    "pino-pretty": "^10.3.0",
     "ts-node-dev": "^2.0.0"
   }
 }
