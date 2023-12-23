@@ -1,16 +1,19 @@
-import fs from 'fs'
+import type { FastifyBaseLogger } from 'fastify'
 import fastify from 'fastify'
 import { Authenticator } from '@fastify/passport'
-import { fastifySecureSession } from '@fastify/secure-session'
+import { fastifySession } from '@fastify/session'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
+import RedisStore from 'connect-redis'
+import { fastifyCookie } from '@fastify/cookie'
 // import cors from '@fastify/cors'
 import { createContext } from './context'
 import pretty from 'pino-pretty'
 import pino from 'pino'
 import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import { Redis } from 'ioredis'
 
 import { appRouter } from './router'
 import { openApiDocument } from './openapi'
@@ -23,25 +26,58 @@ export function createServer({
   googleClientId,
   googleClientSecret,
 }: ServerConfig) {
-  const fastifyPassport = new Authenticator()
-  const stream = pretty({
-    colorize: true,
-    translateTime: 'HH:MM:ss Z',
-    ignore: 'pid,hostname',
-  })
-  const prettyLogger = pino({ level: 'debug' }, stream)
+  const client = new Redis({ host: 'localhost', port: 6379, enableAutoPipelining: true })
+  // const stream = pretty({
+  //   colorize: true,
+  //   translateTime: 'HH:MM:ss Z',
+  //   ignore: 'pid,hostname',
+  // })
+  // const prettyLogger = pino({ level: 'debug' }, stream)
 
   const server = fastify({
-    logger: ['local', 'test'].includes(environment) ? prettyLogger : true,
+    // logger: ['local', 'test'].includes(environment) ? (prettyLogger as FastifyBaseLogger) : true,
+    logger: false,
   })
 
-  server.register(fastifySecureSession, {
-    key: fs.readFileSync('key.bin'),
-    cookie: { path: '/' },
+  const fastifyPassport = new Authenticator()
+
+  client.on('error', (err) => {
+    console.log('Could not establish a connection with redis. ' + err)
+  })
+  client.on('connect', () => {
+    console.log('Connected to redis successfully')
+  })
+
+  // server.register(fastifySecureSession, {
+  //   key: fs.readFileSync('key.bin'),
+  //   cookie: { path: '/' },
+  // })
+
+  server.register(fastifyCookie, {})
+
+  server.register(fastifySession, {
+    secret: 'cNaoPYAwF60HZJzkcNaoPYAwF60HZJzk',
+    cookieName: 'session',
+    cookie: { path: '/', secure: false },
+    store: new RedisStore({
+      client: client,
+      prefix: 'session:',
+    }),
+    prefix: 'session:',
+    saveUninitialized: false,
+    rolling: false,
   })
 
   server.register(fastifyPassport.initialize())
   server.register(fastifyPassport.secureSession())
+  server.addHook('preHandler', (request, reply, next) => {
+    request.session.touch()
+    request.session.user = { ...request.user }
+    // @ts-expect-error
+    //request.session.user = { name: 'max' }
+    //request.session.user = { name: 'max' }
+    next()
+  })
 
   fastifyPassport.use(
     'google',
@@ -65,8 +101,10 @@ export function createServer({
     return user
   })
 
-  server.get('/', async (req) => {
-    return `👋 Hello ${JSON.stringify(req.user)} 👋`
+  server.get('/', async (req, reply) => {
+    console.log(req.session)
+    //reply.send(req.cookies.sessionId)
+    return `👋 Hello ${JSON.stringify(req.session.user)} 👋`
   })
 
   server.get(
@@ -88,6 +126,15 @@ export function createServer({
   //   methods: '*',
   // })
 
+  server.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return console.log(err)
+      }
+      res.redirect('http://localhost:3000')
+    })
+  })
+
   server.register(fastifyTRPCPlugin, {
     prefix,
     trpcOptions: { router: appRouter, createContext },
@@ -99,7 +146,6 @@ export function createServer({
     createContext,
   })
 
-  // Server Swagger UI
   server.register(fastifySwagger, {
     mode: 'static',
     specification: { document: openApiDocument },
