@@ -1,23 +1,23 @@
-import type { FastifyBaseLogger } from 'fastify'
 import fastify from 'fastify'
-import { Authenticator } from '@fastify/passport'
 import { fastifySession } from '@fastify/session'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 import RedisStore from 'connect-redis'
 import { fastifyCookie } from '@fastify/cookie'
+import { fastifyCors as cors } from '@fastify/cors'
 // import cors from '@fastify/cors'
 import { createContext } from './context'
 import pretty from 'pino-pretty'
 import pino from 'pino'
 import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi'
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Redis } from 'ioredis'
 
 import { appRouter } from './router'
 import { openApiDocument } from './openapi'
 import type { ServerConfig } from '@api/configs/env.config'
+
+import authPlugin from '@api/modules/auth/auth.plugin'
 
 export function createServer({
   port,
@@ -38,8 +38,6 @@ export function createServer({
     // logger: ['local', 'test'].includes(environment) ? (prettyLogger as FastifyBaseLogger) : true,
     logger: false,
   })
-
-  const fastifyPassport = new Authenticator()
 
   client.on('error', (err) => {
     console.log('Could not establish a connection with redis. ' + err)
@@ -63,76 +61,29 @@ export function createServer({
       client: client,
       prefix: 'session:',
     }),
-    prefix: 'session:',
+    //prefix: 'session:',
     saveUninitialized: false,
     rolling: false,
   })
 
-  server.register(fastifyPassport.initialize())
-  server.register(fastifyPassport.secureSession())
+  server.register(authPlugin, { prefix: '/auth', googleClientId, googleClientSecret })
+
   server.addHook('preHandler', (request, reply, next) => {
-    request.session.touch()
-    request.session.user = { ...request.user }
-    // @ts-expect-error
-    //request.session.user = { name: 'max' }
-    //request.session.user = { name: 'max' }
+    if (request.routeOptions.url === '/auth/login') return next()
+    if (!request.isAuthenticated()) {
+      return reply.status(401).send({ message: 'Not authenticated' })
+    }
     next()
   })
 
-  fastifyPassport.use(
-    'google',
-    new GoogleStrategy(
-      {
-        clientID: googleClientId,
-        clientSecret: googleClientSecret,
-        callbackURL: 'http://localhost:4000/auth/google/callback',
-      },
-      (_token, _refresh, profile, cb) => {
-        cb(undefined, profile)
-      },
-    ),
-  )
-
-  fastifyPassport.registerUserDeserializer(async (user) => {
-    return user
-  })
-
-  fastifyPassport.registerUserSerializer(async (user) => {
-    return user
-  })
-
   server.get('/', async (req, reply) => {
-    console.log(req.session)
-    //reply.send(req.cookies.sessionId)
-    return `👋 Hello ${JSON.stringify(req.session.user)} 👋`
+    console.log(req.user)
+    reply.code(200).header('Content-Type', 'application/json').send(req.session)
   })
 
-  server.get(
-    '/auth/google/callback',
-    {
-      preValidation: fastifyPassport.authenticate('google', {
-        scope: ['profile'],
-      }),
-    },
-    async (_req, res) => {
-      res.redirect('/')
-    },
-  )
-
-  server.get('/login', fastifyPassport.authenticate('google', { scope: ['profile'] }))
-
-  // server.register(cors, {
-  //   origin: '*',
-  //   methods: '*',
-  // })
-
-  server.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return console.log(err)
-      }
-      res.redirect('http://localhost:3000')
-    })
+  server.register(cors, {
+    origin: '*',
+    methods: '*',
   })
 
   server.register(fastifyTRPCPlugin, {

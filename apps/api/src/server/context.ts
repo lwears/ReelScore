@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server'
 import type { inferAsyncReturnType } from '@trpc/server'
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify'
 import { verify } from 'jsonwebtoken'
+import type { User } from '@prisma/client'
 import { PrismaClient } from '@prisma/client'
 
 import { get } from 'env-var'
@@ -12,11 +13,6 @@ export const authConfig = {
 }
 
 export const prisma = new PrismaClient()
-
-export interface User {
-  email: string
-  role: 'user' | 'admin'
-}
 
 async function decodeAndVerifyJwtToken(token: string): Promise<User> {
   const decoded = verify(token, authConfig.secretKey)
