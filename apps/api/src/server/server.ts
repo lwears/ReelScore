@@ -5,8 +5,7 @@ import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 import RedisStore from 'connect-redis'
 import { fastifyCookie } from '@fastify/cookie'
-import { fastifyCors as cors } from '@fastify/cors'
-// import cors from '@fastify/cors'
+import cors from '@fastify/cors'
 import { createContext } from './context'
 import pretty from 'pino-pretty'
 import pino from 'pino'
@@ -66,7 +65,7 @@ export function createServer({
     rolling: false,
   })
 
-  server.register(authPlugin, { prefix: '/auth', googleClientId, googleClientSecret })
+  server.register(authPlugin, { googleClientId, googleClientSecret })
 
   server.addHook('preHandler', (request, reply, next) => {
     if (request.routeOptions.url === '/auth/login') return next()
@@ -77,7 +76,6 @@ export function createServer({
   })
 
   server.get('/', async (req, reply) => {
-    console.log(req.user)
     reply.code(200).header('Content-Type', 'application/json').send(req.session)
   })
 

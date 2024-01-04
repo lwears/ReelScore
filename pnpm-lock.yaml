@@ -172,6 +172,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@heroicons/react':
+        specifier: ^2.1.1
+        version: 2.1.1(react@18.2.0)
       next:
         specifier: 14.0.4
         version: 14.0.4(react-dom@18.2.0)(react@18.2.0)
@@ -822,6 +825,14 @@ packages:
       '@hapi/boom': 10.0.1
       '@hapi/bourne': 3.0.0
       '@hapi/hoek': 11.0.4
+    dev: false
+
+  /@heroicons/react@2.1.1(react@18.2.0):
+    resolution: {integrity: sha512-JyyN9Lo66kirbCMuMMRPtJxtKJoIsXKS569ebHGGRKbl8s4CtUfLnyKJxteA+vIKySocO4s1SkTkGS4xtG/yEA==}
+    peerDependencies:
+      react: '>= 16'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@humanwhocodes/config-array@0.11.13:

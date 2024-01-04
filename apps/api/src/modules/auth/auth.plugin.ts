@@ -2,10 +2,9 @@ import { Authenticator } from '@fastify/passport'
 import type { FastifyInstance, FastifyPluginCallback, FastifyPluginOptions } from 'fastify'
 import type { Profile } from 'passport-google-oauth20'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
-import { PrismaClient } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import fp from 'fastify-plugin'
-
-const prisma = new PrismaClient()
+import { userService } from '../users/users.service'
 
 interface Options {
   googleClientId: string
@@ -33,55 +32,47 @@ const authPlugin: FastifyPluginCallback<Options> = (
         callbackURL: 'http://localhost:4000/auth/google/callback',
       },
       async (_token, _tokenSecret, profile, done) => {
-        return prisma.user
-          .findUnique({ where: { googleId: profile.id } }) //
-          .then((user) => {
-            if (user) {
-              done(null, user)
-            } else {
-              prisma.user
-                .create({
-                  data: {
-                    googleId: profile.id,
-                    email: (profile.emails?.length && profile?.emails[0]?.value) as string,
-                    name: profile.displayName,
-                  },
-                })
-                .then((user) => done(null, user))
-                .catch((err) => done(err))
-            }
-          })
+        const user: Prisma.UserCreateInput = {
+          googleId: profile.id,
+          email: (profile.emails?.length && profile?.emails[0]?.value) as string,
+          name: profile.displayName,
+        }
+        return userService
+          .findOrCreate(user)
+          .then((user) => done(null, user))
+          .catch((err) => done(err))
       },
     ),
   )
 
-  fastifyPassport.registerUserDeserializer(async (id: string) =>
-    prisma.user.findUnique({ where: { id } }),
-  )
+  fastifyPassport.registerUserDeserializer(async (id: string) => userService.get(id))
 
   fastifyPassport.registerUserSerializer(async (user: Profile) => user.id)
 
   fastify.get(
-    '/google/callback',
+    '/auth/google/callback',
     {
       preValidation: fastifyPassport.authenticate('google', {
         scope: ['profile'],
       }),
     },
     async (_req, res) => {
-      return res.redirect('/')
+      return res.redirect('http://localhost:3000/dashboard')
     },
   )
 
-  fastify.get('/login', fastifyPassport.authenticate('google', { scope: ['profile', 'email'] }))
+  fastify.get(
+    '/auth/login',
+    fastifyPassport.authenticate('google', { scope: ['profile', 'email'] }),
+  )
 
-  fastify.get('/logout', (req, res) => {
+  fastify.get('/auth/logout', (req, res) => {
     req.session.destroy((err) => {
       if (err) {
         console.log(err)
       }
       res.clearCookie('session')
-      res.redirect('http://localhost:3000')
+      res.redirect('http://localhost:3000/login')
     })
   })
 
