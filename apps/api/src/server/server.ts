@@ -17,15 +17,20 @@ import { openApiDocument } from './openapi'
 import type { ServerConfig } from '@api/configs/env.config'
 
 import authPlugin from '@api/modules/auth/auth.plugin'
+import testPlugin from '@api/modules/test/test.plugin'
 
 export function createServer({
   port,
   environment,
-  prefix,
+  trpcPrefix,
   googleClientId,
   googleClientSecret,
 }: ServerConfig) {
-  const client = new Redis({ host: 'localhost', port: 6379, enableAutoPipelining: true })
+  const client = new Redis({
+    host: 'localhost',
+    port: 6379,
+    enableAutoPipelining: true,
+  })
   // const stream = pretty({
   //   colorize: true,
   //   translateTime: 'HH:MM:ss Z',
@@ -65,32 +70,23 @@ export function createServer({
     rolling: false,
   })
 
+  server.register(cors, {
+    origin: 'http://localhost:3000',
+    methods: '*',
+    credentials: true,
+  })
+
   server.register(authPlugin, { googleClientId, googleClientSecret })
 
-  server.addHook('preHandler', (request, reply, next) => {
-    if (request.routeOptions.url === '/auth/login') return next()
-    if (!request.isAuthenticated()) {
-      return reply.status(401).send({ message: 'Not authenticated' })
-    }
-    next()
-  })
-
-  server.get('/', async (req, reply) => {
-    reply.code(200).header('Content-Type', 'application/json').send(req.session)
-  })
-
-  server.register(cors, {
-    origin: '*',
-    methods: '*',
-  })
+  server.register(testPlugin, {})
 
   server.register(fastifyTRPCPlugin, {
-    prefix,
+    prefix: trpcPrefix,
     trpcOptions: { router: appRouter, createContext },
   })
 
   server.register(fastifyTRPCOpenApiPlugin, {
-    basePath: '/api',
+    basePath: '/trpc',
     router: appRouter,
     createContext,
   })

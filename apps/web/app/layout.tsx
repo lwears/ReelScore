@@ -1,5 +1,9 @@
 import type { Metadata } from 'next'
+import React from 'react'
+
 import './globals.css'
+import { TrpcProvider } from './trpc/trpc-provider'
+
 export const metadata: Metadata = {
   title: {
     template: '%s | ReelScore',
@@ -11,8 +15,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="antialiased">{children}</body>
-    </html>
+    <TrpcProvider>
+      <html lang="en">
+        <body className="antialiased">{children}</body>
+      </html>
+    </TrpcProvider>
   )
 }

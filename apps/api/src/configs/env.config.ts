@@ -10,7 +10,7 @@ export const envSchema = z.object({
   SECRET_KEY: z.string().min(10),
   JWT_EXPIRES_IN: z.string(),
   DATABASE_URL: z.string().url(),
-  PREFIX: z.string().default('api'),
+  TRPC_PREFIX: z.string().default('/trpc'),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
 })
@@ -20,7 +20,7 @@ const env = envSchema.parse(process.env)
 export const serverConfig = {
   environment: env.NODE_ENV,
   port: env.PORT,
-  prefix: env.PREFIX,
+  trpcPrefix: env.TRPC_PREFIX,
   googleClientId: env.GOOGLE_CLIENT_ID,
   googleClientSecret: env.GOOGLE_CLIENT_SECRET,
 }

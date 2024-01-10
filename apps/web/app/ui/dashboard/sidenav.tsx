@@ -16,7 +16,7 @@ export default function SideNav() {
           ReelScore
         </h5>
       </div>
-      <nav className="flex  flex-col gap-1 p-2 font-sans text-base font-normal text-slate-200">
+      <nav className="flex flex-col gap-1 p-2 font-sans text-base font-normal text-slate-200">
         {navItems.map((i) => (
           <NavItem {...i} key={i.text} />
         ))}
