@@ -25,19 +25,19 @@ const isAuthenticated = t.middleware(({ next, ctx }) => {
   })
 })
 
-const isAdmin = t.middleware(({ next, ctx }) => {
-  if (!ctx.user || ctx.user.role !== 'admin') {
-    throw new TRPCError({ message: 'Unauthorized', code: 'UNAUTHORIZED' })
-  }
-  return next({
-    ctx: {
-      user: ctx.user,
-    },
-  })
-})
+// const isAdmin = t.middleware(({ next, ctx }) => {
+//   if (!ctx.user || ctx.user.role !== 'admin') {
+//     throw new TRPCError({ message: 'Unauthorized', code: 'UNAUTHORIZED' })
+//   }
+//   return next({
+//     ctx: {
+//       user: ctx.user,
+//     },
+//   })
+// })
 
 export const router = t.router
 
-export const procedure = t.procedure.use(isAuthenticated)
-export const noAuthProcedure = t.procedure
-export const adminProcedure = t.procedure.use(isAdmin)
+export const privateProcedure = t.procedure.use(isAuthenticated)
+export const publicProcedure = t.procedure
+// export const adminProcedure = t.procedure.use(isAdmin)

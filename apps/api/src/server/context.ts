@@ -1,7 +1,6 @@
 import { TRPCError } from '@trpc/server'
 import type { inferAsyncReturnType } from '@trpc/server'
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify'
-import { verify } from 'jsonwebtoken'
 import { PrismaClient } from '@prisma/client'
 
 import { get } from 'env-var'
@@ -13,20 +12,10 @@ export const authConfig = {
 
 export const prisma = new PrismaClient()
 
-export interface User {
-  email: string
-  role: 'user' | 'admin'
-}
-
-async function decodeAndVerifyJwtToken(token: string): Promise<User> {
-  const decoded = verify(token, authConfig.secretKey)
-  return decoded as User
-}
-
 export async function createContext({ req, res }: CreateFastifyContextOptions) {
-  if (req.headers.authorization) {
+  if (req.user) {
     try {
-      const user = await decodeAndVerifyJwtToken(req.headers.authorization.split(' ')[1])
+      const user = req.user
       return { req, res, prisma, user }
     } catch (err) {
       throw new TRPCError({ message: 'Unauthorized', code: 'UNAUTHORIZED' })
