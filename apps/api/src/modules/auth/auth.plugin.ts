@@ -1,8 +1,12 @@
 import { Authenticator } from '@fastify/passport'
-import type { FastifyInstance, FastifyPluginCallback, FastifyPluginOptions } from 'fastify'
+import type {
+  FastifyInstance,
+  FastifyPluginCallback,
+  FastifyPluginOptions,
+} from 'fastify'
 import type { Profile } from 'passport-google-oauth20'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
-import type { Prisma } from '@prisma/client'
+import type { Prisma, User } from '@prisma/client'
 import fp from 'fastify-plugin'
 import { userService } from '../users/users.service'
 
@@ -16,8 +20,6 @@ const authPlugin: FastifyPluginCallback<Options> = (
   options: FastifyPluginOptions,
   next: (err?: Error) => void,
 ) => {
-  // console.log('My plugin is loaded with options:', options)
-
   const fastifyPassport = new Authenticator()
 
   fastify.register(fastifyPassport.initialize())
@@ -34,7 +36,8 @@ const authPlugin: FastifyPluginCallback<Options> = (
       async (_token, _tokenSecret, profile, done) => {
         const user: Prisma.UserCreateInput = {
           googleId: profile.id,
-          email: (profile.emails?.length && profile?.emails[0]?.value) as string,
+          email: (profile.emails?.length &&
+            profile?.emails[0]?.value) as string,
           name: profile.displayName,
         }
         return userService
@@ -45,7 +48,9 @@ const authPlugin: FastifyPluginCallback<Options> = (
     ),
   )
 
-  fastifyPassport.registerUserDeserializer(async (id: string) => userService.get(id))
+  fastifyPassport.registerUserDeserializer<string, User | null>(
+    async (id: string) => userService.get(id),
+  )
 
   fastifyPassport.registerUserSerializer(async (user: Profile) => user.id)
 
@@ -57,7 +62,7 @@ const authPlugin: FastifyPluginCallback<Options> = (
       }),
     },
     async (_req, res) => {
-      return res.redirect('http://localhost:3000/dashboard')
+      return res.redirect('http://localhost:3000/')
     },
   )
 

@@ -1,7 +1,11 @@
 // import { z } from 'zod'
 // import { TRPCError } from '@trpc/server'
 // import { userDocs } from '@/openapi/user'
-// import { protectedProcedure, router } from '@api/server/trpc'
+import { privateProcedure, publicProcedure, router } from '@api/server/trpc'
+
+export const userRouter = router({
+  getCurrentUser: privateProcedure.query(({ ctx }) => ctx.user ?? null),
+})
 
 // export const userRouter = router({
 //   getAll: protectedProcedure

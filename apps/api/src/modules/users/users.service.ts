@@ -3,7 +3,8 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-const create = (data: Prisma.UserCreateInput): Promise<User> => prisma.user.create({ data })
+const create = (data: Prisma.UserCreateInput): Promise<User> =>
+  prisma.user.create({ data })
 
 const get = (id: Prisma.UserWhereUniqueInput['id']): Promise<User | null> =>
   prisma.user.findUnique({ where: { id } })
@@ -15,7 +16,8 @@ const update = (
   data: Prisma.UserUpdateInput,
 ): Promise<User> => prisma.user.update({ where: { id }, data })
 
-const del = (id: Prisma.UserWhereUniqueInput['id']) => prisma.user.delete({ where: { id } })
+const del = (id: Prisma.UserWhereUniqueInput['id']) =>
+  prisma.user.delete({ where: { id } })
 
 const findOrCreate = (data: Prisma.UserCreateInput): Promise<User> =>
   prisma.user

@@ -17,12 +17,12 @@ export default function NavItem({ Icon, text, location }: Props) {
       <div
         role="button"
         tabIndex={0}
-        className="flex w-full items-center text-start leading-tight outline-none transition-all"
+        className=" gap-2 rounded-md dark:hover:bg-white/10 md:px-6 md:py-4 flex w-full items-center text-start leading-tight outline-none transition-all"
       >
-        <div className="mr-4 grid place-items-center">
-          <Icon className="h-5 w-5 text-slate-200" />
+        <div className="">
+          <Icon className="md:h-5 md:w-5 w-8 h-8 text-slate-200" />
         </div>
-        {text}
+        <p className="hidden md:block">{text}</p>
       </div>
     </Link>
   )

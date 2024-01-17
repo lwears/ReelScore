@@ -5,7 +5,9 @@ dotenv.config()
 
 export const envSchema = z.object({
   PORT: z.coerce.number().int().default(4000),
-  NODE_ENV: z.enum(['local', 'development', 'test', 'production']).default('development'),
+  NODE_ENV: z
+    .enum(['local', 'development', 'test', 'production'])
+    .default('development'),
   HOST: z.string().default('localhost'),
   SECRET_KEY: z.string().min(10),
   JWT_EXPIRES_IN: z.string(),

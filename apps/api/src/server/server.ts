@@ -18,6 +18,11 @@ import type { ServerConfig } from '@api/configs/env.config'
 
 import authPlugin from '@api/modules/auth/auth.plugin'
 import testPlugin from '@api/modules/test/test.plugin'
+import { type User } from '@prisma/client'
+
+declare module 'fastify' {
+  interface PassportUser extends User {}
+}
 
 export function createServer({
   port,
@@ -71,7 +76,7 @@ export function createServer({
   })
 
   server.register(cors, {
-    origin: 'http://localhost:3000',
+    origin: true,
     methods: '*',
     credentials: true,
   })
@@ -82,7 +87,14 @@ export function createServer({
 
   server.register(fastifyTRPCPlugin, {
     prefix: trpcPrefix,
-    trpcOptions: { router: appRouter, createContext },
+    trpcOptions: {
+      router: appRouter,
+      createContext,
+      // onError({ path, error }) {
+      //   // report to error monitoring
+      //   console.error(`Error in tRPC handler on path '${path}':`, error)
+      // },
+    },
   })
 
   server.register(fastifyTRPCOpenApiPlugin, {
