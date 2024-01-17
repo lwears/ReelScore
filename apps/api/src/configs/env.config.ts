@@ -10,11 +10,11 @@ export const envSchema = z.object({
     .default('development'),
   HOST: z.string().default('localhost'),
   SECRET_KEY: z.string().min(10),
-  JWT_EXPIRES_IN: z.string(),
   DATABASE_URL: z.string().url(),
   TRPC_PREFIX: z.string().default('/trpc'),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
+  TMDB_KEY: z.string(),
 })
 
 const env = envSchema.parse(process.env)
@@ -25,16 +25,11 @@ export const serverConfig = {
   trpcPrefix: env.TRPC_PREFIX,
   googleClientId: env.GOOGLE_CLIENT_ID,
   googleClientSecret: env.GOOGLE_CLIENT_SECRET,
+  secret: env.SECRET_KEY,
+  tmdbKey: env.TMDB_KEY,
 }
 
 export type ServerConfig = typeof serverConfig
-
-export const authConfig = {
-  secretKey: env.SECRET_KEY,
-  jwtExpiresIn: env.JWT_EXPIRES_IN,
-}
-
-export type AuthConfig = typeof authConfig
 
 declare global {
   namespace NodeJS {

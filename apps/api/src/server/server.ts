@@ -14,7 +14,7 @@ import { Redis } from 'ioredis'
 
 import { appRouter } from './router'
 import { openApiDocument } from './openapi'
-import type { ServerConfig } from '@api/configs/env.config'
+import { type ServerConfig } from '@api/configs/env.config'
 
 import authPlugin from '@api/modules/auth/auth.plugin'
 import testPlugin from '@api/modules/test/test.plugin'
@@ -30,6 +30,7 @@ export function createServer({
   trpcPrefix,
   googleClientId,
   googleClientSecret,
+  secret,
 }: ServerConfig) {
   const client = new Redis({
     host: 'localhost',
@@ -63,7 +64,7 @@ export function createServer({
   server.register(fastifyCookie, {})
 
   server.register(fastifySession, {
-    secret: 'cNaoPYAwF60HZJzkcNaoPYAwF60HZJzk',
+    secret: secret,
     cookieName: 'session',
     cookie: { path: '/', secure: false },
     store: new RedisStore({
