@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  seed     = "prisma/seed.ts"
 }
 
 datasource db {
@@ -11,32 +12,38 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  googleId String    @unique
-  email    String    @unique
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  googleId String  @unique
+  email    String  @unique
   name     String
   movies   Movie[]
-  tvSeries TvSerie[]
+  series   Serie[]
 }
 
 model Movie {
-  id             String   @id @default(uuid())
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   title          String   @unique @db.VarChar(255)
-  imdbScore      Int
-  rottenTomatoes Int
-  userId         String
+  posterPath     String
+  releaseDate    DateTime
+  imdbScore      Int?
+  rottenTomatoes Int?
+  score          Int?
+  userId         String   @db.Uuid
   User           User?    @relation(fields: [userId], references: [id])
 }
 
-model TvSerie {
-  id             String   @id @default(uuid())
+model Serie {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   title          String   @unique @db.VarChar(255)
-  imdbScore      Int
-  rottenTomatoes Int
-  userId         String
+  posterPath     String
+  releaseDate    DateTime
+  imdbScore      Int?
+  rottenTomatoes Int?
+  score          Int?
+  userId         String   @db.Uuid
   User           User?    @relation(fields: [userId], references: [id])
 }
