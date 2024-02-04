@@ -1,12 +1,12 @@
 'use server'
 
-import { headers } from 'next/headers'
-import type { TRPCLink } from '@trpc/client'
-import { loggerLink, httpBatchLink, createTRPCProxyClient } from '@trpc/client'
-import superjson from 'superjson'
 import type { AppRouter } from '@api/server/router'
+import type { TRPCLink } from '@trpc/client'
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client'
 import { observable } from '@trpc/server/observable'
-import { permanentRedirect } from 'next/navigation'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
+import superjson from 'superjson'
 
 // export const api = experimental_createTRPCNextAppDirServer<AppRouter>({
 //   config() {
@@ -38,25 +38,20 @@ import { permanentRedirect } from 'next/navigation'
 // })
 
 export const customLink: TRPCLink<AppRouter> = () => {
-  // here we just got initialized in the app - this happens once per app
-  // useful for storing cache for instance
   return ({ next, op }) => {
-    // this is when passing the result to the next link
-    // each link needs to return an observable which propagates results
     return observable((observer) => {
-      //console.log('performing operation:', op)
       const unsubscribe = next(op).subscribe({
         next(value) {
-          //console.log('we received value', value)
           observer.next(value)
         },
         error(err) {
-          //console.log('we received error', err)
-          observer.error(err)
+          // console.log({ err })
           if (err?.data?.code === 'UNAUTHORIZED') {
             console.log('LIAM123') // Works
-            //permanentRedirect('/login') // Does not work
+            observer.complete()
+            redirect('/login') // Does not work
           }
+          observer.error(err)
         },
         complete() {
           observer.complete()
@@ -67,6 +62,31 @@ export const customLink: TRPCLink<AppRouter> = () => {
   }
 }
 
+// const errorLink: TRPCLink<AppRouter> = (): OperationLink<AppRouter> => {
+//   const link: OperationLink<AppRouter> = ({ op, next }) => {
+//     return observable((observer) => {
+//       next(op)
+//         .pipe(
+//           tap({
+//             next: (result) => observer.next(result),
+//             error: (result) => {
+//               if (result.data?.code === 'UNAUTHORIZED') {
+//                 observer.next(
+//                   null as unknown as OperationResultEnvelope<unknown>,
+//                 )
+//                 redirect('/login')
+//               }
+//               observer.error(result)
+//             },
+//             complete: () => observer.complete(),
+//           }),
+//         )
+//         .subscribe(observer)
+//     })
+//   }
+//   return link
+// }
+
 export const api = createTRPCProxyClient<AppRouter>({
   transformer: superjson,
   links: [
@@ -76,7 +96,7 @@ export const api = createTRPCProxyClient<AppRouter>({
     //   //   process.env.NODE_ENV === 'development' ||
     //   //   (op.direction === 'down' && op.result instanceof Error),
     // }),
-    //customLink,
+    // errorLink,
     httpBatchLink({
       url: 'http://localhost:4000/trpc',
       headers(opts) {
@@ -98,6 +118,17 @@ export const api = createTRPCProxyClient<AppRouter>({
           ...options,
           credentials: 'include',
         })
+        //.then((res) => {
+        //   // console.log(err.())
+        //   const clone = res.clone()
+        //   let isError = false
+        //   clone.json().then((data) => {
+        //     //console.log(data[0].error.json.data.code)
+        //     isError = data[0].error.json.data.code === 'UNAUTHORIZED'
+        //   })
+        //   isError && redirect('/login', RedirectType.replace)
+        //   return res
+        //})
       },
     }),
   ],

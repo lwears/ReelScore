@@ -54,7 +54,6 @@ export async function middleware(request: NextRequest) {
     .catch((err) => {
       if (err instanceof TRPCClientError) {
         if (err.data.code === 'UNAUTHORIZED') {
-          console.log('in if')
           return NextResponse.redirect(new URL('/login', request.url))
         }
       }
