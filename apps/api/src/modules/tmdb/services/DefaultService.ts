@@ -29,7 +29,7 @@ export class DefaultService {
     year?: string,
   ): CancelablePromise<{
     page?: number
-    results?: Array<{
+    results: Array<{
       adult?: boolean
       backdrop_path?: string
       genre_ids?: Array<number>
@@ -465,7 +465,7 @@ export class DefaultService {
     page: number = 1,
   ): CancelablePromise<{
     page?: number
-    results?: Array<{
+    results: Array<{
       adult?: boolean
       backdrop_path?: string
       id?: number

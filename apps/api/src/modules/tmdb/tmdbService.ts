@@ -15,6 +15,7 @@ export class TmdbService {
     HttpRequest: HttpRequestConstructor = FetchHttpRequest,
   ) {
     this.request = new HttpRequest({
+      // TODO: Add to Process.env
       BASE: config?.BASE ?? 'https://api.themoviedb.org',
       VERSION: config?.VERSION ?? '3',
       WITH_CREDENTIALS: config?.WITH_CREDENTIALS ?? false,

@@ -30,6 +30,7 @@ model Movie {
   imdbScore      Int?
   rottenTomatoes Int?
   score          Int?
+  watched        Boolean
   userId         String   @db.Uuid
   User           User?    @relation(fields: [userId], references: [id])
 }
@@ -44,6 +45,11 @@ model Serie {
   imdbScore      Int?
   rottenTomatoes Int?
   score          Int?
+  watched        Boolean
   userId         String   @db.Uuid
   User           User?    @relation(fields: [userId], references: [id])
 }
+
+// TODO: custom migration
+// https://www.prisma.io/docs/orm/prisma-migrate/workflows/customizing-migrations
+// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/check-constraints

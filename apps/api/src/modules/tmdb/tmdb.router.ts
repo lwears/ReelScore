@@ -1,22 +1,21 @@
 import { z } from 'zod'
-// import { TRPCError } from '@trpc/server'
-// import { userDocs } from '@/openapi/user'
 import { privateProcedure, publicProcedure, router } from '@api/server/trpc'
 import { TmdbService } from './tmdbService'
-import { mockData } from './mock'
 import { serverConfig } from '@api/configs/env.config'
 
 const tmdbService = new TmdbService({
-<<<<<<< HEAD
-  TOKEN: 'secretHere',
-=======
   TOKEN: serverConfig.tmdbKey,
->>>>>>> 976004c (Removed accidentally added secret)
 }).default
 
 export const tmdbRouter = router({
-  searchMovie: privateProcedure.input(z.string()).query(async ({ input }) => {
-    //tmdbService.searchMovie(input)
-    return mockData
-  }),
+  searchMulti: privateProcedure
+    .input(
+      z.object({
+        query: z.string(),
+        page: z.number().int().gte(0).lte(2_147_483_648),
+      }),
+    )
+    .query(async ({ input: { page, query } }) =>
+      tmdbService.searchMulti(query, false, 'en-US', page),
+    ),
 })
