@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
 export const movieSeed: Prisma.MovieCreateManyInput[] = [
   {
@@ -54,43 +54,43 @@ export const movieSeed: Prisma.MovieCreateManyInput[] = [
 export const serieSeed: Prisma.SerieCreateManyInput[] = [
   {
     posterPath: '/2koX1xLkpTQM4IZebYvKysFW1Nh.jpg',
-    releaseDate: new Date('1994-08-21'),
+    firstAired: new Date('1994-08-21'),
     title: 'Friends',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
   {
     posterPath: '/ztkUQFLlC19CCMYHW9o1zWhJRNq.jpg',
-    releaseDate: new Date('2008-08-21'),
+    firstAired: new Date('2008-08-21'),
     title: 'Breaking Bad',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
   {
     posterPath: '/vUUqzWa2LnHIVqkaKVlVGkVcZIW.jpg',
-    releaseDate: new Date('2016-08-21'),
+    firstAired: new Date('2016-08-21'),
     title: 'Peaky Blinders',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
   {
     posterPath: '/huxmY6Dmzwpv5Q2hnNft0UMK7vf.jpg',
-    releaseDate: new Date('2016-08-21'),
+    firstAired: new Date('2016-08-21'),
     title: 'This is us',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
   {
     posterPath: '/bBfMth0m4A4f8ChiS6MXrRhdEqf.jpg',
-    releaseDate: new Date('2011-08-21'),
+    firstAired: new Date('2011-08-21'),
     title: 'The Bridge',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
   {
     posterPath: '/mOzYV3QH5Nwm8CwkVIUmb0Ae0IO.jpg',
-    releaseDate: new Date('2011-08-21'),
+    firstAired: new Date('2011-08-21'),
     title: 'The Killing',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
   {
     posterPath: '/tFTJ3YbOor3BtabI96QehXxEBii.jpg',
-    releaseDate: new Date('2017-08-21'),
+    firstAired: new Date('2017-08-21'),
     title: "The Handmaid's Tale",
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },

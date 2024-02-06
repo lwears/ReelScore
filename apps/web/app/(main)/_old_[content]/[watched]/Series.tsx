@@ -4,6 +4,7 @@ import { api } from '@web/app/utils/trpc/server'
 
 import Card from '@web/app/ui/main/Card'
 import CardsContainer from '@web/app/ui/main/CardsContainer'
+import { buildImgSrc } from '@web/app/utils/helpers'
 
 export const Series = async () => {
   const series = await api.serieRouter.getAll.query({ watched: true })
@@ -15,6 +16,3 @@ export const Series = async () => {
     </CardsContainer>
   )
 }
-
-const buildImgSrc = (posterPath: string): string | null =>
-  posterPath ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}` : null

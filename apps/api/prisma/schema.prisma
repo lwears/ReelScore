@@ -6,6 +6,10 @@ generator client {
   seed     = "prisma/seed.ts"
 }
 
+generator zod {
+  provider = "zod-prisma-types"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -30,7 +34,7 @@ model Movie {
   imdbScore      Int?
   rottenTomatoes Int?
   score          Int?
-  watched        Boolean
+  watched        Boolean  @default(false)
   userId         String   @db.Uuid
   User           User?    @relation(fields: [userId], references: [id])
 }
@@ -41,15 +45,11 @@ model Serie {
   updatedAt      DateTime @updatedAt
   title          String   @unique @db.VarChar(255)
   posterPath     String
-  releaseDate    DateTime
+  firstAired     DateTime
   imdbScore      Int?
   rottenTomatoes Int?
   score          Int?
-  watched        Boolean
+  watched        Boolean  @default(false)
   userId         String   @db.Uuid
   User           User?    @relation(fields: [userId], references: [id])
 }
-
-// TODO: custom migration
-// https://www.prisma.io/docs/orm/prisma-migrate/workflows/customizing-migrations
-// https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/check-constraints
