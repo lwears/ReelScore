@@ -3,19 +3,19 @@ import type { Prisma } from '@prisma/client'
 export const movieSeed: Prisma.MovieCreateManyInput[] = [
   {
     releaseDate: new Date('2018-01-16 09:00:00'),
-    posterPath: '/2F7WsyChQLEftFiDOVTGkv3hFpyyt.jpg',
+    posterPath: '/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg',
     title: 'Avengers: Infinity War',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
   {
     releaseDate: new Date('2012-01-16 09:00:00'),
-    posterPath: '/2FRYMX2wcKCBAr24UyPD7xwmjaTn.jpg',
+    posterPath: '/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg',
     title: 'The Avengers',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
   {
     releaseDate: new Date('2019-01-16 09:00:00'),
-    posterPath: '/2For06FN3Dka5tukK1e9sl16pB3iy.jpg',
+    posterPath: '/or06FN3Dka5tukK1e9sl16pB3iy.jpg',
     title: 'Avengers: Endgame',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
@@ -47,6 +47,18 @@ export const movieSeed: Prisma.MovieCreateManyInput[] = [
     posterPath: '/cOg3UT2NYWHZxp41vpxAnVCOC4M.jpg',
     releaseDate: new Date('2016-08-21'),
     title: 'Jack Reacher: Never Go Back',
+    userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
+  },
+  {
+    posterPath: '/5weKu49pzJCt06OPpjvT80efnQj.jpg',
+    releaseDate: new Date('2023-08-21'),
+    title: 'Spider-Man: No Way Home',
+    userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
+  },
+  {
+    posterPath: '/c24sv2weTHPsmDa7jEMN0m2P3RT.jpg',
+    releaseDate: new Date('2017-08-21'),
+    title: 'Spider-Man: Homecoming',
     userId: '8855dd27-77d1-45ec-ad04-76fcd697f228',
   },
 ]

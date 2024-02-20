@@ -1,10 +1,14 @@
 'use client'
-import { ChevronUpIcon, FilmIcon, TvIcon } from '@heroicons/react/20/solid'
+
 import Link from 'next/link'
-import Search from './Search'
+import { useState } from 'react'
 import clsx from 'clsx'
-import { useEffect, useRef, useState } from 'react'
-import { HeroIcon } from '@web/app/types'
+import { ChevronUpIcon, FilmIcon, TvIcon } from '@heroicons/react/20/solid'
+
+import { useOutsideClick } from '@web/app/utils'
+import { Search } from './Search'
+
+import { type HeroIcon } from '@web/app/types'
 
 const navItems: NavItem[] = [
   {
@@ -12,12 +16,12 @@ const navItems: NavItem[] = [
     subnav: [
       {
         text: 'Movies',
-        location: 'http://localhost:3000/library/movies',
+        location: 'http://localhost:3000/library/movies/watched',
         Icon: FilmIcon,
       },
       {
         text: 'Series',
-        location: 'http://localhost:3000/library/series',
+        location: 'http://localhost:3000/library/series/watchlist',
         Icon: TvIcon,
       },
     ],
@@ -26,13 +30,13 @@ const navItems: NavItem[] = [
     text: 'Browse',
     subnav: [
       {
-        text: 'Movies2',
-        location: 'http://localhost:3000/browse/movies',
+        text: 'Movies',
+        location: 'http://localhost:3000/browse/movies/',
         Icon: FilmIcon,
       },
       {
-        text: 'Series2',
-        location: 'http://localhost:3000/browse/series',
+        text: 'Series',
+        location: 'http://localhost:3000/browse/series/',
         Icon: TvIcon,
       },
     ],
@@ -45,8 +49,8 @@ const navItems: NavItem[] = [
 
 export default function NavBar() {
   return (
-    <header className="flex items-center justify-between dark:bg-zinc-800">
-      <FilmIcon className="h-7 w-7 text-slate-200 m-2" />
+    <header className="flex items-center justify-between bg-primary-bg">
+      <FilmIcon className="m-4 h-7 w-7" />
 
       <input className="side-menu" type="checkbox" id="side-menu" />
       <label className="hamb" htmlFor="side-menu">
@@ -74,18 +78,20 @@ const Navigation: React.FC<NavigationProps> = ({ navItems }) => {
   }
 
   return (
-    <ul className="text-slate-200 flex flex-col md:flex-row md:gap-2 items-center md:h-full">
+    <ul className="flex flex-col items-center text-slate-200 md:h-full md:flex-row md:gap-2">
       {navItems.map((item, index) => (
         <div
           key={index}
-          className="w-full h-full relative px-2 py-3 md:p-0 md:flex md:items-center border-b-[1px] border-zinc-600 md:border-0 last:border-0"
+          className="relative size-full border-b-[1px] border-zinc-600 px-2 py-3 last:border-0 md:flex md:items-center md:border-0 md:p-0"
         >
           {item.subnav ? (
             <>
               <NavButton
                 text={item.text}
                 onClick={() => handleClick(item.text)}
-                refCallback={(el) => (itemsRef.current[index] = el)}
+                refCallback={(el: HTMLButtonElement) =>
+                  (itemsRef.current[index] = el)
+                }
               />
               <Dropdown
                 items={item.subnav}
@@ -116,28 +122,24 @@ interface SubNavItem {
 interface NavButtonProps {
   text: string
   onClick: () => void
-  refCallback: (el: HTMLButtonElement | null) => void
+  refCallback: (el: HTMLButtonElement) => void
 }
 
-const NavButton: React.FC<NavButtonProps> = ({
-  text,
-  onClick,
-  refCallback,
-}) => (
+const NavButton = ({ text, onClick, refCallback }: NavButtonProps) => (
   <button
     onClick={onClick}
-    className="flex justify-between rounded-md py-2 px-3 text-base text-slate-200 hover:bg-zinc-700 w-full group"
-    ref={(el) => refCallback(el)}
+    className="hover:bg-sky- group flex w-full justify-between rounded-md px-3 py-2 text-base text-primary-fg hover:bg-primary-bg-hover"
+    ref={(el: HTMLButtonElement) => refCallback(el)}
   >
     {text}
-    <ChevronUpIcon className="w-5 h-5 md:hidden group-has-[+.invisible]:rotate-180 transition-all transform" />
+    <ChevronUpIcon className="h-5 w-5 transform transition-all group-has-[+.invisible]:rotate-180 md:hidden" />
   </button>
 )
 
 const LogoutButton = ({ text }: { text: string }) => (
   <button
     onClick={() => console.log('logout')}
-    className="flex justify-between rounded-md py-2 px-3 text-base text-slate-200 hover:bg-zinc-700 w-full whitespace-nowrap"
+    className="flex w-full justify-between whitespace-nowrap rounded-md px-3 py-2 text-base text-primary-fg hover:bg-primary-bg-hover"
   >
     {text}
   </button>
@@ -148,51 +150,23 @@ interface DropdownProps {
   isVisible: boolean
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ items, isVisible }) => (
+const Dropdown = ({ items, isVisible }: DropdownProps) => (
   <ul
     className={clsx(
       'nav-list-dropdown peer-[invisible]:rotate-45',
-      isVisible ? 'max-h-40 opacity-100' : 'max-h-0 invisible opacity-0',
+      isVisible ? 'max-h-40 opacity-100' : 'invisible max-h-0 opacity-0'
     )}
   >
     {items.map(({ text, Icon, location }) => (
       <li key={text} className="">
         <Link
           href={location}
-          className="text-slate-200 h-full w-full py-2 px-3 flex flex-row gap-3 items-center dark:hover:bg-zinc-700 rounded"
+          className="flex h-full w-full flex-row items-center gap-3 rounded px-3 py-2 dark:hover:bg-zinc-700"
         >
-          <Icon className="md:w-5 md:h-5 hidden md:block" />
+          <Icon className="hidden md:block md:h-5 md:w-5" />
           {text}
         </Link>
       </li>
     ))}
   </ul>
 )
-
-const useOutsideClick = <T,>(
-  initialState: T,
-  stateUpdater: (newState: T) => void,
-) => {
-  const itemsRef = useRef<HTMLButtonElement[]>([])
-
-  useEffect(() => {
-    const pageClickEvent = (e: MouseEvent) => {
-      if (
-        itemsRef.current.every((x) => x !== null) &&
-        !itemsRef.current.some((x) => x.contains(e.target as Node))
-      ) {
-        stateUpdater(initialState)
-      }
-    }
-
-    if (stateUpdater !== initialState) {
-      window.addEventListener('click', pageClickEvent)
-    }
-
-    return () => {
-      window.removeEventListener('click', pageClickEvent)
-    }
-  }, [initialState, stateUpdater])
-
-  return itemsRef
-}

@@ -1,2 +1,4 @@
 import { useDebounce } from './useDebounce'
-export { useDebounce }
+import { useOutsideClick } from './useOutsideClick'
+
+export { useDebounce, useOutsideClick }

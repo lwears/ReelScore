@@ -3,10 +3,21 @@
     "../../.eslintrc.json",
     "next/core-web-vitals",
     "plugin:tailwindcss/recommended",
-    "next/babel"
+    "next"
   ],
   "rules": {
     "@next/next/no-html-link-for-pages": "off",
-    "react-hooks/exhaustive-deps": "error"
+    "react-hooks/exhaustive-deps": "error",
+    "tailwindcss/no-custom-classname": [
+      0,
+      {
+        "config": "tailwind.config.js"
+      }
+    ]
+  },
+  "settings": {
+    "tailwindcss": {
+      "config": "tailwind.config.js"
+    }
   }
 }

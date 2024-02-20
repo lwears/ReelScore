@@ -1,9 +1,12 @@
-import Card from '@web/app/ui/main/Card'
+import { Card } from '@web/app/ui/main/Card'
 import CardsContainer from '@web/app/ui/main/CardsContainer'
 import { api } from '@web/app/utils/trpc/server'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import clsx from 'clsx'
+import { mapTmdbToCard } from '@web/app/utils/helpers'
+import { EmptyState } from '@web/app/ui/main/EmptyState'
+import { Suspense } from 'react'
 
 export const metadata: Metadata = {
   title: 'Search',
@@ -22,20 +25,17 @@ export default async function Page({
 
   if (!search) return <p>No Search Query</p>
 
-  //TODO : Remove String
-  const data = await api.tmdbRouter.searchMulti.query({
+  const { data, error } = await api.tmdbRouter.searchMulti.query({
     page: page,
     query: search,
   })
 
-  if (!data.results.length) {
+  if (!data || !data.results || data.results.length === 0) {
     return <EmptyState />
   }
 
   return (
-    <div className="dark:text-white">
-      <h1 className="text-xl md:text-2xl">Search</h1>
-      <p>{JSON.stringify(searchParams)}</p>
+    <div className="p-4">
       <div className="flex space-x-6">
         <Link
           href={{
@@ -47,7 +47,7 @@ export default async function Page({
           }}
           className={clsx(
             'rounded border bg-gray-100 px-3 py-1 text-sm text-gray-800',
-            page <= 1 && 'pointer-events-none opacity-50',
+            page <= 1 && 'pointer-events-none opacity-50'
           )}
         >
           Previous
@@ -65,19 +65,13 @@ export default async function Page({
           Next
         </Link>
       </div>
-      <CardsContainer>
-        {data.results.map((content) => {
-          return <Card key={content.id} {...content} />
-        })}
-      </CardsContainer>
-    </div>
-  )
-}
-
-const EmptyState = () => {
-  return (
-    <div>
-      <p>No content found!</p>
+      <Suspense>
+        <CardsContainer>
+          {data.results.map((m) => {
+            return <Card key={m.id} {...mapTmdbToCard(m)} />
+          })}
+        </CardsContainer>
+      </Suspense>
     </div>
   )
 }

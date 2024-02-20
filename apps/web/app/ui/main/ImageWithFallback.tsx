@@ -1,6 +1,7 @@
 'use client'
 
-import Image, { StaticImageData } from 'next/image'
+import type { StaticImageData } from 'next/image'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import GenericImage from '@web/public/1962.jpg'
 
@@ -16,6 +17,7 @@ interface Props {
 export const ImageWithFallback = ({
   fallback = GenericImage,
   src,
+  alt,
   ...props
 }: Props) => {
   const [error, setError] = useState(false)
@@ -27,7 +29,8 @@ export const ImageWithFallback = ({
   return (
     <Image
       onError={() => !error && setError(true)}
-      src={!src.length || error ? fallback : src}
+      src={src.length === 0 || error ? fallback : src}
+      alt={alt}
       {...props}
     />
   )

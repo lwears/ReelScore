@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
+
 @layer components {
 
     .nav-list-dropdown {
@@ -17,7 +19,7 @@
     }
 
     .nav {
-        @apply w-full h-full fixed overflow-hidden top-[50px] left-0 z-20 flex flex-col bg-zinc-800 max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between
+        @apply w-full h-full fixed overflow-hidden top-[50px] left-0 z-20 flex flex-col bg-primary-bg max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between
     }
 }
 
