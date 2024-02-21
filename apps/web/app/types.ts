@@ -1,4 +1,4 @@
-import { RouterOutputs } from '@api/server/router'
+import type { RouterOutputs } from '@api/server/router'
 
 export type HeroIcon = React.ForwardRefExoticComponent<
   Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {

@@ -2,6 +2,8 @@ import { api } from '@web/app/utils/trpc/server'
 import type { Metadata } from 'next'
 import { MediaDisplay } from './MediaDisplay'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import { CardsSkeleton } from '@web/app/ui/skeletons'
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -31,11 +33,11 @@ export default async function Page({
       api.serieRouter.getAll.query({ watched: watched === Watched.watched }),
   }
 
-  const data = await fetchers[media]()
-
   return (
     <div className="w-full p-4">
-      <MediaDisplay media={data} />
+      <Suspense fallback={<CardsSkeleton />}>
+        <MediaDisplay fetcher={fetchers[media]} />
+      </Suspense>
     </div>
   )
 }

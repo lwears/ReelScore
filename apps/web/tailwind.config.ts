@@ -129,6 +129,13 @@ const config: Config = {
     fontFamily: {
       roboto: ['Roboto', ...defaultTheme.fontFamily.sans],
     },
+    keyframes: {
+      shimmer: {
+        '100%': {
+          transform: 'translateX(100%)',
+        },
+      },
+    },
   },
   plugins: [],
 }

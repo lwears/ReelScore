@@ -49,8 +49,8 @@ const navItems: NavItem[] = [
 
 export default function NavBar() {
   return (
-    <header className="flex items-center justify-between bg-primary-bg">
-      <FilmIcon className="m-4 h-7 w-7" />
+    <header className="bg-primary-bg flex items-center justify-between">
+      <FilmIcon className="m-4 size-7" />
 
       <input className="side-menu" type="checkbox" id="side-menu" />
       <label className="hamb" htmlFor="side-menu">
@@ -128,18 +128,18 @@ interface NavButtonProps {
 const NavButton = ({ text, onClick, refCallback }: NavButtonProps) => (
   <button
     onClick={onClick}
-    className="hover:bg-sky- group flex w-full justify-between rounded-md px-3 py-2 text-base text-primary-fg hover:bg-primary-bg-hover"
+    className="hover:bg-sky- text-primary-fg hover:bg-primary-bg-hover group flex w-full justify-between rounded-md px-3 py-2 text-base"
     ref={(el: HTMLButtonElement) => refCallback(el)}
   >
     {text}
-    <ChevronUpIcon className="h-5 w-5 transform transition-all group-has-[+.invisible]:rotate-180 md:hidden" />
+    <ChevronUpIcon className="size-5 transition-all group-has-[+.invisible]:rotate-180 md:hidden" />
   </button>
 )
 
 const LogoutButton = ({ text }: { text: string }) => (
   <button
     onClick={() => console.log('logout')}
-    className="flex w-full justify-between whitespace-nowrap rounded-md px-3 py-2 text-base text-primary-fg hover:bg-primary-bg-hover"
+    className="text-primary-fg hover:bg-primary-bg-hover flex w-full justify-between whitespace-nowrap rounded-md px-3 py-2 text-base"
   >
     {text}
   </button>
@@ -158,12 +158,12 @@ const Dropdown = ({ items, isVisible }: DropdownProps) => (
     )}
   >
     {items.map(({ text, Icon, location }) => (
-      <li key={text} className="">
+      <li key={text}>
         <Link
           href={location}
-          className="flex h-full w-full flex-row items-center gap-3 rounded px-3 py-2 dark:hover:bg-zinc-700"
+          className="hover:bg-primary-bg-hover flex size-full flex-row items-center gap-3 rounded px-3 py-2"
         >
-          <Icon className="hidden md:block md:h-5 md:w-5" />
+          <Icon className="hidden md:block md:size-5" />
           {text}
         </Link>
       </li>

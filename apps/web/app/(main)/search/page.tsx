@@ -1,33 +1,30 @@
-import { Card } from '@web/app/ui/main/Card'
-import CardsContainer from '@web/app/ui/main/CardsContainer'
-import { api } from '@web/app/utils/trpc/server'
+import clsx from 'clsx'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import clsx from 'clsx'
-import { mapTmdbToCard } from '@web/app/utils/helpers'
-import { EmptyState } from '@web/app/ui/main/EmptyState'
 import { Suspense } from 'react'
+
+import EmptyState from '@web/app/ui/main/EmptyState'
+import { CardsSkeleton } from '@web/app/ui/skeletons'
+import { api } from '@web/app/utils/trpc/server'
+import { MediaDisplay } from './MediaDisplay'
 
 export const metadata: Metadata = {
   title: 'Search',
 }
+interface Props {
+  searchParams: { query: string; page: string }
+}
 
 export default async function Page({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined }
-}) {
-  const page =
-    typeof searchParams.page === 'string' ? Number(searchParams.page) : 1
+  searchParams: { query = '', page = '1' },
+}: Props) {
+  if (!query) return <p>No Search Query</p>
 
-  const search =
-    typeof searchParams.query === 'string' ? searchParams.query : undefined
-
-  if (!search) return <p>No Search Query</p>
+  const currentPage = Number(page)
 
   const { data, error } = await api.tmdbRouter.searchMulti.query({
-    page: page,
-    query: search,
+    page: currentPage,
+    query,
   })
 
   if (!data || !data.results || data.results.length === 0) {
@@ -41,13 +38,13 @@ export default async function Page({
           href={{
             pathname: '/search',
             query: {
-              ...(search ? { query: search } : {}),
-              page: page > 1 ? page - 1 : 1,
+              ...(query ? { query } : {}),
+              page: currentPage > 1 ? currentPage - 1 : 1,
             },
           }}
           className={clsx(
             'rounded border bg-gray-100 px-3 py-1 text-sm text-gray-800',
-            page <= 1 && 'pointer-events-none opacity-50'
+            currentPage <= 1 && 'pointer-events-none opacity-50'
           )}
         >
           Previous
@@ -56,7 +53,7 @@ export default async function Page({
           href={{
             pathname: '/search',
             query: {
-              ...(search ? { query: search } : {}),
+              ...(query ? { query } : {}),
               page: page + 1,
             },
           }}
@@ -65,12 +62,8 @@ export default async function Page({
           Next
         </Link>
       </div>
-      <Suspense>
-        <CardsContainer>
-          {data.results.map((m) => {
-            return <Card key={m.id} {...mapTmdbToCard(m)} />
-          })}
-        </CardsContainer>
+      <Suspense fallback={<CardsSkeleton />}>
+        <MediaDisplay page={currentPage} query={query} />
       </Suspense>
     </div>
   )

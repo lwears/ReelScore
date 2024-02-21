@@ -12,7 +12,7 @@ export interface CardProps {
   score: number | null
 }
 
-export const Card = ({ imgSrc, year, title, score }: CardProps) => {
+export default function Card({ imgSrc, year, title, score }: CardProps) {
   return (
     <div className="group/card shadow-material-2 relative aspect-[2/3] w-full overflow-hidden rounded-md text-sm font-extralight text-white hover:cursor-pointer">
       <div className="absolute left-0 top-0 z-0 block size-full overflow-hidden rounded-md bg-gray-300 group-hover/card:blur-sm">

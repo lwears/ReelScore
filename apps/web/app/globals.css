@@ -7,7 +7,7 @@
 @layer components {
 
     .nav-list-dropdown {
-        @apply md:absolute md:top-[60px] md:-left-0 md:shadow-md rounded md:dark:bg-zinc-800 md:w-32 md:flex md:flex-col gap-2 transition-all duration-200 ease-in-out px-3 md:p-1;
+        @apply md:absolute md:top-[55px] md:-left-0 md:shadow-md rounded md:bg-primary-bg md:w-32 md:flex md:flex-col gap-2 transition-all duration-200 ease-in-out px-3 md:p-1;
     }
 
     .nav-list-dropdown li {
@@ -20,6 +20,14 @@
 
     .nav {
         @apply w-full h-full fixed overflow-hidden top-[50px] left-0 z-20 flex flex-col bg-primary-bg max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between
+    }
+}
+
+@layer utilities {
+
+    /* From NextJS Dashboarc course */
+    .shimmer {
+        @apply before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent
     }
 }
 

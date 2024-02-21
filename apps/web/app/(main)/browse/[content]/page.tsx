@@ -1,4 +1,4 @@
-import Card from '@web/app/ui/main/Card'
+import { Card } from '@web/app/ui/main/Card'
 import CardsContainer from '@web/app/ui/main/CardsContainer'
 import { api } from '@web/app/utils/trpc/server'
 import type { Metadata } from 'next'
@@ -6,6 +6,8 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import { EmptyState } from '@web/app/ui/main/EmptyState'
 import { mapTmdbToCard } from '@web/app/utils/helpers'
+import { Suspense } from 'react'
+import { CardsSkeleton } from '@web/app/ui/skeletons'
 
 export const metadata: Metadata = {
   title: 'Browse',
@@ -49,7 +51,7 @@ export default async function Page({
           }}
           className={clsx(
             'rounded border bg-gray-100 px-3 py-1 text-sm text-gray-800',
-            page <= 1 && 'pointer-events-none opacity-50',
+            page <= 1 && 'pointer-events-none opacity-50'
           )}
         >
           Previous
@@ -67,11 +69,13 @@ export default async function Page({
           Next
         </Link>
       </div>
-      <CardsContainer>
-        {data.results.map((m) => {
-          return <Card key={m.id} {...mapTmdbToCard(m)} />
-        })}
-      </CardsContainer>
+      <Suspense fallback={<CardsSkeleton />}>
+        <CardsContainer>
+          {data.results.map((m) => {
+            return <Card key={m.id} {...mapTmdbToCard(m)} />
+          })}
+        </CardsContainer>
+      </Suspense>
     </div>
   )
 }

@@ -5,7 +5,7 @@ export const movieRouter = router({
   getAll: privateProcedure
     .input(z.object({ watched: z.boolean() }))
     .query(({ ctx }) =>
-      ctx.prisma.movie.findMany({ where: { userId: ctx.user.id } }),
+      ctx.prisma.movie.findMany({ where: { userId: ctx.user.id } })
     ),
 })
 
