@@ -21,3 +21,7 @@ export type TmdbMovie = NonNullable<
 export type TmdbSerie = NonNullable<
   RouterOutputs['tmdbRouter']['searchSerie']['data']
 >['results'][number]
+
+export type TmdbMediaSearchResult =
+  | RouterOutputs['tmdbRouter']['searchMovie']
+  | RouterOutputs['tmdbRouter']['searchSerie']

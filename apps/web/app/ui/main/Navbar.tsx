@@ -6,7 +6,7 @@ import clsx from 'clsx'
 import { ChevronUpIcon, FilmIcon, TvIcon } from '@heroicons/react/20/solid'
 
 import { useOutsideClick } from '@web/app/utils'
-import { Search } from './Search'
+import { Search } from './search/Search'
 
 import { type HeroIcon } from '@web/app/types'
 
@@ -31,12 +31,12 @@ const navItems: NavItem[] = [
     subnav: [
       {
         text: 'Movies',
-        location: 'http://localhost:3000/browse/movies/',
+        location: 'http://localhost:3000/movies/',
         Icon: FilmIcon,
       },
       {
         text: 'Series',
-        location: 'http://localhost:3000/browse/series/',
+        location: 'http://localhost:3000/series/',
         Icon: TvIcon,
       },
     ],

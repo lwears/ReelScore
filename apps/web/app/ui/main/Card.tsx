@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ImageWithFallback } from './ImageWithFallback'
+import { ImageWithFallback } from '../shared/ImageWithFallback'
 import Link from 'next/link'
 import { PlusIcon, CheckIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'

@@ -1133,64 +1133,64 @@ export interface operations {
              * @default 0
              * @example 1
              */
-            page?: number
-            results?: {
+            page: number
+            results: {
               /**
                * @default true
                * @example false
                */
-              adult?: boolean
+              adult: boolean
               /** @example /8YFL5QQVPy3AgrEQxNYVSgiPEbe.jpg */
-              backdrop_path?: string
+              backdrop_path: string | null
               genre_ids?: number[]
               /**
                * @default 0
                * @example 640146
                */
-              id?: number
+              id: number
               /** @example en */
               original_language?: string
               /** @example Ant-Man and the Wasp: Quantumania */
               original_title?: string
               /** @example Super-Hero partners Scott Lang and Hope van Dyne, along with with Hope's parents Janet van Dyne and Hank Pym, and Scott's daughter Cassie Lang, find themselves exploring the Quantum Realm, interacting with strange new creatures and embarking on an adventure that will push them beyond the limits of what they thought possible. */
-              overview?: string
+              overview: string
               /**
                * @default 0
                * @example 9272.643
                */
-              popularity?: number
+              popularity: number
               /** @example /ngl2FKBlU4fhbdsrtdom9LVLBXw.jpg */
-              poster_path?: string
+              poster_path: string | null
               /** @example 2023-02-15 */
-              release_date?: string
+              release_date: string
               /** @example Ant-Man and the Wasp: Quantumania */
-              title?: string
+              title: string
               /**
                * @default true
                * @example false
                */
-              video?: boolean
+              video: boolean
               /**
                * @default 0
                * @example 6.5
                */
-              vote_average?: number
+              vote_average: number
               /**
                * @default 0
                * @example 1856
                */
-              vote_count?: number
+              vote_count: number
             }[]
             /**
              * @default 0
              * @example 38020
              */
-            total_pages?: number
+            total_pages: number
             /**
              * @default 0
              * @example 760385
              */
-            total_results?: number
+            total_results: number
           }
         }
       }
@@ -2259,55 +2259,60 @@ export interface operations {
              * @default 0
              * @example 1
              */
-            page?: number
-            results?: {
+            page: number
+            results: {
+              /**
+               * @default true
+               * @example false
+               */
+              adult: boolean
               /** @example /mAJ84W6I8I272Da87qplS2Dp9ST.jpg */
-              backdrop_path?: string
+              backdrop_path: string | null
               /** @example 2023-01-23 */
-              first_air_date?: string
+              first_air_date: string
               genre_ids?: number[]
               /**
                * @default 0
                * @example 202250
                */
-              id?: number
+              id: number
               /** @example Dirty Linen */
-              name?: string
+              name: string
               origin_country?: string[]
               /** @example tl */
               original_language?: string
               /** @example Dirty Linen */
               original_name?: string
               /** @example To exact vengeance, a young woman infiltrates the household of an influential family as a housemaid to expose their dirty secrets. However, love will get in the way of her revenge plot. */
-              overview?: string
+              overview: string
               /**
                * @default 0
                * @example 2684.061
                */
-              popularity?: number
+              popularity: number
               /** @example /ujlkQtHAVShWyWTloGU2Vh5Jbo9.jpg */
-              poster_path?: string
+              poster_path: string | null
               /**
                * @default 0
                * @example 5
                */
-              vote_average?: number
+              vote_average: number
               /**
                * @default 0
                * @example 13
                */
-              vote_count?: number
+              vote_count: number
             }[]
             /**
              * @default 0
              * @example 7414
              */
-            total_pages?: number
+            total_pages: number
             /**
              * @default 0
              * @example 148265
              */
-            total_results?: number
+            total_results: number
           }
         }
       }

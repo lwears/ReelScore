@@ -1,9 +1,9 @@
 import Card from '@web/app/ui/main/Card'
-import CardsContainer from '@web/app/ui/main/CardsContainer'
-import EmptyState from '@web/app/ui/main/EmptyState'
 import { mapMediaToCard } from '@web/app/utils/helpers'
 
 import { type Media as MediaType } from '@web/app/types'
+import EmptyState from '@web/app/ui/shared/EmptyState'
+import CardsContainer from '@web/app/ui/shared/CardsContainer'
 
 export const MediaDisplay = async ({
   fetcher,

@@ -19,7 +19,7 @@ interface BaseSearchOpts {
   includeAdult?: boolean
 }
 
-export const searchMulti = async ({
+const searchMulti = async ({
   query,
   includeAdult = false,
   page,
@@ -37,7 +37,7 @@ interface MovieSearchOpts extends BaseSearchOpts {
   region?: string
 }
 
-export const searchMovie = async ({
+const searchMovie = async ({
   query,
   includeAdult = false,
   page,
@@ -52,7 +52,7 @@ interface SerieSearchOpts extends BaseSearchOpts {
   year?: string
 }
 
-export const searchSerie = async ({
+const searchSerie = async ({
   query,
   includeAdult = false,
   page,
@@ -66,8 +66,26 @@ export const searchSerie = async ({
 
 // data .map(({data}) => ({ }))
 
+const getPopularMovies = async ({
+  page,
+  language = 'en-US',
+}: {
+  page: number
+  language?: string
+}) => GET('/3/discover/movie', { params: { query: { page, language } } })
+
+const getPopularSeries = async ({
+  page,
+  language = 'en-US',
+}: {
+  page: number
+  language?: string
+}) => GET('/3/discover/tv', { params: { query: { page, language } } })
+
 export const tmdbService = {
   searchMovie,
   searchMulti,
   searchSerie,
+  getPopularMovies,
+  getPopularSeries,
 }

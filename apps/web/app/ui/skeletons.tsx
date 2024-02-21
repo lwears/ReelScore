@@ -1,4 +1,4 @@
-import CardsContainer from './main/CardsContainer'
+import CardsContainer from './shared/CardsContainer'
 
 // Loading animation from NextJS Dashboard course
 export function CardSkeleton() {
@@ -7,9 +7,9 @@ export function CardSkeleton() {
   )
 }
 
-export const CardsSkeleton = () => (
+export const CardsSkeleton = ({ length = 8 }: { length?: number }) => (
   <CardsContainer>
-    {Array.from({ length: 8 }, (_, i) => (
+    {Array.from({ length }, (_, i) => (
       <CardSkeleton key={i} />
     ))}
   </CardsContainer>
