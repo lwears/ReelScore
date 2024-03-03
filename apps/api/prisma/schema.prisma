@@ -21,31 +21,31 @@ model User {
 }
 
 model Movie {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  title          String   @unique @db.VarChar(255)
-  posterPath     String
-  releaseDate    DateTime
-  imdbScore      Int?
-  rottenTomatoes Int?
-  score          Int?
-  watched        Boolean  @default(false)
-  userId         String   @db.Uuid
-  User           User?    @relation(fields: [userId], references: [id])
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tmdbId      Int       @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  title       String    @unique @db.VarChar(255)
+  posterPath  String?
+  releaseDate DateTime?
+  tmdbScore   Int       @default(0)
+  score       Int       @default(0)
+  watched     Boolean   @default(false)
+  userId      String    @db.Uuid
+  User        User?     @relation(fields: [userId], references: [id])
 }
 
 model Serie {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  title          String   @unique @db.VarChar(255)
-  posterPath     String
-  firstAired     DateTime
-  imdbScore      Int?
-  rottenTomatoes Int?
-  score          Int?
-  watched        Boolean  @default(false)
-  userId         String   @db.Uuid
-  User           User?    @relation(fields: [userId], references: [id])
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tmdbId     Int       @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  title      String    @unique @db.VarChar(255)
+  posterPath String?
+  firstAired DateTime?
+  tmdbScore  Int       @default(0)
+  score      Int       @default(0)
+  watched    Boolean   @default(false)
+  userId     String    @db.Uuid
+  User       User?     @relation(fields: [userId], references: [id])
 }

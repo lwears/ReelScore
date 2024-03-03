@@ -17,7 +17,7 @@ export const tmdbRouter = router({
     .input(
       z.object({
         query: z.string(),
-        page: z.number().int().gte(0).lte(2_147_483_648),
+        page: z.number().int().gte(0).lte(2_147_483_648).optional(),
       })
     )
     .query(async ({ input: { page, query } }) =>
@@ -27,7 +27,7 @@ export const tmdbRouter = router({
     .input(
       z.object({
         query: z.string(),
-        page: z.number().int().gte(0).lte(2_147_483_648),
+        page: z.number().int().gte(0).lte(2_147_483_648).optional(),
       })
     )
     .query(async ({ input: { page, query } }) =>
@@ -36,7 +36,7 @@ export const tmdbRouter = router({
   popularMovies: privateProcedure
     .input(
       z.object({
-        page: z.number().int().gte(0).lte(2_147_483_648),
+        page: z.number().int().gte(0).lte(2_147_483_648).optional(),
       })
     )
     .query(async ({ input: { page } }) =>
@@ -45,7 +45,7 @@ export const tmdbRouter = router({
   popularSeries: privateProcedure
     .input(
       z.object({
-        page: z.number().int().gte(0).lte(2_147_483_648),
+        page: z.number().int().gte(0).lte(2_147_483_648).optional(),
       })
     )
     .query(async ({ input: { page } }) =>

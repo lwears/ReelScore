@@ -15,14 +15,14 @@ const { GET } = createClient<paths>({
 interface BaseSearchOpts {
   query: string
   language?: string
-  page: number
+  page?: number
   includeAdult?: boolean
 }
 
 const searchMulti = async ({
   query,
   includeAdult = false,
-  page,
+  page = 1,
   language = 'en-US',
 }: BaseSearchOpts) =>
   GET('/3/search/multi', {
@@ -40,7 +40,7 @@ interface MovieSearchOpts extends BaseSearchOpts {
 const searchMovie = async ({
   query,
   includeAdult = false,
-  page,
+  page = 1,
   language = 'en-US',
 }: MovieSearchOpts) =>
   GET('/3/search/movie', {
@@ -55,7 +55,7 @@ interface SerieSearchOpts extends BaseSearchOpts {
 const searchSerie = async ({
   query,
   includeAdult = false,
-  page,
+  page = 1,
   language = 'en-US',
 }: SerieSearchOpts) =>
   GET('/3/search/tv', {
@@ -67,18 +67,18 @@ const searchSerie = async ({
 // data .map(({data}) => ({ }))
 
 const getPopularMovies = async ({
-  page,
+  page = 1,
   language = 'en-US',
 }: {
-  page: number
+  page?: number
   language?: string
 }) => GET('/3/discover/movie', { params: { query: { page, language } } })
 
 const getPopularSeries = async ({
-  page,
+  page = 1,
   language = 'en-US',
 }: {
-  page: number
+  page?: number
   language?: string
 }) => GET('/3/discover/tv', { params: { query: { page, language } } })
 

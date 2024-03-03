@@ -13,7 +13,7 @@ const getAll = (): Promise<User[]> => prisma.user.findMany()
 
 const update = (
   id: Prisma.UserWhereUniqueInput['id'],
-  data: Prisma.UserUpdateInput,
+  data: Prisma.UserUpdateInput
 ): Promise<User> => prisma.user.update({ where: { id }, data })
 
 const del = (id: Prisma.UserWhereUniqueInput['id']) =>
@@ -22,7 +22,7 @@ const del = (id: Prisma.UserWhereUniqueInput['id']) =>
 const findOrCreate = (data: Prisma.UserCreateInput): Promise<User> =>
   prisma.user
     .findUnique({ where: { googleId: data.googleId } })
-    .then((user) => (user ? user : create(data)))
+    .then((user) => user ?? create(data))
 
 export const userService = {
   findOrCreate,

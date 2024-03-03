@@ -18,11 +18,7 @@ const bigStone = {
 }
 
 const config: Config = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       transitionProperty: {
@@ -62,8 +58,8 @@ const config: Config = {
           },
         },
         primary: {
-          bg: bigStone[950],
-          'bg-hover': bigStone[800], //White
+          bg: bigStone[800],
+          'bg-hover': bigStone[600], //White
           fg: bigStone[100],
           'fg-hover': bigStone[100],
         },
