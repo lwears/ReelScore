@@ -1,4 +1,4 @@
-import { LinkButton } from "@web/ui/components/Button"
+import { LinkButton } from '@web/ui/components/Button'
 
 interface Props {
   header: string

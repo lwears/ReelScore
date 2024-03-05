@@ -13,7 +13,7 @@ export const openApiDocument = generateOpenApiDocument(
     baseUrl: 'http://localhost:3000/api',
     docsUrl: 'https://github.com/jlalmes/trpc-openapi',
     tags: ['auth', 'users', 'posts'],
-  },
+  }
 )
 
 export default openApiDocument
