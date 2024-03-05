@@ -3,7 +3,7 @@
 ```ts
 function isEntityOfType<T extends Content, K extends keyof T>(
   obj: any,
-  typeCheckProperty: K,
+  typeCheckProperty: K
 ): obj is T {
   return typeof obj === 'object' && obj !== null && typeCheckProperty in obj
 }

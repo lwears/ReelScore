@@ -9,7 +9,7 @@ prisma.user
     Promise.all([
       prisma.movie.createMany({ data: movieSeed }),
       prisma.serie.createMany({ data: serieSeed }),
-    ]),
+    ])
   )
   .catch((error) => {
     console.error(error)

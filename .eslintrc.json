@@ -15,15 +15,10 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/consistent-type-definitions": [
-      "error",
-      "interface"
-    ],
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/no-namespace": "off",
     "unicorn/filename-case": [
