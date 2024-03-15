@@ -19,11 +19,11 @@
     }
 
     .nav-list-item {
-        @apply relative size-full px-2 py-3 last:border-0 md:flex md:items-center md:border-0 md:p-0 text-base font-normal
+        @apply relative size-full px-2 py-3 last:border-0 md:flex md:items-center md:border-0 border-b-[1px] border-big-stone-700 md:p-0 text-base font-normal
     }
 
     .nav {
-        @apply w-full h-full fixed overflow-hidden top-[50px] left-0 z-20 flex flex-col bg-primary-bg max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_li]:border-b-[1px] [&_li]:border-big-stone-700 [&_search]:border-b-[1px] [&_search]:border-big-stone-700
+        @apply w-full h-full fixed overflow-hidden top-[50px] left-0 z-20 flex flex-col bg-primary-bg max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_search]:border-b-[1px] [&_search]:border-big-stone-700
     }
 }
 

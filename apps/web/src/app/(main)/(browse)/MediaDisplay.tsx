@@ -1,9 +1,9 @@
 import Card from '@web/ui/components/Card'
-
-import type { TmdbMediaSearchResult } from '@web/types'
 import EmptyState from '@web/ui/components/EmptyState'
 import { isTmdbMovie, mapTmdbToLocal } from '@web/lib/utils/helpers'
 import CardsContainer from '@web/ui/components/CardsContainer'
+
+import type { TmdbMediaSearchResult } from '@web/types'
 
 export const MediaDisplay = async ({
   fetcher,

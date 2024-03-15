@@ -1,6 +1,7 @@
 import { buildImgSrc } from '@web/lib/utils/helpers'
 import clsx from 'clsx'
 import { ImageWithFallback } from './ImageWithFallback'
+import { StarIcon } from '@heroicons/react/20/solid'
 
 export interface CardProps {
   posterPath: string | null
@@ -16,7 +17,7 @@ export default function Card(data: CardProps) {
   return (
     <div className="shadow-material-2 group relative aspect-[2/3] w-full overflow-hidden rounded-md text-sm font-extralight text-white hover:cursor-pointer ">
       <div className="absolute left-0 top-0 z-0 block size-full overflow-hidden rounded-md bg-gray-300 group-hover:blur-sm">
-        {posterPath && (
+        {posterPath ? (
           <ImageWithFallback
             src={buildImgSrc(posterPath)}
             alt={title || 'No Title'}
@@ -24,6 +25,10 @@ export default function Card(data: CardProps) {
             height={320}
             className="size-full object-cover"
           />
+        ) : (
+          <p className="flex size-full items-center justify-center p-2 text-center text-xl font-semibold text-gray-500">
+            {title}
+          </p>
         )}
       </div>
       <div className="flex h-full flex-col justify-between opacity-0 group-hover:opacity-100">
@@ -40,7 +45,12 @@ export default function Card(data: CardProps) {
               {title}
               {date && ` (${date.getFullYear()})`}
             </p>
-            {tmdbScore > 0 && <p>{tmdbScore}</p>}
+            {tmdbScore > 0 && (
+              <span className="flex gap-2 ">
+                <p>{tmdbScore}</p>
+                <StarIcon className="size-4" />
+              </span>
+            )}
           </div>
           <div className="flex w-full">{children && children}</div>
         </div>

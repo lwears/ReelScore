@@ -13,7 +13,8 @@ export const MediaDisplay = async ({
 }: {
   fetcher: () => Promise<TmdbMediaSearchResult>
 }) => {
-  const { data, error } = await sleep(5000).then(() => fetcher())
+  // TODO fix if error
+  const { data, error } = await sleep(3000).then(fetcher)
 
   if (!data || !data.results || data.results.length === 0) {
     return <EmptyState />

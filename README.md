@@ -5,6 +5,12 @@ A simple movie / TV serie app for watchlists and scoring
 ## TODO
 
 Passport User as User?
+Style and separate pagination
+Style Login page
+Gtihub login
+Pagination for movies and series
+bug on refreshing browse movies - redirects back to search
+Add Search to browse
 
 ### Tried to create a CrudRouter
 
