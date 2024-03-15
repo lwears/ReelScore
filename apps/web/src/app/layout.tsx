@@ -1,8 +1,11 @@
-import type { Metadata } from 'next'
 import React from 'react'
 import { Roboto } from 'next/font/google'
+import { Toaster } from 'sonner'
 
+import { TRPCReactProvider } from '@web/lib/utils/trpc/react'
 import '@web/styles/globals.css'
+
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: {
@@ -26,7 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-medium antialiased dark:text-zinc-200">
-        {children}
+        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Toaster position="top-right" expand richColors />
       </body>
     </html>
   )

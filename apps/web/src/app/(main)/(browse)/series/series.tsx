@@ -1,13 +1,14 @@
 import Link from 'next/link'
+import clsx from 'clsx'
 
 import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { mapTmdbToLocal } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/server'
 import { AddSerie } from '@web/ui/browse/buttons'
-import clsx from 'clsx'
 import CardsContainer from '@web/ui/components/CardsContainer'
 import Card from '@web/ui/components/Card'
 import EmptyState from '@web/ui/components/EmptyState'
+import Pagination from '@web/ui/pagination'
 
 interface Props {
   query: string
@@ -30,7 +31,7 @@ export const Series = async ({ query, page }: Props) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-3">
-      <div className="flex space-x-6">
+      {/* <div className="flex space-x-6">
         <Link
           href={{
             pathname: '/series',
@@ -58,24 +59,15 @@ export const Series = async ({ query, page }: Props) => {
         >
           Next
         </Link>
-      </div>
+      </div> */}
+      <Pagination totalPages={data.total_pages} />
       <CardsContainer>
         {data.results.map((s) => {
           const serie = mapTmdbToLocal(s)
           return (
             <Card key={s.id} {...serie} date={serie.firstAired}>
-              <AddSerie
-                serie={serie}
-                watched={true}
-                text="Watchlist"
-                Icon={PlusIcon}
-              />
-              <AddSerie
-                serie={serie}
-                watched={false}
-                text="Seen"
-                Icon={CheckIcon}
-              />
+              <AddSerie serie={serie} watched={true} />
+              <AddSerie serie={serie} watched={false} />
             </Card>
           )
         })}

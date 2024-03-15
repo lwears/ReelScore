@@ -1,10 +1,12 @@
-import { api } from '@web/lib/utils/trpc/server'
-import type { Metadata } from 'next'
-import { MediaDisplay } from './MediaDisplay'
-import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
+import { notFound } from 'next/navigation'
+
+import { api } from '@web/lib/utils/trpc/server'
+import { MediaDisplay } from './MediaDisplay'
 import { CardsSkeleton } from '@web/ui/skeletons'
-import { deleteMovie, deleteSerie } from '@web/lib/requests/library'
+// import { deleteMovie, deleteSerie } from '@web/lib/requests/library'
+
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Library',
@@ -20,10 +22,10 @@ enum Watched {
   watchlist = 'watchlist',
 }
 
-const actions = {
-  [Media.MOVIES]: deleteMovie,
-  [Media.SERIES]: deleteSerie,
-}
+// const actions = {
+//   [Media.MOVIES]: deleteMovie,
+//   [Media.SERIES]: deleteSerie,
+// }
 
 export default async function Page({
   params: { media, watched },
@@ -42,7 +44,7 @@ export default async function Page({
   return (
     <div className="w-full p-4">
       <Suspense fallback={<CardsSkeleton />}>
-        <MediaDisplay fetcher={fetchers[media]} deleteAction={actions[media]} />
+        <MediaDisplay fetcher={fetchers[media]} />
       </Suspense>
     </div>
   )

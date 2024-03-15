@@ -91,12 +91,12 @@ export const api = createTRPCProxyClient<AppRouter>({
   transformer: superjson,
   links: [
     loggerLink({
-      //enabled: (op) => false,
       enabled: (op) =>
         process.env.NODE_ENV === 'development' ||
         (op.direction === 'down' && op.result instanceof Error),
     }),
     // errorLink,
+    // TODO Switch back to batch stream
     httpLink({
       url: 'http://localhost:4000/trpc',
       // headers(opts) {
@@ -129,17 +129,6 @@ export const api = createTRPCProxyClient<AppRouter>({
           ...options,
           credentials: 'include',
         })
-        //.then((res) => {
-        //   // console.log(err.())
-        //   const clone = res.clone()
-        //   let isError = false
-        //   clone.json().then((data) => {
-        //     //console.log(data[0].error.json.data.code)
-        //     isError = data[0].error.json.data.code === 'UNAUTHORIZED'
-        //   })
-        //   isError && redirect('/login', RedirectType.replace)
-        //   return res
-        //})
       },
     }),
   ],
