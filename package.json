@@ -36,10 +36,8 @@
     "typescript": "^5.4.2"
   },
   "lint-staged": {
-    "**/*.{js,ts,tsx}": [
-      "eslint --fix"
-    ],
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "prettier --write --ignore-unknown",
+    "**/*.{jsx,js,tsx,ts}": "eslint --cache --fix"
   },
   "dependencies": {
     "superjson": "2.2.1",
