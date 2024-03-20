@@ -1,21 +1,31 @@
-import { privateProcedure, publicProcedure, router } from '@api/server/trpc'
+import { privateProcedure, router } from '@api/server/trpc'
 import { z } from 'zod'
 import { movieService } from './movies.service'
 import { createMovieSchema } from './movies.dtos'
+import { listSchema } from '@api/shared/dto'
 
 export const movieRouter = router({
-  getAll: privateProcedure
-    .input(z.object({ watched: z.boolean() }))
-    .query(({ input, ctx }) =>
-      movieService.getAll(ctx.user.id, { watched: input.watched })
+  list: privateProcedure
+    .input(listSchema)
+    .query(({ input: { watched, query, page, limit }, ctx }) =>
+      movieService.list(
+        ctx.user.id,
+        {
+          watched,
+          title: { contains: query, mode: 'insensitive' },
+        },
+        page,
+        limit
+      )
     ),
   create: privateProcedure
     .input(createMovieSchema)
-    .mutation(({ input, ctx }) => {
-      return movieService.create({
+    .mutation(async ({ input, ctx }) => {
+      const data = await movieService.create({
         ...input,
         User: { connect: { id: ctx.user.id } },
       })
+      return data
     }),
   delete: privateProcedure
     .input(z.object({ id: z.string().uuid() }))

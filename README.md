@@ -8,9 +8,10 @@ Passport User as User?
 Style and separate pagination
 Style Login page
 Gtihub login
-Pagination for movies and series
-bug on refreshing browse movies - redirects back to search
 Add Search to browse
+Dark Mode
+add button watchlist card seen
+add is loading when loading new page
 
 ### Tried to create a CrudRouter
 

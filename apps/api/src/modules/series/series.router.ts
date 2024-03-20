@@ -2,12 +2,21 @@ import { privateProcedure, router } from '@api/server/trpc'
 import { z } from 'zod'
 import { serieService } from './series.service'
 import { createSerieSchema } from './series.dtos'
+import { listSchema } from '@api/shared/dto'
 
 export const serieRouter = router({
-  getAll: privateProcedure
-    .input(z.object({ watched: z.boolean() }))
-    .query(({ input, ctx }) =>
-      serieService.getAll(ctx.user.id, { watched: input.watched })
+  list: privateProcedure
+    .input(listSchema)
+    .query(({ input: { watched, query, page, limit }, ctx }) =>
+      serieService.list(
+        ctx.user.id,
+        {
+          watched,
+          title: { contains: query, mode: 'insensitive' },
+        },
+        page,
+        limit
+      )
     ),
   create: privateProcedure
     .input(createSerieSchema)

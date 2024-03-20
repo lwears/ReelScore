@@ -10,7 +10,7 @@ export const createSerieSchema = z.object({
   posterPath: z.string().nullable(),
   firstAired: z.coerce.date().nullable(),
   watched: z.boolean().default(false),
-  tmdbScore: z.number().min(0).max(10),
+  tmdbScore: z.number().nonnegative().max(10),
 })
 
 export type CreateSerieSchema = z.TypeOf<typeof createSerieSchema>
