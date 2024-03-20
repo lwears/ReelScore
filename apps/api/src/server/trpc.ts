@@ -1,16 +1,20 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import type { Context } from './context'
+import { ZodError } from 'zod'
 export type { AppRouter } from './router'
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
-  errorFormatter({ shape, error, ctx }) {
-    if (error.code === 'INTERNAL_SERVER_ERROR') {
-      ctx?.req.log.error(error)
-      return { ...shape, message: 'Internal server error' }
+  errorFormatter({ shape, error }) {
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.cause instanceof ZodError ? error.cause.flatten() : null,
+      },
     }
-    return shape
   },
 })
 
@@ -23,6 +27,20 @@ const isAuthenticated = t.middleware(({ next, ctx }) => {
       user: ctx.user,
     },
   })
+})
+
+// To Simulate lagging
+const simulateLag = t.middleware(async ({ next, ctx }) => {
+  if (ctx.req.headers['user-agent']?.includes('Next.js')) return next()
+  const start = Date.now()
+  const result = await next()
+  const end = Date.now()
+  const completionTime = end - start
+  const timeRemainder = 2000 - completionTime
+  if (timeRemainder > 0) {
+    await new Promise((resolve) => setTimeout(resolve, timeRemainder))
+  }
+  return result
 })
 
 // const isAdmin = t.middleware(({ next, ctx }) => {
@@ -38,6 +56,8 @@ const isAuthenticated = t.middleware(({ next, ctx }) => {
 
 export const router = t.router
 
-export const privateProcedure = t.procedure.use(isAuthenticated)
+export const privateProcedure = t.procedure
+  .use(isAuthenticated)
+  .use(simulateLag)
 export const publicProcedure = t.procedure
 // export const adminProcedure = t.procedure.use(isAdmin)

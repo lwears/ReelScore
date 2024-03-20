@@ -9,8 +9,8 @@ export async function createContext({ req, res }: CreateFastifyContextOptions) {
   if (req.user) {
     try {
       const user = req.user as User
-      return { req, res, prisma, user }
-    } catch (err) {
+      return { req, res, user }
+    } catch {
       throw new TRPCError({ message: 'Unauthorized', code: 'UNAUTHORIZED' })
     }
   }

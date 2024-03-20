@@ -2,11 +2,11 @@ import { movieRouter } from '@api/modules/movies/movies.router'
 import { serieRouter } from '@api/modules/series/series.router'
 import { tmdbRouter } from '@api/modules/tmdb/tmdb.router'
 import { userRouter } from '@api/modules/users/users.router'
+import { router } from './trpc'
+
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
-import { privateProcedure, router } from './trpc'
 
 export const appRouter = router({
-  healthcheck: privateProcedure.query(() => 'yay!'),
   userRouter: userRouter,
   tmdbRouter: tmdbRouter,
   movieRouter: movieRouter,
