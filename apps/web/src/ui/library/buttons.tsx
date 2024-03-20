@@ -5,7 +5,7 @@ import { TrashIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
 
 import { api } from '@web/lib/utils/trpc/react'
-import { Button } from '../components/Button'
+import { Button } from '../components/button'
 
 // TODO: Can i apply DRY to this?
 export const DeleteMovie = ({ id }: { id: string }) => {

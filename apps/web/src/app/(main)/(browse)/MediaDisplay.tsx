@@ -1,4 +1,4 @@
-import Card from '@web/ui/components/Card'
+import Card from '@web/ui/components/card'
 import EmptyState from '@web/ui/components/EmptyState'
 import { isTmdbMovie, mapTmdbToLocal } from '@web/lib/utils/helpers'
 import CardsContainer from '@web/ui/components/CardsContainer'

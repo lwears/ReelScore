@@ -1,5 +1,12 @@
 import type { RouterOutputs } from '@api/server/router'
 
+export interface Paginated<A> {
+  results: A[]
+  page: number
+  count: number
+  totalPages: number
+}
+
 export type HeroIcon = React.ForwardRefExoticComponent<
   Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {
     title?: string | undefined
@@ -9,9 +16,9 @@ export type HeroIcon = React.ForwardRefExoticComponent<
 
 export type Media = Movie | Serie
 
-export type Movie = RouterOutputs['movieRouter']['getAll'][number]
+export type Movie = RouterOutputs['movieRouter']['list']['results'][number]
 
-export type Serie = RouterOutputs['serieRouter']['getAll'][number]
+export type Serie = RouterOutputs['serieRouter']['list']['results'][number]
 
 export type TmdbMedia = TmdbMovie | TmdbSerie
 

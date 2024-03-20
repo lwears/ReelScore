@@ -3,11 +3,7 @@
 import { useState } from 'react'
 import superjson from 'superjson'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import {
-  httpBatchLink,
-  loggerLink,
-  unstable_httpBatchStreamLink,
-} from '@trpc/client'
+import { httpBatchLink, loggerLink } from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query'
 
 import type { AppRouter } from '@api/server/trpc'
@@ -40,6 +36,9 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
         }),
         httpBatchLink({
           url: 'http://localhost:4000/trpc',
+          headers: {
+            'x-trpc-source': 'nextjs-react',
+          },
           fetch(url, options) {
             return fetch(url, {
               ...options,

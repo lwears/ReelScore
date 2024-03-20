@@ -12,6 +12,7 @@ Add Search to browse
 Dark Mode
 add button watchlist card seen
 add is loading when loading new page
+Map errors to better descriptions on FE
 
 ### Tried to create a CrudRouter
 

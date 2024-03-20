@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation'
 import { api } from '@web/lib/utils/trpc/server'
 import { MediaDisplay } from './MediaDisplay'
 import { CardsSkeleton } from '@web/ui/skeletons'
-// import { deleteMovie, deleteSerie } from '@web/lib/requests/library'
 
 import type { Metadata } from 'next'
 
@@ -22,23 +21,30 @@ enum Watched {
   watchlist = 'watchlist',
 }
 
-// const actions = {
-//   [Media.MOVIES]: deleteMovie,
-//   [Media.SERIES]: deleteSerie,
-// }
+interface Props {
+  searchParams: { query: string; page: string }
+  params: { media: Media; watched: Watched }
+}
 
 export default async function Page({
   params: { media, watched },
-}: {
-  params: { media: Media; watched: Watched }
-}) {
+  searchParams: { page = '1' },
+}: Props) {
   if (!['movies', 'series'].includes(media)) notFound()
 
   const fetchers = {
     [Media.MOVIES]: () =>
-      api.movieRouter.getAll.query({ watched: watched === Watched.watched }),
+      api.movieRouter.list.query({
+        watched: watched === Watched.watched,
+        limit: 27,
+        page: Number(page),
+      }),
     [Media.SERIES]: () =>
-      api.serieRouter.getAll.query({ watched: watched === Watched.watched }),
+      api.serieRouter.list.query({
+        watched: watched === Watched.watched,
+        limit: 27,
+        page: Number(page),
+      }),
   }
 
   return (

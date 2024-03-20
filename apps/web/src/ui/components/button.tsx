@@ -13,9 +13,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-primary-bg hover:bg-primary-bg-hover',
+        primary: 'bg-primary hover:bg-primary-hover',
         secondary:
-          'border-primary-bg text-primary-bg hover:bg-big-stone-200 border-2',
+          'border-primary-bg text-primary-bg hover:bg-primary-muted border-2',
         card: 'hover:bg-white/20',
       },
       size: {

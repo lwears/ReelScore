@@ -6,7 +6,7 @@ import clsx from 'clsx'
 import { ChevronUpIcon, FilmIcon, TvIcon } from '@heroicons/react/20/solid'
 
 import { useOutsideClick } from '@web/lib/utils'
-import { Search } from '../search/Search'
+import { Search } from '../search/search'
 
 import type { HeroIcon } from '@web/types'
 
@@ -49,7 +49,7 @@ const navItems: NavItem[] = [
 
 export default function NavBar() {
   return (
-    <header className="bg-primary-bg flex items-center justify-between">
+    <header className="bg-primary flex items-center justify-between">
       <FilmIcon className="m-4 size-7" />
 
       <input className="side-menu" type="checkbox" id="side-menu" />
@@ -125,7 +125,7 @@ interface NavButtonProps {
 const NavButton = ({ text, onClick, refCallback }: NavButtonProps) => (
   <button
     onClick={onClick}
-    className="text-primary-fg hover:bg-primary-bg-hover group flex w-full justify-between rounded-md px-3 py-2"
+    className="text-primary-fg hover:bg-primary-hover group flex w-full justify-between rounded-md px-3 py-2"
     ref={(el: HTMLButtonElement) => refCallback(el)}
   >
     {text}
@@ -135,9 +135,8 @@ const NavButton = ({ text, onClick, refCallback }: NavButtonProps) => (
 
 const LogoutButton = ({ text }: { text: string }) => (
   <a
-    // onClick={() => console.log('logout')}
     href={'http://localhost:4000/auth/logout'}
-    className="text-primary-fg hover:bg-primary-bg-hover flex w-full justify-between whitespace-nowrap rounded-md px-3 py-2"
+    className="text-primary-fg hover:bg-primary-hover flex w-full justify-between whitespace-nowrap rounded-md px-3 py-2"
   >
     {text}
   </a>
@@ -159,7 +158,7 @@ const Dropdown = ({ items, isVisible }: DropdownProps) => (
       <li className="nav-list-dropdown-item" key={text}>
         <Link
           href={location}
-          className="hover:bg-primary-bg-hover flex size-full flex-row items-center gap-3 rounded px-3 py-2"
+          className="hover:bg-primary-hover flex size-full flex-row items-center gap-3 rounded px-3 py-2"
         >
           <Icon className="hidden md:block md:size-5" />
           {text}

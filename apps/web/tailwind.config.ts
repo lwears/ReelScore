@@ -1,26 +1,35 @@
 import type { Config } from 'tailwindcss'
 import defaultTheme from 'tailwindcss/defaultTheme'
 import colors from 'tailwindcss/colors'
-import { theme } from './theme.js'
 
-const bigStone = {
-  '50': '#f5f7fa',
-  '100': '#ebeef3',
-  '200': '#d2dae5',
-  '300': '#abbcce',
-  '400': '#7e98b2',
-  '500': '#5d7b9a',
-  '600': '#496280',
-  '700': '#3c5068',
-  '800': '#354557',
-  '900': '#303c4a',
-  '950': '#27303d',
+const fromVariable = (name: string) => `hsl(var(--${name}) / <alpha-value>)`
+
+const rhino = {
+  '50': '#f1f8fd',
+  '100': '#e0eef9',
+  '200': '#c8e2f5',
+  '300': '#a3cfed',
+  '400': '#77b5e3',
+  '500': '#579ada',
+  '600': '#4380cd',
+  '700': '#396cbc',
+  '800': '#345999',
+  '900': '#263e64',
+  '950': '#202f4b',
 }
 
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
+      gridTemplateRows: {
+        'auto-fill-100': 'repeat(auto-fill, minmax(200px, 1fr))',
+        'auto-fit-100': 'repeat(auto-fit, minmax(200px, 1fr))',
+      },
+      gridTemplateColumns: {
+        'auto-fill-100': 'repeat(auto-fill, minmax(180px, 1fr))',
+        'auto-fit-100': 'repeat(auto-fit, minmax(180px, 1fr))',
+      },
       transitionProperty: {
         'max-height': 'max-height',
       },
@@ -35,86 +44,37 @@ const config: Config = {
           '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);',
       },
       colors: {
-        background: {
-          light: bigStone[100],
-          dark: colors.gray[700],
-        },
-        surface: {
-          primary: {
-            bg: bigStone[100],
-            'bg-hover': bigStone[100], //White
-            fg: bigStone[100],
-            'fg-hover': bigStone[100],
-          },
-          secondary: {
-            bg: bigStone[100],
-            'bg-hover': bigStone[300],
-            fg: bigStone[950],
-          },
-          tertiary: {
-            bg: '#70797C',
-            'bg-hover': '#899295',
-            fg: '#F8F9FB',
-          },
-        },
+        ...rhino,
+        border: rhino[400],
+        input: rhino[300],
+        ring: rhino[200],
+        background: rhino[100],
+        foreground: rhino[950],
         primary: {
-          bg: bigStone[800],
-          'bg-hover': bigStone[600], //White
-          fg: bigStone[100],
-          'fg-hover': bigStone[100],
-        },
-        'primary-c': {
-          bg: bigStone[300],
-          'bg-hover': bigStone[200],
-          fg: bigStone[100],
+          DEFAULT: rhino[800],
+          foreground: colors.white,
+          hover: rhino[700],
         },
         secondary: {
-          bg: '#4b6269',
-          'bg-hover': '#647B82',
-          fg: '#ffffff',
+          DEFAULT: rhino[300],
+          foreground: rhino[950],
+          hover: rhino[300],
         },
-        'secondary-c': {
-          bg: '#cee7ef',
-          'bg-hover': '#DCF5FD',
-          fg: '#061f25',
+        destructive: {
+          DEFAULT: fromVariable('destructive'),
+          foreground: fromVariable('destructive-foreground'),
         },
-        success: {
-          bg: '#35CE8D', // todo #35CE8D
-          'bg-hover': '#35CE8D',
-          fg: '#ffffff',
+        accent: {
+          DEFAULT: fromVariable('accent'),
+          foreground: fromVariable('accent-foreground'),
         },
-        warning: {
-          bg: '##FFD700',
-          'bg-hover': '#FFEC8B',
-          fg: '#ffffff',
+        popover: {
+          DEFAULT: fromVariable('popover'),
+          foreground: fromVariable('popover-foreground'),
         },
-        error: {
-          bg: colors.red[500],
-          'bg-hover': colors.red[300],
-          fg: colors.red[100],
-        },
-        border: {
-          primary: bigStone[950],
-          'primary-hover': '#757779',
-          secondary: '#8E9192',
-          'secondary-hover': '#A9ABAD',
-          tertiary: '#C5C7C8',
-          'tertiary-hover': '#E1E3E4',
-          disabled: '#00000014',
-          focus: '#141414',
-        },
-        'big-stone': {
-          '50': '#f5f7fa',
-          '100': '#ebeef3',
-          '200': '#d2dae5',
-          '300': '#abbcce',
-          '400': '#7e98b2',
-          '500': '#5d7b9a',
-          '600': '#496280',
-          '700': '#3c5068',
-          '800': '#354557',
-          '900': '#303c4a',
-          '950': '#27303d',
+        card: {
+          DEFAULT: rhino[100],
+          foreground: rhino[950],
         },
       },
     },

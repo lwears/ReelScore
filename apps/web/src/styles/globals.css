@@ -4,108 +4,144 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
 
+@layer base {
+  :root {
+    --background: 217 100% 95%;
+    --foreground: 217 5% 10%;
+    --card: 217 50% 90%;
+    --card-foreground: 217 5% 15%;
+    --popover: 217 100% 95%;
+    --popover-foreground: 217 100% 10%;
+    --primary: 217 45% 27%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 30% 70%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 179 30% 85%;
+    --muted-foreground: 217 5% 35%;
+    --accent: 179 30% 80%;
+    --accent-foreground: 217 5% 15%;
+    --destructive: 0 100% 30%;
+    --destructive-foreground: 217 5% 90%;
+    --border: 217 30% 50%;
+    --input: 217 30% 26%;
+    --ring: 217 45% 27%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 217 50% 10%;
+    --foreground: 217 5% 90%;
+    --card: 217 50% 10%;
+    --card-foreground: 217 5% 90%;
+    --popover: 217 50% 5%;
+    --popover-foreground: 217 5% 90%;
+    --primary: 217 45% 27%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 30% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 179 30% 25%;
+    --muted-foreground: 217 5% 60%;
+    --accent: 179 30% 25%;
+    --accent-foreground: 217 5% 90%;
+    --destructive: 0 100% 30%;
+    --destructive-foreground: 217 5% 90%;
+    --border: 217 30% 26%;
+    --input: 217 30% 26%;
+    --ring: 217 45% 27%;
+    --radius: 0.5rem;
+  }
+}
+
 @layer components {
+  .nav-list-ul {
+    @apply text-primary-foreground flex flex-col items-center md:h-full md:flex-row md:gap-2;
+  }
 
-    .nav-list-ul {
-        @apply text-primary-fg flex flex-col items-center md:h-full md:flex-row md:gap-2
-    }
+  .nav-list-dropdown {
+    @apply md:absolute md:top-[55px] md:-left-0 md:shadow-md rounded md:bg-primary md:w-32 md:flex md:flex-col gap-2 transition-all duration-200 ease-in-out px-3 md:p-1;
+  }
 
-    .nav-list-dropdown {
-        @apply md:absolute md:top-[55px] md:-left-0 md:shadow-md rounded md:bg-primary-bg md:w-32 md:flex md:flex-col gap-2 transition-all duration-200 ease-in-out px-3 md:p-1;
-    }
+  .nav-list-dropdown-item {
+    @apply md:list-none transition-colors duration-200 ease-in-out;
+  }
 
-    .nav-list-dropdown-item {
-        @apply md:list-none transition-colors duration-200 ease-in-out;
-    }
+  .nav-list-item {
+    @apply relative size-full px-2 py-3 last:border-0 md:flex md:items-center md:border-0 border-b-[1px] border-border md:p-0 text-base font-normal;
+  }
 
-    .nav-list-item {
-        @apply relative size-full px-2 py-3 last:border-0 md:flex md:items-center md:border-0 border-b-[1px] border-big-stone-700 md:p-0 text-base font-normal
-    }
-
-    .nav {
-        @apply w-full h-full fixed overflow-hidden top-[50px] left-0 z-20 flex flex-col bg-primary-bg max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_search]:border-b-[1px] [&_search]:border-big-stone-700
-    }
+  .nav {
+    @apply w-full h-full fixed overflow-hidden top-[50px] left-0 z-20 flex flex-col max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_search]:border-b-[1px] [&_search]:border-border;
+  }
 }
 
 @layer utilities {
-
-    /* From NextJS Dashboarc course */
-    .shimmer {
-        @apply before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent
-    }
-}
-
-:root {
-    --white: #f9f9f9;
-    --black: #36383f;
-    --grey: #85888c;
+  /* From NextJS Dashboarc course */
+  .shimmer {
+    @apply before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent;
+  }
 }
 
 .hamb {
-    cursor: pointer;
-    float: right;
-    padding: 20px;
+  cursor: pointer;
+  float: right;
+  padding: 20px;
 }
 
 .hamb-line {
-    background: white;
-    display: block;
-    height: 2px;
-    position: relative;
-    width: 24px;
-
-
+  background: white;
+  display: block;
+  height: 2px;
+  position: relative;
+  width: 24px;
 }
 
 .hamb-line::before,
 .hamb-line::after {
-    background: white;
-    content: '';
-    display: block;
-    height: 100%;
-    position: absolute;
-    transition: all 0.2s ease-out;
-    width: 100%;
+  background: white;
+  content: '';
+  display: block;
+  height: 100%;
+  position: absolute;
+  transition: all 0.2s ease-out;
+  width: 100%;
 }
 
 .hamb-line::before {
-    top: 5px;
+  top: 5px;
 }
 
 .hamb-line::after {
-    top: -5px;
+  top: -5px;
 }
 
 .side-menu {
-    display: none;
+  display: none;
 }
 
 /* Toggle menu icon */
 
-.side-menu:checked~nav {
-    max-height: 350px;
+.side-menu:checked ~ nav {
+  max-height: 350px;
 }
 
-.side-menu:checked~.hamb .hamb-line {
-    background: transparent;
+.side-menu:checked ~ .hamb .hamb-line {
+  background: transparent;
 }
 
-.side-menu:checked~.hamb .hamb-line::before {
-    transform: rotate(-45deg);
-    top: 0;
+.side-menu:checked ~ .hamb .hamb-line::before {
+  transform: rotate(-45deg);
+  top: 0;
 }
 
-.side-menu:checked~.hamb .hamb-line::after {
-    transform: rotate(45deg);
-    top: 0;
+.side-menu:checked ~ .hamb .hamb-line::after {
+  transform: rotate(45deg);
+  top: 0;
 }
 
 /* Responsiveness */
 
 @media (min-width: 768px) {
-
-    .hamb {
-        display: none;
-    }
-
+  .hamb {
+    display: none;
+  }
 }

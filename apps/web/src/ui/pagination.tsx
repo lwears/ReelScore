@@ -1,13 +1,11 @@
 'use client'
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
-import clsx from 'clsx'
+import { cn } from '@web/lib/utils/cn'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
-  // NOTE: comment in this code when you get to this point in the course
-
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const currentPage = Number(searchParams.get('page')) || 1
@@ -22,16 +20,14 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 
   return (
     <>
-      {/* NOTE: comment in this code when you get to this point in the course */}
-
-      <div className="inline-flex">
+      <div className="flex w-full justify-center gap-2">
         <PaginationArrow
           direction="left"
           href={createPageURL(currentPage - 1)}
           isDisabled={currentPage <= 1}
         />
 
-        <div className="flex -space-x-px">
+        <div className="hidden -space-x-px sm:flex sm:w-fit">
           {allPages.map((page, index) => {
             let position: 'first' | 'last' | 'single' | 'middle' | undefined
 
@@ -73,14 +69,15 @@ function PaginationNumber({
   position?: 'first' | 'last' | 'middle' | 'single'
   isActive: boolean
 }) {
-  const className = clsx(
-    'flex size-10 items-center justify-center border text-sm',
+  const className = cn(
+    'border-primary border-2 text-primary sm:flex size-12 items-center justify-center text-sm',
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
-      'z-10 bg-blue-600 border-blue-600 text-white': isActive,
-      'hover:bg-gray-100': !isActive && position !== 'middle',
-      'text-gray-300': position === 'middle',
+      'z-10 bg-primary text-primary-foreground': isActive,
+      'hover:bg-primary/70 hover:text-primary-foreground':
+        !isActive && position !== 'middle',
+      'text-primary': position === 'middle',
     }
   )
 
@@ -102,13 +99,13 @@ function PaginationArrow({
   direction: 'left' | 'right'
   isDisabled?: boolean
 }) {
-  const className = clsx(
-    'flex size-10 items-center justify-center rounded-md border',
+  const className = cn(
+    'border-primary text-primary hover:text-primary-foreground flex h-12 sm:w-20 w-full items-center justify-center rounded-md border-2',
     {
-      'pointer-events-none text-gray-300': isDisabled,
-      'hover:bg-gray-100': !isDisabled,
-      'mr-2 md:mr-4': direction === 'left',
-      'ml-2 md:ml-4': direction === 'right',
+      'pointer-events-none text-primary': isDisabled,
+      'hover:bg-primary/70 hover:text-primary-foreground': !isDisabled,
+      // 'mr-2 md:mr-4': direction === 'left',
+      // 'ml-2 md:ml-4': direction === 'right',
     }
   )
 

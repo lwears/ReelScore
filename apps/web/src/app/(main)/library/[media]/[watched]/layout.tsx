@@ -1,4 +1,4 @@
-import Tabs from '@web/ui/library/Tabs'
+import Tabs from '@web/ui/library/tabs'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
