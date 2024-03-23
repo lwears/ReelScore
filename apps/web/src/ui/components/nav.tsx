@@ -10,6 +10,7 @@ import { Search } from '../search/search'
 
 import type { HeroIcon } from '@web/types'
 
+// TODO Move to somewhere better
 const navItems: NavItem[] = [
   {
     text: 'Library',

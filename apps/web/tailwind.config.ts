@@ -44,7 +44,7 @@ const config: Config = {
           '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);',
       },
       colors: {
-        ...rhino,
+        rhino,
         border: rhino[400],
         input: rhino[300],
         ring: rhino[200],
@@ -58,7 +58,7 @@ const config: Config = {
         secondary: {
           DEFAULT: rhino[300],
           foreground: rhino[950],
-          hover: rhino[300],
+          hover: rhino[200],
         },
         destructive: {
           DEFAULT: fromVariable('destructive'),

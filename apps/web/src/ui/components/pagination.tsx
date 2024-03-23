@@ -1,9 +1,10 @@
 'use client'
 
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
-import { cn } from '@web/lib/utils/cn'
 import Link from 'next/link'
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
 import { usePathname, useSearchParams } from 'next/navigation'
+
+import { cn } from '@web/lib/utils/cn'
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const searchParams = useSearchParams()
@@ -70,7 +71,7 @@ function PaginationNumber({
   isActive: boolean
 }) {
   const className = cn(
-    'border-primary border-2 text-primary sm:flex size-12 items-center justify-center text-sm',
+    'border-border border text-primary sm:flex size-12 items-center justify-center text-sm',
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
@@ -100,7 +101,7 @@ function PaginationArrow({
   isDisabled?: boolean
 }) {
   const className = cn(
-    'border-primary text-primary hover:text-primary-foreground flex h-12 sm:w-20 w-full items-center justify-center rounded-md border-2',
+    'border-border text-primary hover:text-primary-foreground flex h-12 sm:w-12 w-full items-center justify-center rounded-md border',
     {
       'pointer-events-none text-primary': isDisabled,
       'hover:bg-primary/70 hover:text-primary-foreground': !isDisabled,

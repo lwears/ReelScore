@@ -1,21 +1,23 @@
 import Card from '@web/ui/components/card'
-import EmptyState from '@web/ui/components/EmptyState'
-import CardsContainer from '@web/ui/components/CardsContainer'
+import Empty from '@web/ui/components/empty'
+import CardsContainer from '@web/ui/components/cards-container'
 import { isMovie } from '@web/lib/utils/helpers'
-import { DeleteMovie, DeleteSerie } from '@web/ui/library/buttons'
-import Pagination from '@web/ui/pagination'
+import { DeleteMovie, DeleteSerie, UpdateMovie } from '@web/ui/library/buttons'
+import Pagination from '@web/ui/components/pagination'
 
 import type { Media as MediaType, Paginated } from '@web/types'
 
 export const MediaDisplay = async ({
   fetcher,
+  watched,
 }: {
   fetcher: () => Promise<Paginated<MediaType>>
+  watched: boolean
 }) => {
   const media = await fetcher()
 
   if (!media) {
-    return <EmptyState />
+    return <Empty />
   }
 
   //Artur, TODO: Better name for type predictate
@@ -30,8 +32,11 @@ export const MediaDisplay = async ({
               {...m}
               date={isMovie(m) ? m.releaseDate : m.firstAired}
             >
-              {isMovie(m) && <DeleteMovie id={m.id} />}
-              {!isMovie(m) && <DeleteSerie id={m.id} />}
+              <div className="flex w-full">
+                {isMovie(m) && <DeleteMovie id={m.id} />}
+                {!isMovie(m) && <DeleteSerie id={m.id} />}
+                {!watched && <UpdateMovie id={m.id} />}
+              </div>
             </Card>
           )
         })}

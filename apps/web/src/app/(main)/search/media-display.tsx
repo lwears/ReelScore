@@ -1,7 +1,8 @@
 import Card from '@web/ui/components/card'
-import EmptyState from '@web/ui/components/EmptyState'
-import { isTmdbMovie, mapTmdbToLocal } from '@web/lib/utils/helpers'
-import CardsContainer from '@web/ui/components/CardsContainer'
+import Empty from '@web/ui/components/empty'
+import Error from '@web/ui/components/error'
+import CardsContainer from '@web/ui/search/cards-container'
+import { isTmdbMovie, mapTmdbToCard } from '@web/lib/utils/helpers'
 
 import type { TmdbMediaSearchResult } from '@web/types'
 
@@ -10,19 +11,25 @@ export const MediaDisplay = async ({
 }: {
   fetcher: () => Promise<TmdbMediaSearchResult>
 }) => {
-  const { data } = await fetcher()
+  // TODO fix error undefined
+  const { data, error } = await fetcher()
 
-  if (!data || !data.results || data.results.length === 0) {
-    return <EmptyState />
+  if (error) {
+    return <Error message={error} />
   }
 
+  if (!data || !data.results || data.results.length === 0) {
+    return <Empty />
+  }
+
+  // Artur: Trying to make card reusable, passing date like the below. better options?
   return (
     <CardsContainer>
-      {data.results.map((m) => {
+      {data.results.slice(0, 6).map((m) => {
         return (
           <Card
             key={m.id}
-            {...mapTmdbToLocal(m)}
+            {...mapTmdbToCard(m)}
             date={
               isTmdbMovie(m)
                 ? new Date(m.release_date)

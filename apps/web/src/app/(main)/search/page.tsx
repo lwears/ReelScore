@@ -1,10 +1,11 @@
-import type { Metadata } from 'next'
 import { Suspense } from 'react'
 
-import { CardsSkeleton } from '@web/ui/skeletons'
+import { CardsSkeleton } from '@web/ui/components/skeletons'
 import { api } from '@web/lib/utils/trpc/server'
-import { MediaDisplay } from './MediaDisplay'
-import MediaHeader from './MediaHeader'
+import { MediaDisplay } from './media-display'
+import MediaHeader from './media-header'
+
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Search',

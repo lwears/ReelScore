@@ -1,10 +1,10 @@
 'use client'
 
+import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
 import { toast } from 'sonner'
-import { CheckIcon, PlusIcon } from '@heroicons/react/20/solid'
 
-import { Button } from '../components/button'
 import { api } from '@web/lib/utils/trpc/react'
+import { Button } from '../components/button'
 
 import type { RouterInputs } from '@api/server/router'
 
@@ -25,7 +25,7 @@ export const AddMovie = ({
   })
 
   const text = watched ? 'Seen' : 'Watchlist'
-  const Icon = watched ? CheckIcon : PlusIcon
+  const Icon = watched ? CheckCircleIcon : PlusCircleIcon
 
   return (
     <form
@@ -58,7 +58,8 @@ export const AddSerie = ({
   })
 
   const text = watched ? 'Seen' : 'Watchlist'
-  const Icon = watched ? CheckIcon : PlusIcon
+  const Icon = watched ? CheckCircleIcon : PlusCircleIcon
+
   return (
     <form
       className="w-full"

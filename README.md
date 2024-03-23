@@ -5,14 +5,13 @@ A simple movie / TV serie app for watchlists and scoring
 ## TODO
 
 Passport User as User?
-Style and separate pagination
 Style Login page
 Gtihub login
-Add Search to browse
 Dark Mode
-add button watchlist card seen
 add is loading when loading new page
 Map errors to better descriptions on FE
+Rename to lowercase
+Check if errors returned from tRPC
 
 ### Tried to create a CrudRouter
 
