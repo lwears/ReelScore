@@ -2,13 +2,17 @@ import { PrismaClient } from '@prisma/client'
 
 import type { Prisma, Serie } from '@prisma/client'
 import type { Paginated } from '../movies/movies.service'
+import type { CreateSerieSchema, UpdateSerieSchema } from './series.dtos'
 
 import { PAGE_SIZE } from '@api/constants'
 
 const prisma = new PrismaClient()
 
-const create = (data: Prisma.SerieCreateInput): Promise<Serie> =>
-  prisma.serie.create({ data })
+const create = (userId: string, data: CreateSerieSchema) =>
+  prisma.serie.create({ data: { ...data, User: { connect: { id: userId } } } })
+
+const update = (userId: string, data: UpdateSerieSchema) =>
+  prisma.serie.update({ data, where: { id: data.id, userId } })
 
 const list = async (
   userId: string,
@@ -33,17 +37,12 @@ const list = async (
       page,
     }))
 
-const getAll = (
-  userId: string,
-  where?: Prisma.SerieWhereInput
-): Promise<Serie[]> => prisma.serie.findMany({ where: { userId, ...where } })
-
-const del = (id: Prisma.UserWhereUniqueInput['id'], userId: string) =>
+const del = (userId: string, id: Prisma.UserWhereUniqueInput['id']) =>
   prisma.serie.delete({ where: { id, userId } })
 
 export const serieService = {
-  create,
   list,
-  getAll,
+  create,
+  update,
   delete: del,
 }

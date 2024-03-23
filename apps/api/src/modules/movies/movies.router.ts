@@ -1,7 +1,7 @@
 import { privateProcedure, router } from '@api/server/trpc'
 import { z } from 'zod'
 import { movieService } from './movies.service'
-import { createMovieSchema } from './movies.dtos'
+import { createMovieSchema, updateMovieSchema } from './movies.dtos'
 import { listSchema } from '@api/shared/dto'
 
 export const movieRouter = router({
@@ -20,16 +20,13 @@ export const movieRouter = router({
     ),
   create: privateProcedure
     .input(createMovieSchema)
-    .mutation(async ({ input, ctx }) => {
-      const data = await movieService.create({
-        ...input,
-        User: { connect: { id: ctx.user.id } },
-      })
-      return data
-    }),
+    .mutation(({ input, ctx }) => movieService.create(ctx.user.id, input)),
+  update: privateProcedure
+    .input(updateMovieSchema)
+    .mutation(({ input, ctx }) => movieService.update(ctx.user.id, input)),
   delete: privateProcedure
     .input(z.object({ id: z.string().uuid() }))
-    .mutation(({ input, ctx }) => movieService.delete(input.id, ctx.user.id)),
+    .mutation(({ input, ctx }) => movieService.delete(ctx.user.id, input.id)),
 })
 
 // https://dev.to/nicklucas/trpc-patterns-router-factories-and-polymorphism-30b0

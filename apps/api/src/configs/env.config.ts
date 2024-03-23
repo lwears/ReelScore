@@ -15,6 +15,7 @@ export const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   TMDB_KEY: z.string(),
+  TMDB_URL: z.string().url(),
 })
 
 const env = envSchema.parse(process.env)
@@ -27,6 +28,7 @@ export const serverConfig = {
   googleClientSecret: env.GOOGLE_CLIENT_SECRET,
   secret: env.SECRET_KEY,
   tmdbKey: env.TMDB_KEY,
+  tmdbUrl: env.TMDB_URL,
 }
 
 export type ServerConfig = typeof serverConfig

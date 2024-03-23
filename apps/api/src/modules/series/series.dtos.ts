@@ -13,4 +13,12 @@ export const createSerieSchema = z.object({
   tmdbScore: z.number().nonnegative().max(10),
 })
 
+// Duplicate with movie or centralise?
+export const updateSerieSchema = z.object({
+  watched: z.boolean().optional(),
+  score: z.number().nonnegative().max(10).optional(),
+  id: z.string().uuid(),
+})
+
 export type CreateSerieSchema = z.TypeOf<typeof createSerieSchema>
+export type UpdateSerieSchema = z.TypeOf<typeof updateSerieSchema>

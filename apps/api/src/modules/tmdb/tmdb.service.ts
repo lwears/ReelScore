@@ -1,10 +1,10 @@
 import createClient from 'openapi-fetch'
-import type { paths } from './v3'
 import { serverConfig } from '@api/configs/env.config'
 
+import type { paths } from './v3'
+
 const { GET } = createClient<paths>({
-  // TODO Move to ENV
-  baseUrl: 'https://api.themoviedb.org',
+  baseUrl: serverConfig.tmdbUrl,
   headers: {
     get Authorization() {
       return serverConfig.tmdbKey ? `Bearer ${serverConfig.tmdbKey}` : undefined
@@ -61,10 +61,6 @@ const searchSerie = async ({
   GET('/3/search/tv', {
     params: { query: { query, page, language, include_adult: includeAdult } },
   })
-
-// const data = searchMulti('oceans').then((data)=> data.data).then((data)=> data?.results?.map((t) => t.))
-
-// data .map(({data}) => ({ }))
 
 const getPopularMovies = async ({
   page = 1,

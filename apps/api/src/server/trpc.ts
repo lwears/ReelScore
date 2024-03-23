@@ -1,7 +1,8 @@
-import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
-import type { Context } from './context'
 import { ZodError } from 'zod'
+import { initTRPC, TRPCError } from '@trpc/server'
+
+import type { Context } from './context'
 export type { AppRouter } from './router'
 
 const t = initTRPC.context<Context>().create({
@@ -36,23 +37,12 @@ const simulateLag = t.middleware(async ({ next, ctx }) => {
   const result = await next()
   const end = Date.now()
   const completionTime = end - start
-  const timeRemainder = 2000 - completionTime
+  const timeRemainder = 1000 - completionTime
   if (timeRemainder > 0) {
     await new Promise((resolve) => setTimeout(resolve, timeRemainder))
   }
   return result
 })
-
-// const isAdmin = t.middleware(({ next, ctx }) => {
-//   if (!ctx.user || ctx.user.role !== 'admin') {
-//     throw new TRPCError({ message: 'Unauthorized', code: 'UNAUTHORIZED' })
-//   }
-//   return next({
-//     ctx: {
-//       user: ctx.user,
-//     },
-//   })
-// })
 
 export const router = t.router
 

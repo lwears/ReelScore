@@ -1,4 +1,3 @@
-import { PAGE_SIZE } from '@api/constants'
 import { z } from 'zod'
 
 export const createMovieSchema = z.object({
@@ -14,4 +13,12 @@ export const createMovieSchema = z.object({
   tmdbScore: z.number().nonnegative().max(10),
 })
 
+// Duplicated with serie
+export const updateMovieSchema = z.object({
+  watched: z.boolean().optional(),
+  score: z.number().nonnegative().max(10).optional(),
+  id: z.string().uuid(),
+})
+
 export type CreateMovieSchema = z.TypeOf<typeof createMovieSchema>
+export type UpdateMovieSchema = z.TypeOf<typeof updateMovieSchema>

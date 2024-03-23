@@ -1,6 +1,7 @@
 import { PAGE_SIZE } from '@api/constants'
 import type { Movie, Prisma } from '@prisma/client'
 import { PrismaClient } from '@prisma/client'
+import type { CreateMovieSchema, UpdateMovieSchema } from './movies.dtos'
 
 export interface Paginated<A> {
   results: A[]
@@ -11,7 +12,11 @@ export interface Paginated<A> {
 
 const prisma = new PrismaClient()
 
-const create = (data: Prisma.MovieCreateInput) => prisma.movie.create({ data })
+const create = (userId: string, data: CreateMovieSchema) =>
+  prisma.movie.create({ data: { ...data, User: { connect: { id: userId } } } })
+
+const update = (userId: string, data: UpdateMovieSchema) =>
+  prisma.movie.update({ data, where: { id: data.id, userId } })
 
 const list = async (
   userId: string,
@@ -36,11 +41,12 @@ const list = async (
       page,
     }))
 
-const del = (id: Prisma.UserWhereUniqueInput['id'], userId: string) =>
+const del = (userId: string, id: Prisma.UserWhereUniqueInput['id']) =>
   prisma.movie.delete({ where: { id, userId } })
 
 export const movieService = {
-  create,
   list,
+  create,
+  update,
   delete: del,
 }
