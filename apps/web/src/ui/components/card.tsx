@@ -7,16 +7,17 @@ export interface CardProps {
   posterPath: string | null
   title: string
   date: Date | null
+  score?: number
   tmdbScore: number
-  tmdbId: number
   children?: React.ReactNode
 }
 
+// Add users score
 export default function Card(data: CardProps) {
-  const { posterPath, date, title, tmdbScore, children } = data
+  const { posterPath, date, title, score, children, tmdbScore } = data
   return (
     <div className="shadow-material-2 group relative aspect-[2/3] w-full overflow-hidden rounded-md text-sm font-extralight text-white hover:cursor-pointer ">
-      <div className="absolute left-0 top-0 z-0 block size-full overflow-hidden rounded-md bg-gray-300 group-hover:blur-sm">
+      <div className="bg-card absolute left-0 top-0 z-0 block size-full overflow-hidden rounded-md group-hover:blur-sm">
         {posterPath ? (
           <ImageWithFallback
             src={buildImgSrc(posterPath)}
@@ -40,7 +41,7 @@ export default function Card(data: CardProps) {
               : 'bg-black opacity-60'
           )}
         >
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-1">
             <p className="overflow-hidden text-ellipsis">
               {title}
               {date && ` (${date.getFullYear()})`}

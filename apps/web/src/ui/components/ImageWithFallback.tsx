@@ -1,9 +1,11 @@
 'use client'
 
-import type { StaticImageData } from 'next/image'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+
 import GenericImage from '@web/../public/1962.jpg'
+
+import type { StaticImageData } from 'next/image'
 
 interface Props {
   alt: string

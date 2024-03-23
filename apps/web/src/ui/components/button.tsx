@@ -9,7 +9,7 @@ import type { VariantProps } from 'class-variance-authority'
 //https://medium.com/@wdswy/how-to-build-highly-reusable-react-components-in-next-js-13-tailwindcss-and-radix-ui-a17cf5fbed99
 
 const buttonVariants = cva(
-  'flex items-center gap-1 rounded-md px-3 py-1 font-semibold text-white active:opacity-80',
+  'flex items-center gap-[2px] rounded-md px-3 py-1 font-semibold text-white active:opacity-80',
   {
     variants: {
       variant: {
@@ -22,7 +22,7 @@ const buttonVariants = cva(
         sm: 'px-3 py-1 text-xs [&_svg]:w-4',
         md: 'px-4 py-1.5 text-sm [&_svg]:w-6',
         lg: 'text-md px-6 py-2 [&_svg]:w-8',
-        card: 'w-full p-1.5 font-normal [&_svg]:w-6',
+        card: 'w-full p-1.5 text-xs font-normal [&_svg]:w-6',
       },
       defaultVariants: {
         variant: 'primary',

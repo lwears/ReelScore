@@ -1,5 +1,6 @@
-import { CardsSkeleton } from '@web/ui/skeletons'
 import { Suspense } from 'react'
+
+import { MediaDisplaySkeleton } from '@web/ui/components/skeletons'
 import { Series } from './series'
 
 interface Props {
@@ -12,7 +13,7 @@ export default async function Page({
   const currentPage = Number(page)
 
   return (
-    <Suspense key={query + currentPage} fallback={<CardsSkeleton />}>
+    <Suspense key={query + currentPage} fallback={<MediaDisplaySkeleton />}>
       <Series page={currentPage} query={query} />
     </Suspense>
   )

@@ -19,7 +19,7 @@ export const Search = () => {
   return (
     <search className="flex flex-row items-center justify-center px-2 py-3 text-gray-600 ">
       <input
-        className=" bg-background focus:border-border h-10 rounded-full border-2 px-5 pr-16 text-sm focus:outline-none md:h-8"
+        className=" bg-background focus:border-border border-rhino-600 h-10 rounded-full border-2 px-5 pr-16 text-sm outline-none focus:outline-none md:h-8"
         type="search"
         name="search"
         placeholder="Search"

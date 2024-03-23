@@ -70,7 +70,7 @@
   }
 
   .nav {
-    @apply w-full h-full fixed overflow-hidden top-[50px] left-0 z-20 flex flex-col max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_search]:border-b-[1px] [&_search]:border-border;
+    @apply size-full fixed bg-primary overflow-hidden top-[50px] left-0 z-20 flex flex-col max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_search]:border-b-[1px] [&_search]:border-border;
   }
 }
 

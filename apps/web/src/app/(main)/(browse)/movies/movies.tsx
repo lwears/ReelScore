@@ -1,11 +1,12 @@
 import Card from '@web/ui/components/card'
-import CardsContainer from '@web/ui/components/CardsContainer'
-import EmptyState from '@web/ui/components/EmptyState'
+import CardsContainer from '@web/ui/components/cards-container'
+import Empty from '@web/ui/components/empty'
 
-import { mapTmdbToLocal } from '@web/lib/utils/helpers'
+import { mapTmdbMedia, mapTmdbToCard } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/server'
 import { AddMovie } from '@web/ui/browse/buttons'
-import Pagination from '@web/ui/pagination'
+import Pagination from '@web/ui/components/pagination'
+import Error from '@web/ui/components/error'
 
 interface Props {
   query: string
@@ -20,11 +21,14 @@ export const Movies = async ({ query, page }: Props) => {
     return response
   }
 
-  //TODO Fix Error component
   const { data, error } = await fetchData()
 
+  if (error) {
+    return <Error message={error} />
+  }
+
   if (!data || !data.results || data.results.length === 0) {
-    return <EmptyState />
+    return <Empty />
   }
 
   return (
@@ -32,12 +36,13 @@ export const Movies = async ({ query, page }: Props) => {
       <Pagination totalPages={data.total_pages} />
       <CardsContainer>
         {data.results.map((m) => {
-          const movie = mapTmdbToLocal(m)
+          const movie = mapTmdbToCard(m)
+          const data = mapTmdbMedia(m)
           return (
-            <Card key={m.id} {...movie} date={movie.releaseDate}>
+            <Card key={m.id} {...movie}>
               <div className="flex w-full">
-                <AddMovie movie={movie} watched={true} />
-                <AddMovie movie={movie} watched={false} />
+                <AddMovie movie={data} watched={true} />
+                <AddMovie movie={data} watched={false} />
               </div>
             </Card>
           )

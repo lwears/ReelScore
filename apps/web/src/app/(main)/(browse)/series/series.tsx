@@ -1,10 +1,10 @@
-import { mapTmdbToLocal } from '@web/lib/utils/helpers'
+import { mapTmdbMedia, mapTmdbToCard } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/server'
 import { AddSerie } from '@web/ui/browse/buttons'
 import Card from '@web/ui/components/card'
-import CardsContainer from '@web/ui/components/CardsContainer'
-import EmptyState from '@web/ui/components/EmptyState'
-import Pagination from '@web/ui/pagination'
+import CardsContainer from '@web/ui/components/cards-container'
+import Empty from '@web/ui/components/empty'
+import Pagination from '@web/ui/components/pagination'
 
 interface Props {
   query: string
@@ -22,19 +22,20 @@ export const Series = async ({ query, page }: Props) => {
   const { data, error } = await fetchData()
 
   if (!data || !data.results || data.results.length === 0) {
-    return <EmptyState />
+    return <Empty />
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-3">
+    <div className="flex w-full flex-col items-center justify-center gap-3">
       <Pagination totalPages={data.total_pages} />
       <CardsContainer>
         {data.results.map((s) => {
-          const serie = mapTmdbToLocal(s)
+          const serie = mapTmdbToCard(s)
+          const data = mapTmdbMedia(s)
           return (
-            <Card key={s.id} {...serie} date={serie.firstAired}>
-              <AddSerie serie={serie} watched={true} />
-              <AddSerie serie={serie} watched={false} />
+            <Card key={s.id} {...serie}>
+              <AddSerie serie={data} watched={true} />
+              <AddSerie serie={data} watched={false} />
             </Card>
           )
         })}
