@@ -2,7 +2,7 @@
 
 A simple movie / TV serie app for watchlists and scoring
 
-## Requirements
+## Requirements :receipt:
 
 - docker-compose or podman-compose
 - pnpm
@@ -19,7 +19,7 @@ cd ../..
 pnpm run dev
 ```
 
-## TODO
+## Todo :pencil2:
 
 - Passport User as User?
 - Dark Mode
