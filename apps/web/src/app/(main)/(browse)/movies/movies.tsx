@@ -1,12 +1,11 @@
 import Card from '@web/ui/components/card'
 import CardsContainer from '@web/ui/components/cards-container'
 import Empty from '@web/ui/components/empty'
-
+import Pagination from '@web/ui/components/pagination'
+import Error from '@web/ui/components/error'
 import { mapTmdbMedia, mapTmdbToCard } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/server'
 import { AddMovie } from '@web/ui/browse/buttons'
-import Pagination from '@web/ui/components/pagination'
-import Error from '@web/ui/components/error'
 
 interface Props {
   query: string

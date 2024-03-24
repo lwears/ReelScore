@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
-import { type NextRequest } from 'next/server'
 import { TRPCClientError } from '@trpc/client'
+
 import { api } from './lib/utils/trpc/server'
+
+import { type NextRequest } from 'next/server'
 
 // interface User {
 //   id: string
@@ -45,11 +47,7 @@ import { api } from './lib/utils/trpc/server'
 
 export async function middleware(request: NextRequest) {
   return api.userRouter.getCurrentUser
-    .query(undefined, {
-      context: {
-        headersOverride: Object.fromEntries(request.headers),
-      },
-    })
+    .query()
     .then(() => NextResponse.next())
     .catch((error) => {
       if (

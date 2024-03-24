@@ -19,8 +19,8 @@ const buttonVariants = cva(
         card: 'hover:bg-white/20',
       },
       size: {
-        sm: 'px-3 py-1 text-xs [&_svg]:w-4',
-        md: 'px-4 py-1.5 text-sm [&_svg]:w-6',
+        sm: 'px-3 py-1.5 text-xs [&_svg]:w-4',
+        md: 'px-4 py-2 text-sm [&_svg]:w-6',
         lg: 'text-md px-6 py-2 [&_svg]:w-8',
         card: 'w-full p-1.5 text-xs font-normal [&_svg]:w-6',
       },
