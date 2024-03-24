@@ -1,4 +1,4 @@
-# ReelScore
+# :tv: ReelScore :tv:
 
 A simple movie / TV serie app for watchlists and scoring
 
