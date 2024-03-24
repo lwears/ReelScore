@@ -6,18 +6,26 @@ A simple movie / TV serie app for watchlists and scoring
 
 - docker-compose or podman-compose
 - pnpm
+- client secrets and ids for github and google
 
-## Setup
+## :hammer_and_wrench: Getting Started
 
-```sh
-pnpm i
-pnpm run setup / setup-podman
-cd apps/api
-npx prisma generate
-npx prisma migrate dev
-cd ../..
-pnpm run dev
-```
+### Step 1: :rocket: Initial Setup
+
+- Clone the repository: `git clone https://github.com/lwears/ReelScore.git`
+- Navigate: `cd ReelScore`
+- Install dependencies: `pnpm i`
+- Build docker containers `pnpm run setup / setup-podman`
+- Initialise Prisma `cd apps/api && npx prisma generate && npx prisma migrate dev`
+
+### Step 2: :gear: Environment Configuration
+
+- Create `.env`: Copy `.env.example` to `.env`
+- Update `.env`: Fill in necessary environment variables
+
+### Step 3: :running_man: Running the Project
+
+- Development Mode: `pnpm run dev`
 
 ## Todo :pencil2:
 
