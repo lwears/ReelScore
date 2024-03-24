@@ -26,7 +26,7 @@ pnpm run dev
 - add is loading when loading new page on search?
 - Map errors to better descriptions on FE
 - Check if errors returned from tRPC
-- Fix Next to latest version
+- Update NextJS to latest version (in progress) currently getting an error.
 
 ### Tried to create a CrudRouter
 
