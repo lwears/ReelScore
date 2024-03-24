@@ -2,16 +2,28 @@
 
 A simple movie / TV serie app for watchlists and scoring
 
+## Requirements
+
+    - docker-compose or podman-compose
+    - pnpm
+
+## Setup
+
+```sh
+pnpm i
+pnpm run setup / setup-podman
+pnpm run dev
+```
+
 ## TODO
 
 Passport User as User?
 Style Login page
-Gtihub login
 Dark Mode
-add is loading when loading new page
+add is loading when loading new page on search?
 Map errors to better descriptions on FE
-Rename to lowercase
 Check if errors returned from tRPC
+Fix Next to latest version
 
 ### Tried to create a CrudRouter
 
@@ -28,6 +40,4 @@ This also affected me creating re-usable components on the FE
 
 ## Build Central Components
 
-Button
-Link
 Dropdown

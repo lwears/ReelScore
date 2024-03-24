@@ -19,9 +19,12 @@ const update = (
 const del = (id: Prisma.UserWhereUniqueInput['id']) =>
   prisma.user.delete({ where: { id } })
 
-const findOrCreate = (data: Prisma.UserCreateInput): Promise<User> =>
+const findOrCreate = (
+  providerId: string,
+  data: Prisma.UserCreateInput
+): Promise<User> =>
   prisma.user
-    .findUnique({ where: { googleId: data.googleId } })
+    .findUnique({ where: { providerId } })
     .then((user) => user ?? create(data))
 
 export const userService = {

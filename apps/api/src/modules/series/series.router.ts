@@ -1,5 +1,6 @@
-import { privateProcedure, router } from '@api/server/trpc'
 import { z } from 'zod'
+
+import { privateProcedure, router } from '@api/server/trpc'
 import { serieService } from './series.service'
 import { createSerieSchema, updateSerieSchema } from './series.dtos'
 import { listSchema } from '@api/shared/dto'

@@ -12,12 +12,15 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  googleId String  @unique
-  email    String  @unique
-  name     String
-  movies   Movie[]
-  series   Serie[]
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  providerId String   @unique
+  provider   Provider
+  email      String
+  name       String
+  movies     Movie[]
+  series     Serie[]
+
+  @@unique([email, provider])
 }
 
 model Movie {
@@ -32,7 +35,7 @@ model Movie {
   score       Int       @default(0)
   watched     Boolean   @default(false)
   userId      String    @db.Uuid
-  User        User?     @relation(fields: [userId], references: [id])
+  User        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Serie {
@@ -47,5 +50,10 @@ model Serie {
   score      Int       @default(0)
   watched    Boolean   @default(false)
   userId     String    @db.Uuid
-  User       User?     @relation(fields: [userId], references: [id])
+  User       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Provider {
+  GITHUB
+  GOOGLE
 }

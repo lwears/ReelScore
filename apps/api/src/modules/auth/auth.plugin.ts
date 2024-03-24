@@ -1,20 +1,25 @@
 import fp from 'fastify-plugin'
 import { Authenticator } from '@fastify/passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import { Strategy as GithubStrategy } from 'passport-github2'
 
 import { userService } from '../users/users.service'
+import { serverConfig } from '@api/configs/env.config'
+import { mapProviderUser } from '@api/lib/utils'
 
 import type {
   FastifyInstance,
   FastifyPluginCallback,
   FastifyPluginOptions,
 } from 'fastify'
-import type { Prisma, User } from '@prisma/client'
-import type { Profile } from 'passport-google-oauth20'
+import type { User } from '@prisma/client'
+import type { Profile, VerifyCallback } from 'passport-google-oauth20'
 
 interface Options {
   googleClientId: string
   googleClientSecret: string
+  githubClientId: string
+  githubClientSecret: string
 }
 
 const authPlugin: FastifyPluginCallback<Options> = (
@@ -33,17 +38,34 @@ const authPlugin: FastifyPluginCallback<Options> = (
       {
         clientID: options.googleClientId,
         clientSecret: options.googleClientSecret,
-        callbackURL: 'http://localhost:4000/auth/google/callback',
+        callbackURL: `${serverConfig.host}/auth/google/callback`,
       },
       async (_token, _tokenSecret, profile, done) => {
-        const user: Prisma.UserCreateInput = {
-          googleId: profile.id,
-          email: (profile.emails?.length &&
-            profile?.emails[0]?.value) as string,
-          name: profile.displayName,
-        }
         return userService
-          .findOrCreate(user)
+          .findOrCreate(profile.id, mapProviderUser(profile))
+          .then((user) => done(null, user))
+          .catch((error) => done(error))
+      }
+    )
+  )
+
+  fastifyPassport.use(
+    'github',
+    new GithubStrategy(
+      {
+        clientID: options.githubClientId,
+        clientSecret: options.githubClientSecret,
+        callbackURL: `${serverConfig.host}/auth/github/callback`,
+        scope: ['read:user'],
+      },
+      async (
+        _token: string,
+        _tokenSecret: string,
+        profile: Profile,
+        done: VerifyCallback
+      ) => {
+        return userService
+          .findOrCreate(profile.id, mapProviderUser(profile))
           .then((user) => done(null, user))
           .catch((error) => done(error))
       }
@@ -64,13 +86,30 @@ const authPlugin: FastifyPluginCallback<Options> = (
       }),
     },
     async (_req, res) => {
-      return res.redirect('http://localhost:3000/library/movies/watchlist')
+      return res.redirect(`${serverConfig.clientUrl}/movies`)
     }
   )
 
   fastify.get(
-    '/auth/login',
+    '/auth/github/callback',
+    {
+      preValidation: fastifyPassport.authenticate('github', {
+        scope: ['user:email'],
+      }),
+    },
+    async (_req, res) => {
+      return res.redirect(`${serverConfig.clientUrl}/movies`)
+    }
+  )
+
+  fastify.get(
+    '/auth/google/login',
     fastifyPassport.authenticate('google', { scope: ['profile', 'email'] })
+  )
+
+  fastify.get(
+    '/auth/github/login',
+    fastifyPassport.authenticate('github', { scope: ['user:email'] })
   )
 
   fastify.get('/auth/logout', (req, res) => {
@@ -79,7 +118,7 @@ const authPlugin: FastifyPluginCallback<Options> = (
         console.log(err)
       }
       res.clearCookie('session')
-      res.redirect('http://localhost:3000/login')
+      res.redirect(`${serverConfig.clientUrl}/login`)
     })
   })
 

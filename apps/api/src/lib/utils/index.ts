@@ -2,6 +2,9 @@ import { TRPCError } from '@trpc/server'
 
 import type { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
 
+import type { Profile as PassportProfile } from 'passport-google-oauth20'
+import type { Prisma, Provider } from '@prisma/client'
+
 export const prismaErrToTRPCError = (
   prismaErrCode: string,
   message: string
@@ -91,3 +94,12 @@ export const prismaErrToTRPCError = (
 
 //   throw error_
 // }
+
+export const mapProviderUser = (
+  p: PassportProfile
+): Prisma.UserCreateInput => ({
+  providerId: p.id,
+  provider: p.provider.toUpperCase() as Provider,
+  email: (p.emails?.length && p?.emails[0]?.value) as string,
+  name: p.displayName,
+})

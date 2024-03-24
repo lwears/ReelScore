@@ -128,6 +128,7 @@ export const serieSeed: Prisma.SerieCreateManyInput[] = [
 export const userSeed: Prisma.UserCreateInput = {
   email: 'liamwears@gmail.com',
   id: '8855dd27-77d1-45ec-ad04-76fcd697f228',
-  googleId: '111573196264245181275',
+  providerId: '111573196264245181275',
+  provider: 'GOOGLE',
   name: 'Liam Wears',
 }

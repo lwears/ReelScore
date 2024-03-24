@@ -33,6 +33,8 @@ export function createServer({
   googleClientId,
   googleClientSecret,
   secret,
+  githubClientId,
+  githubClientSecret,
 }: ServerConfig) {
   const client = new Redis({
     host: 'localhost',
@@ -85,7 +87,12 @@ export function createServer({
     credentials: true,
   })
 
-  server.register(authPlugin, { googleClientId, googleClientSecret })
+  server.register(authPlugin, {
+    googleClientId,
+    googleClientSecret,
+    githubClientId,
+    githubClientSecret,
+  })
 
   server.register(testPlugin, {})
 
