@@ -7,22 +7,32 @@ import { ChevronUpIcon, FilmIcon, TvIcon } from '@heroicons/react/20/solid'
 
 import { useOutsideClick } from '@web/lib/utils'
 import { Search } from '../search/search'
-
 import type { HeroIcon } from '@web/types'
+import { env } from 'apps/web/env'
 
-// TODO Move to somewhere better
-const navItems: NavItem[] = [
+interface NavItem {
+  text: string
+  subnav: SubNavItem[]
+}
+
+interface SubNavItem {
+  text: string
+  location: string
+  Icon: HeroIcon
+}
+
+export const navItems: NavItem[] = [
   {
     text: 'Library',
     subnav: [
       {
         text: 'Movies',
-        location: 'http://localhost:3000/library/movies/watched',
+        location: `/library/movies/watched`,
         Icon: FilmIcon,
       },
       {
         text: 'Series',
-        location: 'http://localhost:3000/library/series/watchlist',
+        location: '/library/series/watchlist',
         Icon: TvIcon,
       },
     ],
@@ -32,19 +42,15 @@ const navItems: NavItem[] = [
     subnav: [
       {
         text: 'Movies',
-        location: 'http://localhost:3000/movies/',
+        location: '/movies/',
         Icon: FilmIcon,
       },
       {
         text: 'Series',
-        location: 'http://localhost:3000/series/',
+        location: '/series/',
         Icon: TvIcon,
       },
     ],
-  },
-  {
-    text: 'Log Out',
-    location: 'http://localhost:4000/auth/logout',
   },
 ]
 
@@ -78,93 +84,77 @@ const Navigation: React.FC<NavigationProps> = ({ navItems }) => {
     setActiveTab((prev) => (prev === itemText ? '' : itemText))
   }
 
+  const refCallback = (el: HTMLButtonElement, i: number) =>
+    (itemsRef.current[i] = el)
+
   return (
     <ul className="nav-list-ul">
       {navItems.map((item, index) => (
         <li key={index} className="nav-list-item">
-          {item.subnav ? (
-            <>
-              <NavButton
-                text={item.text}
-                onClick={() => handleClick(item.text)}
-                refCallback={(el: HTMLButtonElement) =>
-                  (itemsRef.current[index] = el)
-                }
-              />
-              <Dropdown
-                items={item.subnav}
-                isVisible={activeTab === item.text}
-              />
-            </>
-          ) : (
-            <LogoutButton text={item.text} />
-          )}
+          <NavDropdown
+            items={item.subnav}
+            text={item.text}
+            onClick={() => handleClick(item.text)}
+            refCallback={(e) => refCallback(e, index)}
+            isVisible={activeTab === item.text}
+          />
         </li>
       ))}
+      <LogoutButton />
     </ul>
   )
 }
 
-interface NavItem {
-  text: string
-  location?: string
-  subnav?: SubNavItem[]
-}
-
-interface SubNavItem {
-  text: string
-  location: string
-  Icon: HeroIcon
-}
-
-interface NavButtonProps {
-  text: string
-  onClick: () => void
-  refCallback: (el: HTMLButtonElement) => void
-}
-
-const NavButton = ({ text, onClick, refCallback }: NavButtonProps) => (
-  <button
-    onClick={onClick}
-    className="text-primary-fg hover:bg-primary-hover group flex w-full justify-between rounded-md px-3 py-2"
-    ref={(el: HTMLButtonElement) => refCallback(el)}
-  >
-    {text}
-    <ChevronUpIcon className="size-5 transition-all group-has-[+.invisible]:rotate-180 md:hidden" />
-  </button>
-)
-
-const LogoutButton = ({ text }: { text: string }) => (
+const LogoutButton = () => (
   <a
-    href={'http://localhost:4000/auth/logout'}
+    href={`${env.NEXT_PUBLIC_API_URL}/auth/logout`}
     className="text-primary-fg hover:bg-primary-hover flex w-full justify-between whitespace-nowrap rounded-md px-3 py-2"
   >
-    {text}
+    Logout
   </a>
 )
 
-interface DropdownProps {
+interface NavDropdownProps {
+  text: string
+  onClick: () => void
+  refCallback: (el: HTMLButtonElement) => void
   items: SubNavItem[]
   isVisible: boolean
 }
 
-const Dropdown = ({ items, isVisible }: DropdownProps) => (
-  <ul
-    className={clsx(
-      'nav-list-dropdown peer-[invisible]:rotate-45',
-      isVisible ? 'max-h-40 opacity-100' : 'invisible max-h-0 opacity-0'
-    )}
-  >
-    {items.map(({ text, Icon, location }) => (
-      <li className="nav-list-dropdown-item" key={text}>
-        <Link
-          href={location}
-          className="hover:bg-primary-hover flex size-full flex-row items-center gap-3 rounded px-3 py-2"
-        >
-          <Icon className="hidden md:block md:size-5" />
-          {text}
-        </Link>
-      </li>
-    ))}
-  </ul>
+const NavDropdown = ({
+  items,
+  isVisible,
+  onClick,
+  text,
+  refCallback,
+}: NavDropdownProps) => (
+  <>
+    <button
+      onClick={onClick}
+      className="text-primary-fg hover:bg-primary-hover group flex w-full justify-between rounded-md px-3 py-2"
+      ref={(el: HTMLButtonElement) => refCallback(el)}
+    >
+      {text}
+      <ChevronUpIcon className="size-5 transition-all group-has-[+.invisible]:rotate-180 md:hidden" />
+    </button>
+    <ul
+      className={clsx(
+        'nav-list-dropdown peer-[invisible]:rotate-45',
+        isVisible ? 'max-h-40 opacity-100' : 'invisible max-h-0 opacity-0'
+      )}
+    >
+      {items.map(({ text, Icon, location }) => (
+        <li className="nav-list-dropdown-item" key={text}>
+          <Link
+            href={location}
+            className="hover:bg-primary-hover flex size-full flex-row items-center gap-3 rounded px-3 py-2"
+          >
+            <Icon className="hidden md:block md:size-5" />
+            {text}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  </>
 )
