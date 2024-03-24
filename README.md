@@ -18,7 +18,6 @@ pnpm run dev
 ## TODO
 
 Passport User as User?
-Style Login page
 Dark Mode
 add is loading when loading new page on search?
 Map errors to better descriptions on FE
