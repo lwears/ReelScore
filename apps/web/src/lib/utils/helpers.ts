@@ -6,6 +6,7 @@ import type {
   TmdbMovie,
   TmdbSerie,
 } from '@web/types'
+import { env } from 'apps/web/env'
 
 export const isTmdbMovie = (media: TmdbMedia): media is TmdbMovie => {
   return 'release_date' in media
@@ -24,7 +25,7 @@ export const isSerie = (media: MediaType): media is Serie => {
 }
 
 export const buildImgSrc = (posterPath: string | null) =>
-  posterPath ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}` : ''
+  posterPath ? `${env.NEXT_PUBLIC_TMDB_IMAGE_URL}${posterPath}` : ''
 
 export const mapTmdbToCard = <T extends TmdbMedia>(m: T) => {
   const isMovie = isTmdbMovie(m)

@@ -7,6 +7,7 @@ import { httpBatchLink, loggerLink } from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query'
 
 import type { AppRouter } from '@api/server/trpc'
+import { env } from 'apps/web/env'
 
 const createQueryClient = () => new QueryClient()
 
@@ -27,14 +28,14 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
 
   const [trpcClient] = useState(() =>
     api.createClient({
-      transformer: superjson,
       links: [
         loggerLink({
           enabled: (op) =>
-            process.env.NODE_ENV === 'development' ||
+            env.ENV === 'development' ||
             (op.direction === 'down' && op.result instanceof Error),
         }),
         httpBatchLink({
+          transformer: superjson,
           url: 'http://localhost:4000/trpc',
           headers: {
             'x-trpc-source': 'nextjs-react',
@@ -57,4 +58,10 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
       </api.Provider>
     </QueryClientProvider>
   )
+}
+
+function getBaseUrl() {
+  if (typeof window !== 'undefined') return window.location.origin
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+  return `http://localhost:${process.env.PORT ?? 3000}`
 }

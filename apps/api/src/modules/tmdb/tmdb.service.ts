@@ -1,13 +1,12 @@
 import createClient from 'openapi-fetch'
-import { serverConfig } from '@api/configs/env.config'
 
 import type { paths } from './v3'
 
 const { GET } = createClient<paths>({
-  baseUrl: serverConfig.tmdbUrl,
+  baseUrl: process.env.TMDB_URL,
   headers: {
     get Authorization() {
-      return serverConfig.tmdbKey ? `Bearer ${serverConfig.tmdbKey}` : undefined
+      return process.env.TMDB_KEY ? `Bearer ${process.env.TMDB_KEY}` : undefined
     },
   },
 })

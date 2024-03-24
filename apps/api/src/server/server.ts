@@ -7,6 +7,7 @@ import pino from 'pino'
 import pretty from 'pino-pretty'
 import { fastifyCookie } from '@fastify/cookie'
 import { fastifySession } from '@fastify/session'
+import { fastifyEnv } from '@fastify/env'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { Redis } from 'ioredis'
 import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi'
@@ -17,25 +18,19 @@ import { appRouter } from './router'
 import { prismaErrToTRPCError } from '@api/lib/utils'
 import authPlugin from '@api/modules/auth/auth.plugin'
 import testPlugin from '@api/modules/test/test.plugin'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import {
+  serializerCompiler,
+  validatorCompiler,
+} from 'fastify-type-provider-zod'
 
 import type { TRPCError } from '@trpc/server'
 import type { FastifyBaseLogger } from 'fastify'
-import { type ServerConfig } from '@api/configs/env.config'
 
-declare module 'fastify' {
-  interface PassportUser extends User {}
-}
+import { envSchema } from '@api/configs/env.config'
+import zodToJsonSchema from 'zod-to-json-schema'
 
-export function createServer({
-  port,
-  environment,
-  trpcPrefix,
-  googleClientId,
-  googleClientSecret,
-  secret,
-  githubClientId,
-  githubClientSecret,
-}: ServerConfig) {
+export async function createServer() {
   const client = new Redis({
     host: 'localhost',
     port: 6379,
@@ -49,10 +44,17 @@ export function createServer({
   const prettyLogger = pino({ level: 'debug' }, stream)
 
   const server = fastify({
-    logger: ['local', 'test'].includes(environment)
+    logger: ['local', 'test'].includes(process.env.NODE_ENV)
       ? (prettyLogger as FastifyBaseLogger)
       : true,
-    //logger: false,
+  }).withTypeProvider<ZodTypeProvider>()
+
+  server.setValidatorCompiler(validatorCompiler)
+  server.setSerializerCompiler(serializerCompiler)
+
+  await server.register(fastifyEnv, {
+    dotenv: true,
+    schema: zodToJsonSchema(envSchema),
   })
 
   client.on('error', (err) => {
@@ -70,7 +72,7 @@ export function createServer({
   server.register(fastifyCookie, {})
 
   server.register(fastifySession, {
-    secret: secret,
+    secret: server.config.SECRET_KEY,
     cookieName: 'session',
     cookie: { path: '/', secure: false },
     store: new RedisStore({
@@ -87,17 +89,12 @@ export function createServer({
     credentials: true,
   })
 
-  server.register(authPlugin, {
-    googleClientId,
-    googleClientSecret,
-    githubClientId,
-    githubClientSecret,
-  })
+  server.register(authPlugin)
 
   server.register(testPlugin, {})
 
   server.register(fastifyTRPCPlugin, {
-    prefix: trpcPrefix,
+    prefix: server.config.TRPC_PREFIX,
     trpcOptions: {
       router: appRouter,
       createContext,
@@ -133,10 +130,9 @@ export function createServer({
   const stop = () => server.close()
   const start = async () => {
     try {
-      await server.listen({ port })
+      await server.listen({ port: server.config.PORT })
     } catch (error) {
       server.log.error(error)
-      process.exit(1)
     }
   }
 
