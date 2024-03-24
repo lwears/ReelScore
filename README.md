@@ -12,6 +12,10 @@ A simple movie / TV serie app for watchlists and scoring
 ```sh
 pnpm i
 pnpm run setup / setup-podman
+cd apps/api
+npx prisma generate
+npx prisma migrate dev
+cd ../..
 pnpm run dev
 ```
 
