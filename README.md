@@ -34,7 +34,6 @@ A simple movie / TV serie app for watchlists and scoring
 - add is loading when loading new page on search?
 - Map errors to better descriptions on FE
 - Check if errors returned from tRPC
-- Update NextJS to latest version (in progress) currently getting an error.
 
 #### Tried to create a CrudRouter
 
