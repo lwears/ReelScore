@@ -31,7 +31,7 @@ import superjson from 'superjson'
 //   }
 // }
 
-export const apiServer = createTRPCClient<AppRouter>({
+export const api = createTRPCClient<AppRouter>({
   links: [
     loggerLink({
       enabled: (op) =>
