@@ -1,18 +1,9 @@
-'use server'
+import 'server-only'
 
 import type { AppRouter } from '@api/server/router'
-import type { TRPCLink } from '@trpc/client'
-import {
-  createTRPCProxyClient,
-  createTRPCClient,
-  httpBatchLink,
-  httpLink,
-  loggerLink,
-} from '@trpc/client'
-import { observable } from '@trpc/server/observable'
+import { createTRPCClient, httpBatchLink, loggerLink } from '@trpc/client'
 import { env } from 'apps/web/env'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import superjson from 'superjson'
 
 // export const customLink: TRPCLink<AppRouter> = () => {
@@ -40,7 +31,7 @@ import superjson from 'superjson'
 //   }
 // }
 
-export const api = createTRPCClient<AppRouter>({
+export const apiServer = createTRPCClient<AppRouter>({
   links: [
     loggerLink({
       enabled: (op) =>
