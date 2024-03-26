@@ -16,4 +16,6 @@ export const envSchema = z.object({
   GITHUB_CLIENT_SECRET: z.string(),
   TMDB_KEY: z.string(),
   TMDB_URL: z.string(),
+  COOKIE_NAME: z.string(),
+  COOKIE_MAX_AGE: z.number(),
 })

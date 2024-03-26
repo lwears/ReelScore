@@ -34,4 +34,5 @@ export const userService = {
   getAll,
   update,
   delete: del,
+  findOrThrow: prisma.user.findUniqueOrThrow,
 }

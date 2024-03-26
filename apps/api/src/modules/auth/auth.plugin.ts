@@ -2,6 +2,7 @@ import fp from 'fastify-plugin'
 import { Authenticator } from '@fastify/passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { Strategy as GithubStrategy } from 'passport-github2'
+import { Strategy as LocalStrategy } from 'passport-local'
 
 import { userService } from '../users/users.service'
 import { mapProviderUser } from '@api/lib/utils'
@@ -16,13 +17,28 @@ import type { Profile, VerifyCallback } from 'passport-google-oauth20'
 
 const authPlugin: FastifyPluginCallback = (
   fastify: FastifyInstance,
-  options: FastifyPluginOptions,
+  _options: FastifyPluginOptions,
   next: (err?: Error) => void
 ) => {
   const fastifyPassport = new Authenticator()
 
   fastify.register(fastifyPassport.initialize())
   fastify.register(fastifyPassport.secureSession())
+
+  fastifyPassport.use(
+    'local',
+    new LocalStrategy(async (_username, _pwd, done) => {
+      try {
+        const user = await userService.findOrThrow({
+          where: { id: '8855dd27-77d1-45ec-ad04-76fcd697f229' },
+        })
+        console.log(user)
+        return done(null, user)
+      } catch (error) {
+        return done(error)
+      }
+    })
+  )
 
   fastifyPassport.use(
     'google',
@@ -65,10 +81,18 @@ const authPlugin: FastifyPluginCallback = (
   )
 
   fastifyPassport.registerUserDeserializer<string, User | null>(
-    async (id: string) => userService.get(id)
+    async (id: string) => {
+      const user = userService.get(id)
+      console.log({ id })
+      return user
+    }
   )
 
-  fastifyPassport.registerUserSerializer(async (user: Profile) => user.id)
+  fastifyPassport.registerUserSerializer(async (user: Profile) => {
+    console.log('deserial')
+    console.log(user)
+    return user.id
+  })
 
   fastify.get(
     '/auth/google/callback',
@@ -94,6 +118,14 @@ const authPlugin: FastifyPluginCallback = (
     }
   )
 
+  // fastify.post(
+  //   '/login123',
+  //   fastifyPassport.authenticate('local', {
+  //     successRedirect: `${fastify.config.CLIENT_URL}/movies`,
+
+  //   })
+  // )
+
   fastify.get(
     '/auth/google/login',
     fastifyPassport.authenticate('google', { scope: ['profile', 'email'] })
@@ -104,12 +136,21 @@ const authPlugin: FastifyPluginCallback = (
     fastifyPassport.authenticate('github', { scope: ['user:email'] })
   )
 
+  fastify.post(
+    '/login123',
+    fastifyPassport.authenticate('local', {
+      successRedirect: `${fastify.config.CLIENT_URL}/movies`,
+      authInfo: true,
+      //  failureRedirect: '/login',
+    })
+  )
+
   fastify.get('/auth/logout', (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log(err)
+    req.session.destroy((error) => {
+      if (error) {
+        fastify.log.error(error)
       }
-      res.clearCookie('session')
+      res.clearCookie(fastify.config.COOKIE_NAME)
       res.redirect(`${fastify.config.CLIENT_URL}/login`)
     })
   })

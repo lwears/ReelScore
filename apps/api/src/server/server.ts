@@ -1,36 +1,39 @@
 import fastify from 'fastify'
-import cors from '@fastify/cors'
-import fastifySwagger from '@fastify/swagger'
-import fastifySwaggerUi from '@fastify/swagger-ui'
-import RedisStore from 'connect-redis'
-import pino from 'pino'
-import pretty from 'pino-pretty'
+import { fastifyCors } from '@fastify/cors'
+import { fastifySensible } from '@fastify/sensible'
+import { fastifySwagger } from '@fastify/swagger'
+import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { fastifyCookie } from '@fastify/cookie'
 import { fastifySession } from '@fastify/session'
 import { fastifyEnv } from '@fastify/env'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
-import { Redis } from 'ioredis'
 import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi'
-import { Prisma, type User } from '@prisma/client'
-import { createContext } from './context'
-import { openApiDocument } from './openapi'
-import { appRouter } from './router'
-import { prismaErrToTRPCError } from '@api/lib/utils'
-import authPlugin from '@api/modules/auth/auth.plugin'
-import testPlugin from '@api/modules/test/test.plugin'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import RedisStore from 'connect-redis'
+import pino from 'pino'
+import pretty from 'pino-pretty'
+import zodToJsonSchema from 'zod-to-json-schema'
+import { Redis } from 'ioredis'
+import { Prisma } from '@prisma/client'
 import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod'
 
+import { createContext } from './context'
+import { openApiDocument } from './openapi'
+import { appRouter } from './router'
+import { prismaErrToTRPCError } from '@api/lib/utils'
+import { envSchema } from '@api/configs/env.config'
+import authPlugin from '@api/modules/auth/auth.plugin'
+import testPlugin from '@api/modules/test/test.plugin'
+
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import type { TRPCError } from '@trpc/server'
 import type { FastifyBaseLogger } from 'fastify'
 
-import { envSchema } from '@api/configs/env.config'
-import zodToJsonSchema from 'zod-to-json-schema'
-
 export async function createServer() {
+  const isProduction = process.env.NODE_ENV === 'production'
+
   const client = new Redis({
     host: 'localhost',
     port: 6379,
@@ -64,17 +67,19 @@ export async function createServer() {
     console.log('Connected to redis successfully')
   })
 
-  // server.register(fastifySecureSession, {
-  //   key: fs.readFileSync('key.bin'),
-  //   cookie: { path: '/' },
-  // })
-
   server.register(fastifyCookie, {})
+
+  server.register(fastifySensible, {})
 
   server.register(fastifySession, {
     secret: server.config.SECRET_KEY,
-    cookieName: 'session',
-    cookie: { path: '/', secure: false },
+    cookieName: server.config.COOKIE_NAME,
+    cookie: {
+      secure: false,
+      //sameSite: isProduction,
+      //httpOnly: true,
+      maxAge: server.config.COOKIE_MAX_AGE,
+    },
     store: new RedisStore({
       client: client,
       prefix: 'session:',
@@ -83,7 +88,7 @@ export async function createServer() {
     rolling: false,
   })
 
-  server.register(cors, {
+  server.register(fastifyCors, {
     origin: true,
     methods: '*',
     credentials: true,

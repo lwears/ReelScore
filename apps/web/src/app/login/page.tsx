@@ -32,6 +32,32 @@ export default function LoginPage() {
             Sign in with Google
           </Link>
         </Button>
+
+        <form
+          method="POST"
+          action={async (formdata) => {
+            'use server'
+            await fetch('http://localhost:4000/login123', {
+              method: 'POST',
+              redirect: 'follow',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: `{"username": "test", "password": "test"}`,
+            })
+          }}
+        >
+          <input id="username" type="username" name="username" hidden />
+          <input id="password" type="password" name="password" hidden />
+          <Button
+            type="submit"
+            variant="primary"
+            size="md"
+            className="font-medium"
+          >
+            Generic Login
+          </Button>
+        </form>
       </div>
     </main>
   )
