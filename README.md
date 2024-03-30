@@ -1,6 +1,18 @@
 # :tv: ReelScore :tv:
 
-A simple movie / TV serie app for watchlists and scoring
+A simple movie / TV serie app for watchlists and scoring.
+
+## Tech Stack
+
+- Fastify
+- tRPC
+- Prisma
+- PostgreSQL
+- Redis
+- Next.JS
+- React
+- Tailwind
+- TypeScript
 
 ## Requirements :receipt:
 
@@ -34,6 +46,7 @@ A simple movie / TV serie app for watchlists and scoring
 - add is loading when loading new page on search?
 - Map errors to better descriptions on FE
 - Check if errors returned from tRPC
+- Search border bottom
 
 #### Tried to create a CrudRouter
 
