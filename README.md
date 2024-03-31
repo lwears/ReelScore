@@ -2,16 +2,21 @@
 
 A simple movie / TV serie app for watchlists and scoring.
 
-## Tech Stack
+## About :thinking:
 
-- Fastify
-- tRPC
-- Prisma
-- PostgreSQL
-- Redis
-- Next.JS
-- React
-- Tailwind
+After 1 year working in cyber security I wanted to keep up-to date on the latest technologies and also maintain my web development skills. I chose the latest and greatest libraries and frameworks to play with which are listed below. I could have made things easy for myself by using 'create-t3-app' or 'create-t3-turbo' but sometimes when you use these boilerplating tools you miss a lot of the how and why.
+
+## Tech Stack :toolbox:
+
+- Fastify - Backend server framework
+- tRPC - end-to-end type safety and api interaction
+- Prisma - DB ORM
+- PostgreSQL - DBMS
+- Redis - storage for server-side sessions
+- Zod - Schema validation
+- Next.JS - frontend framework
+- React - frontend framework
+- Tailwind - CSS utility library
 - TypeScript
 
 ## Requirements :receipt:
@@ -48,7 +53,9 @@ A simple movie / TV serie app for watchlists and scoring.
 - Check if errors returned from tRPC
 - Search border bottom
 
-#### Tried to create a CrudRouter
+#### Notes
+
+##### Tried to create a CrudRouter
 
 Due to Prisma not having any generic for delegate, the TypeScript solution was simply too complicated for this project.
 
