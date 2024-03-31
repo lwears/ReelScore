@@ -44,10 +44,6 @@ After 1 year working in cyber security I wanted to keep up-to date on the latest
 
 - Development Mode: `pnpm run dev`
 
-## Demo
-
-[Screencast from 2024-03-30 20-24-17.webm](https://github.com/lwears/ReelScore/assets/13499003/a83d67c1-ac41-4d4b-9ca5-f0acf9b90553)
-
 ## Todo :pencil2:
 
 - Passport User as User?
@@ -71,7 +67,3 @@ https://github.com/prisma/prisma/discussions/3929#discussioncomment-6732368
 https://dev.to/nicklucas/trpc-patterns-router-factories-and-polymorphism-30b0
 
 This also affected me creating re-usable components on the FE
-
-## Build Central Components
-
-Dropdown
