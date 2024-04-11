@@ -32,3 +32,12 @@ export type TmdbSerie = NonNullable<
 export type TmdbMediaSearchResult =
   | RouterOutputs['tmdbRouter']['searchMovie']
   | RouterOutputs['tmdbRouter']['searchSerie']
+
+export enum ErrorCode {
+  CONFLICT = 'CONFLICT',
+  PAYLOAD_TOO_LARGE = 'PAYLOAD_TOO_LARGE',
+  NOT_FOUND = 'NOT_FOUND',
+  BAD_REQUEST = 'BAD_REQUEST',
+  TIMEOUT = 'TIMEOUT',
+  TOO_MANY_REQUESTS = 'TOO_MANY_REQUESTS',
+}

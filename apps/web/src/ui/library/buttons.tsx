@@ -51,12 +51,14 @@ export const DeleteMovie = ({ id }: { id: string }) => {
     onError: (error) => toast.error(error.message),
   })
   return (
-    <form action={() => deleteMovie.mutate({ id })}>
-      <Button size="card" variant="card" type="submit">
-        <XCircleIcon />
-        Remove
-      </Button>
-    </form>
+    <Button
+      variant="ghost"
+      size="card"
+      IconBefore={<XCircleIcon />}
+      onClick={() => deleteMovie.mutate({ id })}
+    >
+      Remove
+    </Button>
   )
 }
 
@@ -72,19 +74,21 @@ export const DeleteSerie = ({ id }: { id: string }) => {
     onError: (error) => toast(error.message),
   })
   return (
-    <form action={() => deleteSerie.mutate({ id })}>
-      <Button size="card" variant="card" type="submit">
-        <XCircleIcon />
-        Remove
-      </Button>
-    </form>
+    <Button
+      variant="ghost"
+      size="card"
+      IconBefore={<XCircleIcon />}
+      onClick={() => deleteSerie.mutate({ id })}
+    >
+      Remove
+    </Button>
   )
 }
 
 export const UpdateMovie = ({ id }: { id: string }) => {
   const router = useRouter()
   const utils = api.useUtils()
-  const updateSerie = api.movieRouter.update.useMutation({
+  const update = api.movieRouter.update.useMutation({
     onSuccess: async (s) => {
       toast.success('Movie moved to Watched', { description: s.title })
       utils.movieRouter.list.invalidate()
@@ -93,14 +97,35 @@ export const UpdateMovie = ({ id }: { id: string }) => {
     onError: (error) => toast(error.message),
   })
   return (
-    <form
-      className="w-full"
-      action={() => updateSerie.mutate({ id, watched: true })}
+    <Button
+      variant="ghost"
+      size="card"
+      IconBefore={<CheckCircleIcon />}
+      onClick={() => update.mutate({ id, watched: true })}
     >
-      <Button size="card" variant="card" type="submit">
-        <CheckCircleIcon />
-        Watched !
-      </Button>
-    </form>
+      Watched !
+    </Button>
+  )
+}
+export const UpdateSerie = ({ id }: { id: string }) => {
+  const router = useRouter()
+  const utils = api.useUtils()
+  const update = api.serieRouter.update.useMutation({
+    onSuccess: async (s) => {
+      toast.success('Serie moved to Watched', { description: s.title })
+      utils.serieRouter.list.invalidate()
+      router.refresh()
+    },
+    onError: (error) => toast(error.message),
+  })
+  return (
+    <Button
+      variant="ghost"
+      size="card"
+      IconBefore={<CheckCircleIcon />}
+      onClick={() => update.mutate({ id, watched: true })}
+    >
+      Watched !
+    </Button>
   )
 }

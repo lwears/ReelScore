@@ -70,7 +70,7 @@
   }
 
   .nav {
-    @apply size-full fixed bg-primary overflow-hidden top-[50px] left-0 z-20 flex flex-col max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_search]:border-b-[1px] [&_search]:border-border;
+    @apply size-full z-20 fixed bg-primary overflow-hidden top-[50px] left-0 flex flex-col max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_search]:border-b-[1px] [&_search]:border-border md:[&_search]:border-none;
   }
 }
 
@@ -119,20 +119,20 @@
 
 /* Toggle menu icon */
 
-.side-menu:checked ~ nav {
+.side-menu:checked~nav {
   max-height: 350px;
 }
 
-.side-menu:checked ~ .hamb .hamb-line {
+.side-menu:checked~.hamb .hamb-line {
   background: transparent;
 }
 
-.side-menu:checked ~ .hamb .hamb-line::before {
+.side-menu:checked~.hamb .hamb-line::before {
   transform: rotate(-45deg);
   top: 0;
 }
 
-.side-menu:checked ~ .hamb .hamb-line::after {
+.side-menu:checked~.hamb .hamb-line::after {
   transform: rotate(45deg);
   top: 0;
 }

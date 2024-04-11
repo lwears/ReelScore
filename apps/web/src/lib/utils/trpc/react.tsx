@@ -31,12 +31,12 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
       links: [
         loggerLink({
           enabled: (op) =>
-            env.ENV === 'development' ||
+            process.env.NODE_ENV === 'development' ||
             (op.direction === 'down' && op.result instanceof Error),
         }),
         httpBatchLink({
           transformer: superjson,
-          url: 'http://localhost:4000/trpc',
+          url: `${env.NEXT_PUBLIC_API_URL}/trpc`,
           headers: {
             'x-trpc-source': 'nextjs-react',
           },
@@ -58,10 +58,4 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
       </api.Provider>
     </QueryClientProvider>
   )
-}
-
-function getBaseUrl() {
-  if (typeof window !== 'undefined') return window.location.origin
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return `http://localhost:${process.env.PORT ?? 3000}`
 }

@@ -4,6 +4,7 @@ import { Button } from '@web/ui/components/button'
 import { GithubSVG } from '@web/ui/svg/github'
 import { GoogleSVG } from '@web/ui/svg/google'
 
+import { env } from 'apps/web/env'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -20,15 +21,20 @@ export default function LoginPage() {
           variant="primary"
           size="md"
           className="bg-black font-medium hover:bg-gray-700"
+          IconBefore={<GithubSVG />}
         >
-          <Link href={'http://localhost:4000/auth/github/login'}>
-            <GithubSVG />
+          <Link href={`${env.NEXT_PUBLIC_API_URL}/auth/github/login`}>
             Sign in with Github
           </Link>
         </Button>
-        <Button asChild variant="primary" size="md" className="font-medium">
-          <Link href={'http://localhost:4000/auth/google/login'}>
-            <GoogleSVG />
+        <Button
+          asChild
+          variant="primary"
+          size="md"
+          className="font-medium"
+          IconBefore={<GoogleSVG />}
+        >
+          <Link href={`${env.NEXT_PUBLIC_API_URL}/auth/google/login`}>
             Sign in with Google
           </Link>
         </Button>

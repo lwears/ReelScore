@@ -4,7 +4,7 @@ import { Movies } from './movies'
 import { MediaDisplaySkeleton } from '@web/ui/components/skeletons'
 
 interface Props {
-  searchParams: { query: string; page: string }
+  searchParams: { query: string; page: string; show: boolean }
 }
 
 export default async function Page({

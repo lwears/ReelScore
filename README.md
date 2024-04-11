@@ -51,7 +51,6 @@ After 1 year working in cyber security I wanted to keep up-to date on the latest
 - add is loading when loading new page on search?
 - Map errors to better descriptions on FE
 - Check if errors returned from tRPC
-- Search border bottom
 
 #### Notes
 

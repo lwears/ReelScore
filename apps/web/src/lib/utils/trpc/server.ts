@@ -1,10 +1,12 @@
 import 'server-only'
 
-import type { AppRouter } from '@api/server/router'
-import { createTRPCClient, httpBatchLink, loggerLink } from '@trpc/client'
-import { env } from 'apps/web/env'
 import { cookies } from 'next/headers'
+import { createTRPCClient, httpBatchLink, loggerLink } from '@trpc/client'
 import superjson from 'superjson'
+
+import { env } from 'apps/web/env'
+
+import type { AppRouter } from '@api/server/router'
 
 // export const customLink: TRPCLink<AppRouter> = () => {
 //   return ({ next, op }) => {
@@ -35,7 +37,7 @@ export const api = createTRPCClient<AppRouter>({
   links: [
     loggerLink({
       enabled: (op) =>
-        env.ENV === 'development' ||
+        env.NODE_ENV === 'development' ||
         (op.direction === 'down' && op.result instanceof Error),
     }),
     httpBatchLink({

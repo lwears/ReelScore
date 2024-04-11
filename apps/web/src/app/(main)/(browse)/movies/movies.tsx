@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import Card from '@web/ui/components/card'
 import CardsContainer from '@web/ui/components/cards-container'
 import Empty from '@web/ui/components/empty'
@@ -6,6 +8,7 @@ import Error from '@web/ui/components/error'
 import { mapTmdbMedia, mapTmdbToCard } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/server'
 import { AddMovie } from '@web/ui/browse/buttons'
+import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
 
 interface Props {
   query: string
@@ -13,17 +16,17 @@ interface Props {
 }
 
 export const Movies = async ({ query, page }: Props) => {
-  const fetchData = async () => {
-    const response = await (query
+  const fetchData = () =>
+    query
       ? api.tmdbRouter.searchMovie.query({ query, page })
-      : api.tmdbRouter.popularMovies.query({ page }))
-    return response
-  }
+      : api.tmdbRouter.popularMovies.query({ page })
 
   const { data, error } = await fetchData()
 
+  // {"status_code":7,"status_message":"Invalid API key: You must be granted a valid key.","success":false}
+
   if (error) {
-    return <Error message={error} />
+    return <Error message={error.status_message} />
   }
 
   if (!data || !data.results || data.results.length === 0) {
@@ -36,14 +39,32 @@ export const Movies = async ({ query, page }: Props) => {
       <CardsContainer>
         {data.results.map((m) => {
           const movie = mapTmdbToCard(m)
-          const data = mapTmdbMedia(m)
+          const mappedData = mapTmdbMedia(m)
           return (
-            <Card key={m.id} {...movie}>
-              <div className="flex w-full">
-                <AddMovie movie={data} watched={true} />
-                <AddMovie movie={data} watched={false} />
-              </div>
-            </Card>
+            <Link key={m.id} href={`/movies/${m.id}`}>
+              <Card {...movie}>
+                <AddMovie
+                  buttonProps={{
+                    variant: 'ghost',
+                    size: 'card',
+                    IconBefore: <CheckCircleIcon />,
+                  }}
+                  movie={mappedData}
+                  watched={true}
+                  text="Seen"
+                />
+                <AddMovie
+                  buttonProps={{
+                    variant: 'ghost',
+                    size: 'card',
+                    IconBefore: <PlusCircleIcon />,
+                  }}
+                  movie={mappedData}
+                  watched={true}
+                  text="WatchList"
+                />
+              </Card>
+            </Link>
           )
         })}
       </CardsContainer>

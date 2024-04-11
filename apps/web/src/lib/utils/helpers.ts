@@ -1,10 +1,11 @@
-import type {
-  Media as MediaType,
-  Movie,
-  Serie,
-  TmdbMedia,
-  TmdbMovie,
-  TmdbSerie,
+import {
+  ErrorCode,
+  type Media as MediaType,
+  type Movie,
+  type Serie,
+  type TmdbMedia,
+  type TmdbMovie,
+  type TmdbSerie,
 } from '@web/types'
 import { env } from 'apps/web/env'
 
@@ -47,4 +48,22 @@ export const mapTmdbMedia = <T extends TmdbMedia>(m: T) => {
     releaseDate: isMovie ? new Date(m.release_date) : null,
     firstAired: isMovie ? null : new Date(m.first_air_date),
   }
+}
+
+export const isKnownErrorCode = (
+  value: string
+): value is keyof typeof ErrorCode => {
+  return value in ErrorCode
+}
+
+export const getReadableError = (code: ErrorCode, media: 'Movie' | 'Serie') => {
+  const errorMap = {
+    [ErrorCode.CONFLICT]: `You've already added this ${media}`,
+    [ErrorCode.PAYLOAD_TOO_LARGE]: `${media} already exists`,
+    [ErrorCode.NOT_FOUND]: `${media} not found`,
+    [ErrorCode.BAD_REQUEST]: `Input validation error`,
+    [ErrorCode.TIMEOUT]: 'timeout',
+    [ErrorCode.TOO_MANY_REQUESTS]: 'Too many requests',
+  }
+  return errorMap[code]
 }

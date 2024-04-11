@@ -7,8 +7,10 @@ import { ChevronUpIcon, FilmIcon, TvIcon } from '@heroicons/react/20/solid'
 
 import { useOutsideClick } from '@web/lib/utils'
 import { Search } from '../search/search'
-import type { HeroIcon } from '@web/types'
 import { env } from 'apps/web/env'
+
+import type { HeroIcon } from '@web/types'
+import type { RefCallback } from 'react'
 
 interface NavItem {
   text: string
@@ -78,14 +80,17 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({ navItems }) => {
   const [activeTab, setActiveTab] = useState('')
-  const itemsRef = useOutsideClick('', setActiveTab)
+  const itemsRef = useOutsideClick(() => setActiveTab(''))
 
   const handleClick = (itemText: string) => {
     setActiveTab((prev) => (prev === itemText ? '' : itemText))
   }
 
-  const refCallback = (el: HTMLButtonElement, i: number) =>
-    (itemsRef.current[i] = el)
+  const refCallback =
+    (index: number): RefCallback<HTMLButtonElement> =>
+    (el) => {
+      if (el) itemsRef.current[index] = el
+    }
 
   return (
     <ul className="nav-list-ul">
@@ -95,12 +100,14 @@ const Navigation: React.FC<NavigationProps> = ({ navItems }) => {
             items={item.subnav}
             text={item.text}
             onClick={() => handleClick(item.text)}
-            refCallback={(e) => refCallback(e, index)}
+            refCallback={refCallback(index)}
             isVisible={activeTab === item.text}
           />
         </li>
       ))}
-      <LogoutButton />
+      <li className="nav-list-item">
+        <LogoutButton />
+      </li>
     </ul>
   )
 }
@@ -108,7 +115,7 @@ const Navigation: React.FC<NavigationProps> = ({ navItems }) => {
 const LogoutButton = () => (
   <a
     href={`${env.NEXT_PUBLIC_API_URL}/auth/logout`}
-    className="text-primary-fg hover:bg-primary-hover flex w-full justify-between whitespace-nowrap rounded-md px-3 py-2"
+    className="text-primary-fg hover:bg-primary-hover group flex w-full justify-between rounded-md px-3 py-2"
   >
     Logout
   </a>
@@ -117,7 +124,8 @@ const LogoutButton = () => (
 interface NavDropdownProps {
   text: string
   onClick: () => void
-  refCallback: (el: HTMLButtonElement) => void
+  refCallback: RefCallback<HTMLButtonElement>
+  // refCallback: (el: HTMLButtonElement) => HTMLButtonElement
   items: SubNavItem[]
   isVisible: boolean
 }
@@ -133,7 +141,7 @@ const NavDropdown = ({
     <button
       onClick={onClick}
       className="text-primary-fg hover:bg-primary-hover group flex w-full justify-between rounded-md px-3 py-2"
-      ref={(el: HTMLButtonElement) => refCallback(el)}
+      ref={refCallback}
     >
       {text}
       <ChevronUpIcon className="size-5 transition-all group-has-[+.invisible]:rotate-180 md:hidden" />

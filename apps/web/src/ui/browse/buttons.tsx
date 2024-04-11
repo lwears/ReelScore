@@ -5,41 +5,102 @@ import { toast } from 'sonner'
 
 import { api } from '@web/lib/utils/trpc/react'
 import { Button } from '../components/button'
+import { getReadableError, isKnownErrorCode } from '@web/lib/utils/helpers'
 
+import type { ButtonProps } from '../components/button'
 import type { RouterInputs } from '@api/server/router'
+import type { ErrorCode } from '@web/types'
+
+interface AddMovieProps {
+  movie: RouterInputs['movieRouter']['create']
+  watched: boolean
+  onSuccess?: () => void
+  onError?: (e: string) => void
+  buttonProps: ButtonProps
+  text: string
+}
 
 export const AddMovie = ({
   movie,
   watched,
-}: {
-  movie: RouterInputs['movieRouter']['create']
-  watched: boolean
-}) => {
+  onSuccess,
+  onError,
+  buttonProps,
+  text,
+}: AddMovieProps) => {
   const utils = api.useUtils()
+
   const addMovie = api.movieRouter.create.useMutation({
-    onSuccess: async (m) => {
+    onSuccess: (m) => {
       toast.success('Movie Added', { description: m.title })
       void utils.movieRouter.invalidate()
+      onSuccess && onSuccess()
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      const errorCode = error.data?.code as ErrorCode | undefined
+      if (errorCode && isKnownErrorCode(errorCode)) {
+        toast.error(getReadableError(errorCode, 'Movie'))
+      } else {
+        // Handle unexpected errors
+        toast.error(error.message)
+      }
+      onError && onError(error.message)
+    },
   })
 
-  const text = watched ? 'Seen' : 'Watchlist'
-  const Icon = watched ? CheckCircleIcon : PlusCircleIcon
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    addMovie.mutate({ ...movie, watched })
+  }
 
   return (
-    <form
-      className="w-full"
-      action={() => addMovie.mutate({ ...movie, watched })}
-    >
-      <Button size="card" variant="card" type="submit">
-        {/* TODO Fix Icon */}
-        <Icon />
-        {text}
-      </Button>
-    </form>
+    <Button {...buttonProps} onClick={handleClick}>
+      {text}
+    </Button>
   )
 }
+
+// export const AddMovie = ({
+//   movie,
+//   watched,
+// }: {
+//   movie: RouterInputs['movieRouter']['create']
+//   watched: boolean
+// }) => {
+//   const utils = api.useUtils()
+//   const addMovie = api.movieRouter.create.useMutation({
+//     onSuccess: (m) => {
+//       toast.success('Movie Added', { description: m.title })
+//       void utils.movieRouter.invalidate()
+//     },
+//     onError: (error) => {
+//       const errorCode = error.data?.code as ErrorCode | undefined
+//       if (errorCode && isKnownErrorCode(errorCode)) {
+//         return toast.error(getReadableError(errorCode, 'Movie'))
+//       }
+//       // TODO : Handle unexpected errors
+//       toast.error(error.message)
+//     },
+//   })
+
+//   const text = watched ? 'Seen' : 'Watchlist'
+//   const Icon = watched ? CheckCircleIcon : PlusCircleIcon
+
+//   return (
+//     <Button
+//       size="card"
+//       variant="card"
+//       onClick={(e) => {
+//         e.preventDefault()
+//         addMovie.mutate({ ...movie, watched })
+//       }}
+//     >
+//       {/* TODO Fix Icon */}
+//       <Icon />
+//       {text}
+//     </Button>
+//   )
+// }
 
 export const AddSerie = ({
   serie,
@@ -50,25 +111,30 @@ export const AddSerie = ({
 }) => {
   const utils = api.useUtils()
   const addSerie = api.serieRouter.create.useMutation({
-    onSuccess: async (m) => {
+    onSuccess: (m) => {
       toast.success('Serie Added', { description: m.title })
       void utils.serieRouter.invalidate()
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      const errorCode = error.data?.code as ErrorCode | undefined
+      if (errorCode && isKnownErrorCode(errorCode)) {
+        return toast.error(getReadableError(errorCode, 'Movie'))
+      }
+      toast.error(error.message)
+    },
   })
 
   const text = watched ? 'Seen' : 'Watchlist'
   const Icon = watched ? CheckCircleIcon : PlusCircleIcon
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    addSerie.mutate({ ...serie, watched })
+  }
+
   return (
-    <form
-      className="w-full"
-      action={() => addSerie.mutate({ ...serie, watched })}
-    >
-      <Button size="card" variant="card" type="submit">
-        <Icon />
-        {text}
-      </Button>
-    </form>
+    <Button onClick={handleClick} IconBefore={<Icon />}>
+      {text}
+    </Button>
   )
 }
