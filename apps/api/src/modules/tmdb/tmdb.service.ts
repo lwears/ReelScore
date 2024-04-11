@@ -2,10 +2,14 @@ import createClient from 'openapi-fetch'
 
 import type { paths } from './v3'
 
+// TODO FIX
 const { GET } = createClient<paths>({
-  baseUrl: process.env.TMDB_URL,
+  baseUrl: 'https://api.themoviedb.org',
+  //baseUrl: process.env.TMDB_URL,
   headers: {
     get Authorization() {
+      console.log('LIAM123', process.env.TMDB_KEY)
+      console.log('LIAM123', process.env.TMDB_URL)
       return process.env.TMDB_KEY ? `Bearer ${process.env.TMDB_KEY}` : undefined
     },
   },
@@ -35,6 +39,12 @@ interface MovieSearchOpts extends BaseSearchOpts {
   year?: string
   region?: string
 }
+
+const getMovieById = async ({ id }: { id: number }) =>
+  GET(`/3/movie/{movie_id}`, { params: { path: { movie_id: id } } })
+
+const getSerieById = async ({ id }: { id: number }) =>
+  GET(`/3/tv/{series_id}`, { params: { path: { series_id: id } } })
 
 const searchMovie = async ({
   query,
@@ -78,6 +88,8 @@ const getPopularSeries = async ({
 }) => GET('/3/discover/tv', { params: { query: { page, language } } })
 
 export const tmdbService = {
+  getMovieById,
+  getSerieById,
   searchMovie,
   searchMulti,
   searchSerie,

@@ -1,5 +1,6 @@
 import { privateProcedure, router } from '@api/server/trpc'
 import { z } from 'zod'
+import type { ListOptions } from './movies.service'
 import { movieService } from './movies.service'
 import { createMovieSchema, updateMovieSchema } from './movies.dtos'
 import { listSchema } from '@api/shared/dto'
@@ -7,17 +8,17 @@ import { listSchema } from '@api/shared/dto'
 export const movieRouter = router({
   list: privateProcedure
     .input(listSchema)
-    .query(({ input: { watched, query, page, limit }, ctx }) =>
-      movieService.list(
-        ctx.user.id,
-        {
+    .query(({ input: { watched, query, page, limit }, ctx }) => {
+      const opts: ListOptions = {
+        page,
+        take: limit,
+        where: {
           watched,
           title: { contains: query, mode: 'insensitive' },
         },
-        page,
-        limit
-      )
-    ),
+      }
+      return movieService.list(ctx.user.id, opts)
+    }),
   create: privateProcedure
     .input(createMovieSchema)
     .mutation(({ input, ctx }) => movieService.create(ctx.user.id, input)),

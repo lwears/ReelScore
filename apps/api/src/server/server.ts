@@ -11,19 +11,18 @@ import { fastifyEnv } from '@fastify/env'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { Redis } from 'ioredis'
 import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi'
-import { Prisma, type User } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { createContext } from './context'
 import { openApiDocument } from './openapi'
 import { appRouter } from './router'
 import { prismaErrToTRPCError } from '@api/lib/utils'
 import authPlugin from '@api/modules/auth/auth.plugin'
-import testPlugin from '@api/modules/test/test.plugin'
+
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod'
-
 import type { TRPCError } from '@trpc/server'
 import type { FastifyBaseLogger } from 'fastify'
 
@@ -42,6 +41,8 @@ export async function createServer() {
     ignore: 'pid,hostname',
   })
   const prettyLogger = pino({ level: 'debug' }, stream)
+
+  console.log(process.env.TMDB_KEY)
 
   const server = fastify({
     logger: ['local', 'test'].includes(process.env.NODE_ENV)
@@ -63,11 +64,6 @@ export async function createServer() {
   client.on('connect', () => {
     console.log('Connected to redis successfully')
   })
-
-  // server.register(fastifySecureSession, {
-  //   key: fs.readFileSync('key.bin'),
-  //   cookie: { path: '/' },
-  // })
 
   server.register(fastifyCookie, {})
 
@@ -91,15 +87,12 @@ export async function createServer() {
 
   server.register(authPlugin)
 
-  server.register(testPlugin, {})
-
   server.register(fastifyTRPCPlugin, {
     prefix: server.config.TRPC_PREFIX,
     trpcOptions: {
       router: appRouter,
       createContext,
       onError({ error }: { error: TRPCError }) {
-        // report to error monitoring
         if (
           error['cause'] instanceof Prisma.PrismaClientKnownRequestError // The .code property can be accessed in a type-safe manner
         ) {
@@ -111,6 +104,7 @@ export async function createServer() {
     },
   })
 
+  // TODO: Not sure this package is maintained or functional with tRPC v11
   server.register(fastifyTRPCOpenApiPlugin, {
     basePath: '/trpc',
     router: appRouter,

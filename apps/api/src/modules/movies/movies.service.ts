@@ -1,6 +1,8 @@
-import { PAGE_SIZE } from '@api/constants'
-import type { Movie, Prisma } from '@prisma/client'
 import { PrismaClient } from '@prisma/client'
+
+import { PAGE_SIZE } from '@api/constants'
+
+import type { Movie, Prisma } from '@prisma/client'
 import type { CreateMovieSchema, UpdateMovieSchema } from './movies.dtos'
 
 export interface Paginated<A> {
@@ -8,6 +10,12 @@ export interface Paginated<A> {
   page: number
   count: number
   totalPages: number
+}
+
+export interface ListOptions {
+  where?: Prisma.MovieWhereInput
+  page?: number
+  take?: number
 }
 
 const prisma = new PrismaClient()
@@ -20,9 +28,7 @@ const update = (userId: string, data: UpdateMovieSchema) =>
 
 const list = async (
   userId: string,
-  where?: Prisma.MovieWhereInput,
-  page = 1,
-  take = PAGE_SIZE
+  { page = 1, take = PAGE_SIZE, where }: ListOptions
 ): Promise<Paginated<Movie>> =>
   prisma
     .$transaction([

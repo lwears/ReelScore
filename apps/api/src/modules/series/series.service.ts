@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
-import type { Prisma, Serie } from '@prisma/client'
-import type { Paginated } from '../movies/movies.service'
+import type { Prisma } from '@prisma/client'
 import type { CreateSerieSchema, UpdateSerieSchema } from './series.dtos'
 
 import { PAGE_SIZE } from '@api/constants'
@@ -19,7 +18,7 @@ const list = async (
   where?: Prisma.SerieWhereInput,
   page = 1,
   take = PAGE_SIZE
-): Promise<Paginated<Serie>> =>
+) =>
   prisma
     .$transaction([
       prisma.serie.count(),

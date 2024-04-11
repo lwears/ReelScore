@@ -25,10 +25,10 @@ model User {
 
 model Movie {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tmdbId      Int       @unique
+  tmdbId      Int
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  title       String    @unique @db.VarChar(255)
+  title       String    @db.VarChar(255)
   posterPath  String?
   releaseDate DateTime?
   tmdbScore   Int       @default(0)
@@ -36,14 +36,16 @@ model Movie {
   watched     Boolean   @default(false)
   userId      String    @db.Uuid
   User        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tmdbId, userId])
 }
 
 model Serie {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tmdbId     Int       @unique
+  tmdbId     Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  title      String    @unique @db.VarChar(255)
+  title      String    @db.VarChar(255)
   posterPath String?
   firstAired DateTime?
   tmdbScore  Int       @default(0)
@@ -51,6 +53,8 @@ model Serie {
   watched    Boolean   @default(false)
   userId     String    @db.Uuid
   User       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tmdbId, userId])
 }
 
 enum Provider {

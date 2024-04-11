@@ -1,6 +1,6 @@
+import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
-import { initTRPC, TRPCError } from '@trpc/server'
 
 import type { Context } from './context'
 export type { AppRouter } from './router'
@@ -49,5 +49,6 @@ export const router = t.router
 export const privateProcedure = t.procedure
   .use(isAuthenticated)
   .use(simulateLag)
+
 export const publicProcedure = t.procedure
 // export const adminProcedure = t.procedure.use(isAdmin)
