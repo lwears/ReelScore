@@ -1,4 +1,7 @@
 import z from 'zod'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const envSchema = z.object({
   PORT: z.coerce.number().int().default(4000),
@@ -17,3 +20,5 @@ export const envSchema = z.object({
   TMDB_KEY: z.string(),
   TMDB_URL: z.string(),
 })
+
+export const env = envSchema.parse(process.env)

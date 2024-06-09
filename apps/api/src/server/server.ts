@@ -1,17 +1,17 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
-import fastifySwagger from '@fastify/swagger'
-import fastifySwaggerUi from '@fastify/swagger-ui'
-import RedisStore from 'connect-redis'
+import swagger from '@fastify/swagger'
+import swaggerUi from '@fastify/swagger-ui'
+import session from '@fastify/session'
+import cookie from '@fastify/cookie'
 import pino from 'pino'
 import pretty from 'pino-pretty'
-import { fastifyCookie } from '@fastify/cookie'
-import { fastifySession } from '@fastify/session'
-import { fastifyEnv } from '@fastify/env'
+import RedisStore from 'connect-redis'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { Redis } from 'ioredis'
 import { fastifyTRPCOpenApiPlugin } from 'trpc-openapi'
 import { Prisma } from '@prisma/client'
+
 import { createContext } from './context'
 import { openApiDocument } from './openapi'
 import { appRouter } from './router'
@@ -25,11 +25,9 @@ import {
 } from 'fastify-type-provider-zod'
 import type { TRPCError } from '@trpc/server'
 import type { FastifyBaseLogger } from 'fastify'
+import type { ServerConfig } from '@api/configs/server.config'
 
-import { envSchema } from '@api/configs/env.config'
-import zodToJsonSchema from 'zod-to-json-schema'
-
-export async function createServer() {
+export function createServer(config: ServerConfig) {
   const client = new Redis({
     host: 'localhost',
     port: 6379,
@@ -42,21 +40,14 @@ export async function createServer() {
   })
   const prettyLogger = pino({ level: 'debug' }, stream)
 
-  console.log(process.env.TMDB_KEY)
-
   const server = fastify({
-    logger: ['local', 'test'].includes(process.env.NODE_ENV)
+    logger: ['local', 'test'].includes(config.environment)
       ? (prettyLogger as FastifyBaseLogger)
       : true,
   }).withTypeProvider<ZodTypeProvider>()
 
   server.setValidatorCompiler(validatorCompiler)
   server.setSerializerCompiler(serializerCompiler)
-
-  await server.register(fastifyEnv, {
-    dotenv: true,
-    schema: zodToJsonSchema(envSchema),
-  })
 
   client.on('error', (err) => {
     console.log('Could not establish a connection with redis. ' + err)
@@ -65,10 +56,10 @@ export async function createServer() {
     console.log('Connected to redis successfully')
   })
 
-  server.register(fastifyCookie, {})
+  server.register(cookie, {})
 
-  server.register(fastifySession, {
-    secret: server.config.SECRET_KEY,
+  server.register(session, {
+    secret: config.secret,
     cookieName: 'session',
     cookie: { path: '/', secure: false },
     store: new RedisStore({
@@ -88,7 +79,7 @@ export async function createServer() {
   server.register(authPlugin)
 
   server.register(fastifyTRPCPlugin, {
-    prefix: server.config.TRPC_PREFIX,
+    prefix: config.trpcPrefix,
     trpcOptions: {
       router: appRouter,
       createContext,
@@ -111,20 +102,20 @@ export async function createServer() {
     createContext,
   })
 
-  server.register(fastifySwagger, {
+  server.register(swagger, {
     mode: 'static',
     specification: { document: openApiDocument },
     prefix: '/docs',
   })
 
-  server.register(fastifySwaggerUi, {
+  server.register(swaggerUi, {
     routePrefix: '/docs',
   })
 
   const stop = () => server.close()
   const start = async () => {
     try {
-      await server.listen({ port: server.config.PORT })
+      await server.listen({ port: config.port })
     } catch (error) {
       server.log.error(error)
     }

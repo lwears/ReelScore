@@ -13,8 +13,16 @@ import type {
 } from 'fastify'
 import type { User } from '@prisma/client'
 import type { Profile, VerifyCallback } from 'passport-google-oauth20'
+import { env } from '@api/configs/env.config'
 
-const authPlugin: FastifyPluginCallback = (
+interface Options {
+  googleClientId: string
+  googleClientSecret: string
+  githubClientId: string
+  githubClientSecret: string
+}
+
+const authPlugin: FastifyPluginCallback<Options> = (
   fastify: FastifyInstance,
   options: FastifyPluginOptions,
   next: (err?: Error) => void
@@ -28,9 +36,9 @@ const authPlugin: FastifyPluginCallback = (
     'google',
     new GoogleStrategy(
       {
-        clientID: fastify.config.GOOGLE_CLIENT_ID,
-        clientSecret: fastify.config.GOOGLE_CLIENT_SECRET,
-        callbackURL: `${fastify.config.HOST}/auth/google/callback`,
+        clientID: env.GOOGLE_CLIENT_ID,
+        clientSecret: env.GOOGLE_CLIENT_SECRET,
+        callbackURL: `${env.HOST}/auth/google/callback`,
       },
       async (_token, _tokenSecret, profile, done) => {
         return userService
@@ -45,9 +53,9 @@ const authPlugin: FastifyPluginCallback = (
     'github',
     new GithubStrategy(
       {
-        clientID: fastify.config.GITHUB_CLIENT_ID,
-        clientSecret: fastify.config.GITHUB_CLIENT_SECRET,
-        callbackURL: `${fastify.config.HOST}/auth/github/callback`,
+        clientID: env.GITHUB_CLIENT_ID,
+        clientSecret: env.GITHUB_CLIENT_SECRET,
+        callbackURL: `${env.HOST}/auth/github/callback`,
         scope: ['read:user'],
       },
       async (
@@ -78,7 +86,7 @@ const authPlugin: FastifyPluginCallback = (
       }),
     },
     async (_req, res) => {
-      return res.redirect(`${fastify.config.CLIENT_URL}/movies`)
+      return res.redirect(`${env.CLIENT_URL}/movies`)
     }
   )
 
@@ -90,7 +98,7 @@ const authPlugin: FastifyPluginCallback = (
       }),
     },
     async (_req, res) => {
-      return res.redirect(`${fastify.config.CLIENT_URL}/movies`)
+      return res.redirect(`${env.CLIENT_URL}/movies`)
     }
   )
 
@@ -110,7 +118,7 @@ const authPlugin: FastifyPluginCallback = (
         console.log(err)
       }
       res.clearCookie('session')
-      res.redirect(`${fastify.config.CLIENT_URL}/login`)
+      res.redirect(`${env.CLIENT_URL}/login`)
     })
   })
 
