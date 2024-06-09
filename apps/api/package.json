@@ -25,10 +25,11 @@
     "@fastify/sensible": "^5.5.0",
     "@fastify/session": "^10.7.0",
     "@fastify/swagger": "^8.14.0",
-    "@fastify/swagger-ui": "^3.0.0",
-    "@prisma/client": "^5.12.1",
+    "@fastify/swagger-ui": "^3.1.0",
+    "@prisma/client": "^5.15.0",
     "@trpc/server": "11.0.0-next.320",
     "connect-redis": "^7.1.1",
+    "dotenv": "^16.4.5",
     "express-session": "^1.18.0",
     "fastify": "^4.26.2",
     "fastify-plugin": "^4.5.1",
@@ -39,7 +40,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "pino": "^8.20.0",
-    "prisma": "^5.12.1",
+    "prisma": "^5.15.0",
     "trpc-openapi": "^1.2.0",
     "uuid": "^9.0.1",
     "zod-to-json-schema": "^3.22.5"
@@ -54,7 +55,7 @@
     "@types/uuid": "^9.0.8",
     "fastify-tsconfig": "^2.0.0",
     "openapi-typescript": "^6.7.5",
-    "pino-pretty": "^11.0.0",
+    "pino-pretty": "^11.1.0",
     "ts-node": "^10.9.2"
   }
 }
