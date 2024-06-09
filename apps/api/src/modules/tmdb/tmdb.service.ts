@@ -1,16 +1,13 @@
 import createClient from 'openapi-fetch'
 
 import type { paths } from './v3'
+import { env } from '@api/configs/env.config'
 
-// TODO FIX
 const { GET } = createClient<paths>({
-  baseUrl: 'https://api.themoviedb.org',
-  //baseUrl: process.env.TMDB_URL,
+  baseUrl: env.TMDB_URL,
   headers: {
     get Authorization() {
-      console.log('LIAM123', process.env.TMDB_KEY)
-      console.log('LIAM123', process.env.TMDB_URL)
-      return process.env.TMDB_KEY ? `Bearer ${process.env.TMDB_KEY}` : undefined
+      return env.TMDB_KEY ? `Bearer ${env.TMDB_KEY}` : undefined
     },
   },
 })
