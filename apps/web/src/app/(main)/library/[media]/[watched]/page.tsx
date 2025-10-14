@@ -13,15 +13,19 @@ export const metadata: Metadata = {
   title: 'Library',
 }
 
-enum Media {
-  SERIES = 'series',
-  MOVIES = 'movies',
-}
+const Media = {
+  SERIES: 'series',
+  MOVIES: 'movies',
+} as const
 
-enum Watched {
-  watched = 'watched',
-  watchlist = 'watchlist',
-}
+type Media = (typeof Media)[keyof typeof Media]
+
+const Watched = {
+  WATCHED: 'watched',
+  WATCHLIST: 'watchlist',
+} as const
+
+type Watched = (typeof Watched)[keyof typeof Watched]
 
 interface Props {
   searchParams: Promise<{ query: string; page: string }>
@@ -40,14 +44,14 @@ export default async function Page(props: Props) {
   const fetchers = {
     [Media.MOVIES]: () =>
       api.movie.list.query({
-        watched: watched === Watched.watched,
+        watched: watched === Watched.WATCHED,
         query,
         limit: 27,
         page: currentPage,
       }),
     [Media.SERIES]: () =>
       api.series.list.query({
-        watched: watched === Watched.watched,
+        watched: watched === Watched.WATCHED,
         query,
         limit: 27,
         page: currentPage,
@@ -59,7 +63,7 @@ export default async function Page(props: Props) {
       <Suspense key={query + currentPage} fallback={<MediaDisplaySkeleton />}>
         <MediaDisplay
           fetcher={fetchers[media]}
-          watched={watched === Watched.watched}
+          watched={watched === Watched.WATCHED}
         />
       </Suspense>
     </div>
