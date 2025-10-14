@@ -8,7 +8,7 @@ import { Button } from '../components/button'
 import { getReadableError, isKnownErrorCode } from '@web/lib/utils/helpers'
 
 import type { ButtonProps } from '../components/button'
-import type { RouterInputs } from '@api/server/router'
+import type { RouterInputs } from '@reelscore/api'
 import type { ErrorCode } from '@web/types'
 
 interface AddMovieProps {

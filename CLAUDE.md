@@ -18,12 +18,22 @@ ReelScore is a movie/TV series watchlist and scoring application built as a full
 
 This is a pnpm workspace monorepo with two main applications:
 
-- `apps/api/` - Fastify backend server
-- `apps/web/` - Next.js frontend application
+- `apps/api/` - Fastify backend server (package: `@reelscore/api`)
+- `apps/web/` - Next.js frontend application (package: `web`)
+
+**Type Sharing Strategy**:
+- The API package exports its tRPC router types via `apps/api/src/index.ts`
+- The web app imports API types as a workspace dev dependency: `@reelscore/api`
+- Web uses TypeScript project references to the API for better type checking
+- This allows independent deployment while maintaining type safety during development
 
 TypeScript path aliases:
-- `@api/*` maps to `apps/api/src/*`
+- `@api/*` maps to `apps/api/src/*` (internal API use only)
 - `@web/*` maps to `apps/web/src/*`
+
+**Package Naming**:
+- API: `@reelscore/api` - properly scoped for npm publishing if needed
+- Web: `web` - private package, Next.js app
 
 ## Development Commands
 
@@ -63,13 +73,25 @@ cd apps/web && pnpm run dev    # Frontend only (port 3000)
 
 ### Building
 
-```bash
-# Build API
-cd apps/api && pnpm run build
+The monorepo supports both full and independent builds:
 
-# Build web
-cd apps/web && pnpm run build
+```bash
+# Build everything (API first, then web)
+pnpm run build
+
+# Build API independently
+pnpm -w run build:api
+
+# Build web independently (requires API types to be built first)
+pnpm -w run build:web
+
+# Type checking
+pnpm run typecheck        # Check both packages
+pnpm -w run typecheck:api # Check API only
+pnpm -w run typecheck:web # Check web only
 ```
+
+**Build Order**: The API must be built before the web app because the web app depends on API type definitions. The main `build` script handles this automatically.
 
 ### Code Quality
 
@@ -150,8 +172,10 @@ Next.js App Router application:
 - `middleware.ts` - Next.js middleware for route protection
 
 **tRPC Usage**:
-- Client components: Import `api` from `@web/lib/utils/trpc/react` and use hooks (e.g., `api.movieRouter.list.useQuery()`)
-- Server components: Import `api` from `@web/lib/utils/trpc/server` and call procedures directly (e.g., `await api.movieRouter.list()`)
+- Type imports: Import `AppRouter`, `RouterInputs`, `RouterOutputs` from `@reelscore/api` package
+- Client components: Import `api` from `@web/lib/utils/trpc/react` and use hooks (e.g., `api.movie.list.useQuery()`)
+- Server components: Import `api` from `@web/lib/utils/trpc/server` and call procedures directly (e.g., `await api.movie.list()`)
+- Router names: `user`, `tmdb`, `movie`, `series` (not `movieRouter`, etc.)
 
 ### Database Schema
 
@@ -196,3 +220,75 @@ Currently no test suite configured (`test` script exits with error). Tests would
 When the API server is running, Swagger UI is available at: `http://localhost:4000/docs`
 
 The Swagger documentation is auto-generated from Fastify schemas.
+
+## Deployment
+
+The monorepo is structured to support independent deployment of API and web applications:
+
+### Deployment Strategy
+
+**API Deployment** (`apps/api/`):
+- Build output: `apps/api/dist/`
+- Entry point: `apps/api/dist/main.js`
+- Environment: Node.js runtime
+- Recommended platforms: Railway, Render, Fly.io, Docker container
+- Required services: PostgreSQL database, Redis instance
+- Build command: `pnpm -w run build:api`
+- Start command: `node apps/api/dist/main.js` or `pnpm --filter=@reelscore/api start`
+
+**Web Deployment** (`apps/web/`):
+- Build output: `apps/web/.next/`
+- Framework: Next.js 15+ with App Router
+- Recommended platform: Vercel (optimized for Next.js)
+- Build command: `pnpm -w run build:api && pnpm -w run build:web`
+- Note: API must be built first to generate type definitions
+- Start command: `pnpm --filter=web start`
+
+### Docker Deployment
+
+For containerized deployment, create separate Dockerfiles for API and web:
+
+**API Dockerfile** (`apps/api/Dockerfile`):
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+COPY apps/api/package.json ./apps/api/
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
+COPY apps/api ./apps/api
+RUN pnpm --filter=@reelscore/api build
+CMD ["node", "apps/api/dist/main.js"]
+```
+
+**Web Dockerfile** (`apps/web/Dockerfile`):
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+COPY apps/api/package.json ./apps/api/
+COPY apps/web/package.json ./apps/web/
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
+COPY apps/api ./apps/api
+COPY apps/web ./apps/web
+RUN pnpm run build
+CMD ["pnpm", "--filter=web", "start"]
+```
+
+### CI/CD Recommendations
+
+**GitHub Actions example**:
+```yaml
+# Build API
+- run: pnpm -w run build:api
+# Deploy API to hosting platform
+
+# Build Web (API types already available)
+- run: pnpm -w run build:web
+# Deploy web to Vercel/hosting platform
+```
+
+**Key Points**:
+- API and web can be deployed to different platforms
+- Web build requires API types, so build API first or ensure types are available
+- Both apps share some dependencies (zod, superjson, @trpc/server) but deploy independently
+- Use environment variables for API_URL configuration in web app

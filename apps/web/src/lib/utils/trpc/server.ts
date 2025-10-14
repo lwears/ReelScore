@@ -6,7 +6,7 @@ import superjson from 'superjson'
 
 import { env } from 'apps/web/env'
 
-import type { AppRouter } from '@api/server/router'
+import type { AppRouter } from '@reelscore/api'
 
 // export const customLink: TRPCLink<AppRouter> = () => {
 //   return ({ next, op }) => {

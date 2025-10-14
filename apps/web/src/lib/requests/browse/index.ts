@@ -1,6 +1,6 @@
 'use server'
 
-import type { RouterInputs } from '@api/server/router'
+import type { RouterInputs } from '@reelscore/api'
 import { api } from '@web/lib/utils/trpc/server'
 
 export const createMovie = async (

@@ -1,4 +1,4 @@
-import type { RouterOutputs } from '@api/server/router'
+import type { RouterOutputs } from '@reelscore/api'
 
 export interface Paginated<A> {
   results: A[]
@@ -33,11 +33,13 @@ export type TmdbMediaSearchResult =
   | RouterOutputs['tmdb']['searchMovie']
   | RouterOutputs['tmdb']['searchSerie']
 
-export enum ErrorCode {
-  CONFLICT = 'CONFLICT',
-  PAYLOAD_TOO_LARGE = 'PAYLOAD_TOO_LARGE',
-  NOT_FOUND = 'NOT_FOUND',
-  BAD_REQUEST = 'BAD_REQUEST',
-  TIMEOUT = 'TIMEOUT',
-  TOO_MANY_REQUESTS = 'TOO_MANY_REQUESTS',
-}
+export const ErrorCode = {
+  CONFLICT: 'CONFLICT',
+  PAYLOAD_TOO_LARGE: 'PAYLOAD_TOO_LARGE',
+  NOT_FOUND: 'NOT_FOUND',
+  BAD_REQUEST: 'BAD_REQUEST',
+  TIMEOUT: 'TIMEOUT',
+  TOO_MANY_REQUESTS: 'TOO_MANY_REQUESTS',
+} as const
+
+export type ErrorCode = typeof ErrorCode[keyof typeof ErrorCode]
