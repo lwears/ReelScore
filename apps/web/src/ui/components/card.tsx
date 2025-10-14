@@ -1,8 +1,7 @@
-import Image from 'next/image'
-import clsx from 'clsx'
 import { StarIcon } from '@heroicons/react/20/solid'
-
 import { buildImgSrc } from '@web/lib/utils/helpers'
+import clsx from 'clsx'
+import Image from 'next/image'
 
 export interface CardProps {
   posterPath: string | null
@@ -15,7 +14,7 @@ export interface CardProps {
 
 // Add users score
 export default function Card(data: CardProps) {
-  const { posterPath, date, title, score, children, tmdbScore } = data
+  const { posterPath, date, title, children, tmdbScore } = data
   return (
     <div className="shadow-material-2 group relative aspect-[2/3] w-full overflow-hidden rounded-md text-sm font-extralight text-white hover:cursor-pointer ">
       <div className="absolute left-0 top-0 z-0 size-full overflow-hidden rounded-md bg-slate-200 group-hover:blur-sm">

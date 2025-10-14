@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
 import { Button } from '@web/ui/components/button'
+import { useEffect } from 'react'
 
 export default function SearchError({
   error,

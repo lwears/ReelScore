@@ -1,7 +1,6 @@
-import { Suspense } from 'react'
-
-import { Movies } from './_components/movies'
 import { MediaDisplaySkeleton } from '@web/ui/components/skeletons'
+import { Suspense } from 'react'
+import { Movies } from './_components/movies'
 
 export const dynamic = 'force-dynamic'
 

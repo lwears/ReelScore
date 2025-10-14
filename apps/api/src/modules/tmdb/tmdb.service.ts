@@ -1,7 +1,6 @@
-import createClient from 'openapi-fetch'
-
-import type { paths } from './v3'
 import { env } from '@api/configs/env.config'
+import createClient from 'openapi-fetch'
+import type { paths } from './v3'
 
 const { GET } = createClient<paths>({
   baseUrl: env.TMDB_URL,

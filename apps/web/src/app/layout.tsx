@@ -1,8 +1,7 @@
-import React from 'react'
-import { Roboto } from 'next/font/google'
-import { Toaster } from 'sonner'
-
 import { TRPCReactProvider } from '@web/lib/utils/trpc/react'
+import { Roboto } from 'next/font/google'
+import React from 'react'
+import { Toaster } from 'sonner'
 import '@web/styles/globals.css'
 
 import type { Metadata } from 'next'

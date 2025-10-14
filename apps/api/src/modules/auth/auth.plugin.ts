@@ -1,19 +1,17 @@
-import fp from 'fastify-plugin'
-import { Authenticator } from '@fastify/passport'
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
-import { Strategy as GithubStrategy } from 'passport-github2'
-
-import { userService } from '../users/users.service'
+import { env } from '@api/configs/env.config'
+import type { User } from '@api/drizzle/schema'
 import { mapProviderUser } from '@api/lib/utils'
-
+import { Authenticator } from '@fastify/passport'
 import type {
   FastifyInstance,
   FastifyPluginCallback,
   FastifyPluginOptions,
 } from 'fastify'
-import type { User } from '@api/drizzle/schema'
+import fp from 'fastify-plugin'
+import { Strategy as GithubStrategy } from 'passport-github2'
 import type { Profile, VerifyCallback } from 'passport-google-oauth20'
-import { env } from '@api/configs/env.config'
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import { userService } from '../users/users.service'
 
 const authPlugin: FastifyPluginCallback = (
   fastify: FastifyInstance,

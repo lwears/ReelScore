@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -34,7 +34,7 @@
   --breakpoint-xs: 475px;
 
   /* Font families */
-  --font-family-roboto: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+  --font-family-roboto: "Roboto", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -121,7 +121,7 @@
 .hamb-line::before,
 .hamb-line::after {
   background: white;
-  content: '';
+  content: "";
   display: block;
   height: 100%;
   position: absolute;
@@ -143,20 +143,20 @@
 
 /* Toggle menu icon */
 
-.side-menu:checked~nav {
+.side-menu:checked ~ nav {
   max-height: 350px;
 }
 
-.side-menu:checked~.hamb .hamb-line {
+.side-menu:checked ~ .hamb .hamb-line {
   background: transparent;
 }
 
-.side-menu:checked~.hamb .hamb-line::before {
+.side-menu:checked ~ .hamb .hamb-line::before {
   transform: rotate(-45deg);
   top: 0;
 }
 
-.side-menu:checked~.hamb .hamb-line::after {
+.side-menu:checked ~ .hamb .hamb-line::after {
   transform: rotate(45deg);
   top: 0;
 }

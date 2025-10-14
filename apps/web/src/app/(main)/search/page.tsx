@@ -1,11 +1,10 @@
-import { Suspense } from 'react'
+import { api } from '@web/lib/utils/trpc/server'
 
 import { CardsSkeleton } from '@web/ui/components/skeletons'
-import { api } from '@web/lib/utils/trpc/server'
+import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { MediaDisplay } from './_components/media-display'
 import MediaHeader from './_components/media-header'
-
-import type { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
 

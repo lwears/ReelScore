@@ -1,7 +1,7 @@
-import z from 'zod'
 import { privateProcedure, router } from '@api/server/trpc'
-import { tmdbService } from './tmdb.service'
 import type { inferRouterOutputs } from '@trpc/server'
+import z from 'zod'
+import { tmdbService } from './tmdb.service'
 
 export const tmdbRouter = router({
   getSerieById: privateProcedure

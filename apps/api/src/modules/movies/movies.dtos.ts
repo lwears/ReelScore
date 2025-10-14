@@ -1,5 +1,5 @@
-import z from 'zod'
 import { updateMediaSchema } from '@api/shared/dtos/media.dto'
+import z from 'zod'
 
 export const createMovieSchema = z.object({
   tmdbId: z.number({

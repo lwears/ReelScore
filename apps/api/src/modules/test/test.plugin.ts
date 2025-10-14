@@ -1,13 +1,13 @@
 import type {
-  FastifyPluginCallback,
   FastifyInstance,
+  FastifyPluginCallback,
   FastifyPluginOptions,
 } from 'fastify'
 
 const testPlugin: FastifyPluginCallback = (
   fastify: FastifyInstance,
   _options: FastifyPluginOptions,
-  next: (err?: Error) => void,
+  next: (err?: Error) => void
 ) => {
   fastify.addHook('preHandler', (request, reply, next) => {
     if (!request.isAuthenticated()) {

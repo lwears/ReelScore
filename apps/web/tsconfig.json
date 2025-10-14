@@ -2,11 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "strict": true,
     "noEmit": true,
@@ -29,15 +25,11 @@
     ".next/types/**/*.ts",
     "src/middleware.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ],
+  "exclude": ["node_modules"],
   "references": [
     {
       "path": "../api"
     }
   ],
-  "typeRoots": [
-    "../../node_modules/@heroicons/**/*.d.ts"
-  ]
+  "typeRoots": ["../../node_modules/@heroicons/**/*.d.ts"]
 }

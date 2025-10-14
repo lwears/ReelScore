@@ -1,10 +1,9 @@
-import z from 'zod'
-
 import { privateProcedure, router } from '@api/server/trpc'
+import { listSchema } from '@api/shared/dto'
+import z from 'zod'
+import { createSerieSchema, updateSerieSchema } from './series.dtos'
 import type { ListOptions } from './series.service'
 import { serieService } from './series.service'
-import { createSerieSchema, updateSerieSchema } from './series.dtos'
-import { listSchema } from '@api/shared/dto'
 
 export const serieRouter = router({
   list: privateProcedure

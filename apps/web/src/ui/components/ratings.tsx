@@ -1,8 +1,7 @@
-import clsx from 'clsx'
-import { useState } from 'react'
 import { StarIcon } from '@heroicons/react/24/outline'
-
+import clsx from 'clsx'
 import type { KeyboardEvent, ReactElement } from 'react'
+import { useState } from 'react'
 
 export interface RatingProps {
   readOnly?: boolean

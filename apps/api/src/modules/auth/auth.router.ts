@@ -7,7 +7,6 @@ export const authRouter = router({
   // signUp: publicProcedure
   //   .input(userCredentialsSchema)
   //   .mutation(async ({ input, ctx }) => signUp(input, ctx)),
-
   // signIn: publicProcedure
   //   .input(userCredentialsSchema)
   //   .mutation(async ({ input, ctx }) => signIn(input, ctx)),

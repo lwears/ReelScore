@@ -1,21 +1,23 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { XCircleIcon } from '@heroicons/react/20/solid'
-import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
+import {
+  CheckCircleIcon,
+  PlusCircleIcon,
+  XCircleIcon,
+} from '@heroicons/react/20/solid'
 import { StarIcon } from '@heroicons/react/24/outline'
-
+import { useOutsideClick } from '@web/lib/utils'
 import { buildImgSrc, mapTmdbMedia } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/react'
 import { AddMovie } from '@web/ui/browse/buttons'
 import { Button } from '@web/ui/components/button'
 import Rating from '@web/ui/components/ratings'
-import { useOutsideClick } from '@web/lib/utils'
-
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { RefCallback } from 'react'
+import { useState } from 'react'
+
 // import Empty from '@web/ui/components/empty'
 // import Error from '@web/ui/components/error'
 
@@ -73,6 +75,7 @@ const mockData = {
 export default function Page({ params }: { params: { id: number } }) {
   const router = useRouter()
   const itemsRef = useOutsideClick<HTMLDivElement>(router.back)
+  // biome-ignore lint/correctness/noUnusedVariables: id will be used for API call once implemented
   const { id } = params
 
   const refCallback: RefCallback<HTMLDivElement> = (el) => {

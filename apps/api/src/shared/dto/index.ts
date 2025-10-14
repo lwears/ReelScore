@@ -1,6 +1,5 @@
-import z from 'zod'
-
 import { PAGE_SIZE } from '@api/constants'
+import z from 'zod'
 
 export const listSchema = z.object({
   watched: z.boolean({ message: 'watched boolean is required' }),

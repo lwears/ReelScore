@@ -1,11 +1,9 @@
-import Link from 'next/link'
-
 import { Button } from '@web/ui/components/button'
 import { GithubSVG } from '@web/ui/svg/github'
 import { GoogleSVG } from '@web/ui/svg/google'
-
 import { env } from 'apps/web/env'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Login',

@@ -1,5 +1,5 @@
-import z from 'zod'
 import dotenv from 'dotenv'
+import z from 'zod'
 
 dotenv.config()
 
@@ -10,7 +10,9 @@ export const envSchema = z.object({
     .default('development'),
   HOST: z.string().default('localhost:4000'),
   CLIENT_URL: z.string().default('localhost:3000'),
-  SECRET_KEY: z.string().min(32, 'SECRET_KEY must be at least 32 characters for security'),
+  SECRET_KEY: z
+    .string()
+    .min(32, 'SECRET_KEY must be at least 32 characters for security'),
   DATABASE_URL: z.string(),
   TRPC_PREFIX: z.string().default('/trpc'),
   REDIS_HOST: z.string().default('localhost'),

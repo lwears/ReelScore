@@ -1,10 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
-import { usePathname, useSearchParams } from 'next/navigation'
-
 import { cn } from '@web/lib/utils/cn'
+import Link from 'next/link'
+import { usePathname, useSearchParams } from 'next/navigation'
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const searchParams = useSearchParams()

@@ -1,13 +1,12 @@
 'use client'
 
-import { useMemo } from 'react'
-import superjson from 'superjson'
+import type { AppRouter } from '@reelscore/api'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink, loggerLink } from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query'
-
-import type { AppRouter } from '@reelscore/api'
 import { env } from 'apps/web/env'
+import { useMemo } from 'react'
+import superjson from 'superjson'
 
 const createQueryClient = () =>
   new QueryClient({

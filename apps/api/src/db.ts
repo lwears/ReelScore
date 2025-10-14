@@ -1,8 +1,8 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
-import postgres from 'postgres'
 import { pino } from 'pino'
-import * as schema from './drizzle/schema'
+import postgres from 'postgres'
 import { env } from './configs/env.config'
+import * as schema from './drizzle/schema'
 
 // Create a logger for database operations
 const logger = pino(
@@ -23,7 +23,9 @@ const client = postgres(env.DATABASE_URL, {
   idle_timeout: 20, // Close idle connections after 20s
   connect_timeout: 10, // Connection timeout in seconds
   ssl: env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : undefined,
-  onnotice: () => {}, // Silence notices in production
+  onnotice: () => {
+    // Intentionally silence PostgreSQL notices
+  },
 })
 
 // Create the Drizzle database instance
@@ -35,7 +37,10 @@ async function testConnection() {
     await client`SELECT 1`
     logger.info({ service: 'database' }, 'Database connected successfully')
   } catch (error) {
-    logger.error({ err: error, service: 'database' }, 'Database connection failed')
+    logger.error(
+      { err: error, service: 'database' },
+      'Database connection failed'
+    )
     process.exit(1) // Exit if DB connection fails on startup
   }
 }

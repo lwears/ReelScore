@@ -1,10 +1,9 @@
+import { isTmdbMovie, mapTmdbToCard } from '@web/lib/utils/helpers'
+import type { TmdbMediaSearchResult } from '@web/types'
 import Card from '@web/ui/components/card'
 import Empty from '@web/ui/components/empty'
-import Error from '@web/ui/components/error'
+import ErrorDisplay from '@web/ui/components/error'
 import CardsContainer from '@web/ui/search/cards-container'
-import { isTmdbMovie, mapTmdbToCard } from '@web/lib/utils/helpers'
-
-import type { TmdbMediaSearchResult } from '@web/types'
 
 export const MediaDisplay = async ({
   fetcher,
@@ -15,7 +14,7 @@ export const MediaDisplay = async ({
   const { data, error } = await fetcher()
 
   if (error) {
-    return <Error message={error} />
+    return <ErrorDisplay message={error} />
   }
 
   if (!data || !data.results || data.results.length === 0) {

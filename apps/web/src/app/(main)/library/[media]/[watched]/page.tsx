@@ -1,11 +1,9 @@
-import { Suspense } from 'react'
-import { notFound } from 'next/navigation'
-
 import { api } from '@web/lib/utils/trpc/server'
-import { MediaDisplay } from './_components/media-display'
 import { MediaDisplaySkeleton } from '@web/ui/components/skeletons'
-
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import { MediaDisplay } from './_components/media-display'
 
 export const dynamic = 'force-dynamic'
 

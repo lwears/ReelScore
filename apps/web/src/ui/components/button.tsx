@@ -1,11 +1,9 @@
 import { Slot, Slottable } from '@radix-ui/react-slot'
+import { cn } from '@web/lib/utils/cn'
+import type { VariantProps } from 'class-variance-authority'
 import { cva } from 'class-variance-authority'
 import type { ReactElement } from 'react'
 import React from 'react'
-
-import { cn } from '@web/lib/utils/cn'
-
-import type { VariantProps } from 'class-variance-authority'
 
 //https://medium.com/@wdswy/how-to-build-highly-reusable-react-components-in-next-js-13-tailwindcss-and-radix-ui-a17cf5fbed99
 

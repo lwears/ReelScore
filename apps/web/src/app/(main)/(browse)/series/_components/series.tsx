@@ -1,12 +1,12 @@
-import { Suspense } from 'react'
-import Card from '@web/ui/components/card'
-import CardsContainer from '@web/ui/components/cards-container'
-import Empty from '@web/ui/components/empty'
-import Pagination from '@web/ui/components/pagination'
-import Error from '@web/ui/components/error'
 import { mapTmdbMedia, mapTmdbToCard } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/server'
 import { AddSerie } from '@web/ui/browse/buttons'
+import Card from '@web/ui/components/card'
+import CardsContainer from '@web/ui/components/cards-container'
+import Empty from '@web/ui/components/empty'
+import ErrorDisplay from '@web/ui/components/error'
+import Pagination from '@web/ui/components/pagination'
+import { Suspense } from 'react'
 
 interface Props {
   query: string
@@ -22,7 +22,7 @@ export const Series = async ({ query, page }: Props) => {
   const { data, error } = await fetchData()
 
   if (error) {
-    return <Error message={error} />
+    return <ErrorDisplay message={error} />
   }
 
   if (!data || !data.results || data.results.length === 0) {

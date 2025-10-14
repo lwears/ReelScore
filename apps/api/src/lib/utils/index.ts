@@ -1,8 +1,8 @@
+import type { NewUser, Provider } from '@api/drizzle/schema'
 import { TRPCError } from '@trpc/server'
-import { pino } from 'pino'
 
 import type { Profile as PassportProfile } from 'passport-google-oauth20'
-import type { Provider, NewUser } from '@api/drizzle/schema'
+import { pino } from 'pino'
 
 // Create a logger for utility functions
 const logger = pino(
@@ -42,7 +42,17 @@ export const handleDatabaseError = (error: unknown): never => {
     // Reference: https://www.postgresql.org/docs/current/errcodes-appendix.html
     const errorMap: Record<
       string,
-      { code: 'NOT_FOUND' | 'CONFLICT' | 'BAD_REQUEST' | 'TIMEOUT' | 'TOO_MANY_REQUESTS' | 'PAYLOAD_TOO_LARGE' | 'INTERNAL_SERVER_ERROR'; message: string }
+      {
+        code:
+          | 'NOT_FOUND'
+          | 'CONFLICT'
+          | 'BAD_REQUEST'
+          | 'TIMEOUT'
+          | 'TOO_MANY_REQUESTS'
+          | 'PAYLOAD_TOO_LARGE'
+          | 'INTERNAL_SERVER_ERROR'
+        message: string
+      }
     > = {
       // Unique constraint violation
       '23505': {
@@ -62,7 +72,8 @@ export const handleDatabaseError = (error: unknown): never => {
       // Check constraint violation
       '23514': {
         code: 'BAD_REQUEST',
-        message: pgError.detail || 'Value does not meet validation requirements',
+        message:
+          pgError.detail || 'Value does not meet validation requirements',
       },
       // String data right truncation
       '22001': {
@@ -116,11 +127,14 @@ export const handleDatabaseError = (error: unknown): never => {
     }
 
     // Log unhandled PostgreSQL error codes for debugging
-    logger.error({
-      errorCode,
-      pgError,
-      service: 'database'
-    }, 'Unhandled PostgreSQL error code')
+    logger.error(
+      {
+        errorCode,
+        pgError,
+        service: 'database',
+      },
+      'Unhandled PostgreSQL error code'
+    )
   }
 
   // Generic database error
@@ -143,7 +157,8 @@ export const mapProviderUser = (p: PassportProfile): NewUser => {
   if (!email) {
     throw new TRPCError({
       code: 'BAD_REQUEST',
-      message: 'Email is required from OAuth provider. Please ensure your account has a verified email address.',
+      message:
+        'Email is required from OAuth provider. Please ensure your account has a verified email address.',
     })
   }
 

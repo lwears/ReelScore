@@ -1,9 +1,9 @@
 import { privateProcedure, router } from '@api/server/trpc'
+import { listSchema } from '@api/shared/dto'
 import z from 'zod'
+import { createMovieSchema, updateMovieSchema } from './movies.dtos'
 import type { ListOptions } from './movies.service'
 import { movieService } from './movies.service'
-import { createMovieSchema, updateMovieSchema } from './movies.dtos'
-import { listSchema } from '@api/shared/dto'
 
 export const movieRouter = router({
   list: privateProcedure

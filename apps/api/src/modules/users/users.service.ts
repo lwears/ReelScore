@@ -1,8 +1,7 @@
-import { eq } from 'drizzle-orm'
 import db from '@api/db'
+import type { NewUser, User } from '@api/drizzle/schema'
 import { users } from '@api/drizzle/schema'
-
-import type { User, NewUser } from '@api/drizzle/schema'
+import { eq } from 'drizzle-orm'
 
 const create = async (data: NewUser): Promise<User> => {
   const [user] = await db.insert(users).values(data).returning()

@@ -95,13 +95,48 @@ pnpm -w run typecheck:web # Check web only
 
 ### Code Quality
 
+This project uses a **hybrid linting approach** for optimal coverage:
+
+**Primary Linter: Biome** (95% of rules)
+- Fast Rust-based linter and formatter (50-100x faster than ESLint)
+- 340+ migrated rules from ESLint, TypeScript-ESLint, and Prettier
+- Automatic import sorting and organization
+- Single-quote strings, 2-space indentation, semicolons as needed
+
+**Supplementary: ESLint** (4 specific Unicorn rules)
+- `unicorn/no-process-exit` - Prevent abrupt process termination
+- `unicorn/prefer-top-level-await` - Encourage modern async patterns
+- `unicorn/prefer-module` - Enforce ESM over CommonJS
+- `unicorn/no-anonymous-default-export` - Require named exports
+
 ```bash
-# Lint all code
+# Lint everything (runs Biome + ESLint)
 pnpm run lint
 
-# Format all code
+# Lint and auto-fix issues
+pnpm run lint:fix
+
+# Run individual linters
+pnpm run lint:biome   # Biome only
+pnpm run lint:eslint  # ESLint only
+
+# Format all code (Biome)
 pnpm run format
+
+# Check formatting without making changes
+pnpm run format:check
 ```
+
+**Configuration Files**:
+- `biome.json` - Main linter and formatter config
+- `.eslintrc.json` - Minimal config with 4 Unicorn rules (all others disabled)
+- `.eslintignore` - Excludes dist, .next, and CommonJS config files
+- VCS integration enabled - Biome respects `.gitignore`
+
+**Intentional `any` Usage**:
+Some files use `as any` type assertions with `biome-ignore` comments for valid reasons:
+- `apps/api/src/lib/factories/createMediaService.ts` - Generic factory pattern with Drizzle ORM
+- See inline comments for detailed explanations
 
 ### Database Operations
 
@@ -194,12 +229,15 @@ Relations:
 ## Code Style and Conventions
 
 - TypeScript strict mode enabled
-- ESLint with TypeScript, Unicorn plugins
-- Prettier for formatting
-- Husky pre-commit hooks with lint-staged
+- **Hybrid Linting**: Biome (primary) + ESLint (4 Unicorn rules)
+  - Biome: 340+ migrated rules, automatic import sorting
+  - ESLint: Specific rules for process.exit, top-level await, ESM, named exports
+  - Single-quote strings, 2-space indentation, semicolons as needed (ASI-safe)
+- Husky v9 pre-commit hooks with lint-staged (runs both linters)
 - Conventional commits enforced via commitlint
-- Use `interface` over `type` (enforced by ESLint)
+- Use `interface` over `type` (enforced by Biome)
 - Consistent type imports (`import type`)
+- Modern `as const` patterns instead of enums (no enum keyword)
 
 ## Important Notes
 

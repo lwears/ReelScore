@@ -1,27 +1,25 @@
-import fastify from 'fastify'
+import type { ServerConfig } from '@api/configs/server.config'
+import { handleDatabaseError } from '@api/lib/utils'
+import authPlugin from '@api/modules/auth/auth.plugin'
+import cookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
+import session from '@fastify/session'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
-import session from '@fastify/session'
-import cookie from '@fastify/cookie'
-import RedisStore from 'connect-redis'
+import type { TRPCError } from '@trpc/server'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
-import { Redis } from 'ioredis'
-
-import { createContext } from './context'
-import { appRouter } from './router'
-import { handleDatabaseError } from '@api/lib/utils'
-import authPlugin from '@api/modules/auth/auth.plugin'
-
+import RedisStore from 'connect-redis'
+import fastify from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod'
-import type { TRPCError } from '@trpc/server'
-import type { ServerConfig } from '@api/configs/server.config'
+import { Redis } from 'ioredis'
+import { createContext } from './context'
+import { appRouter } from './router'
 
 export function createServer(config: ServerConfig) {
   const client = new Redis({
@@ -63,7 +61,10 @@ export function createServer(config: ServerConfig) {
   server.setSerializerCompiler(serializerCompiler)
 
   client.on('error', (err) => {
-    server.log.error({ err, service: 'redis' }, 'Could not establish a connection with Redis')
+    server.log.error(
+      { err, service: 'redis' },
+      'Could not establish a connection with Redis'
+    )
   })
   client.on('connect', () => {
     server.log.info({ service: 'redis' }, 'Connected to Redis successfully')
@@ -119,7 +120,7 @@ export function createServer(config: ServerConfig) {
         'http://localhost:3001', // Alternative local port
       ]
 
-      if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+      if (allowedOrigins.some((allowed) => origin.startsWith(allowed))) {
         cb(null, true)
       } else {
         config.environment === 'local'
@@ -154,7 +155,11 @@ export function createServer(config: ServerConfig) {
       createContext,
       onError({ error }: { error: TRPCError }) {
         // Handle database errors from Drizzle/PostgreSQL
-        if (error.cause && typeof error.cause === 'object' && 'code' in error.cause) {
+        if (
+          error.cause &&
+          typeof error.cause === 'object' &&
+          'code' in error.cause
+        ) {
           try {
             handleDatabaseError(error.cause)
           } catch (dbError) {

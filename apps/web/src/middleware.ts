@@ -1,9 +1,6 @@
-import { NextResponse } from 'next/server'
 import { TRPCClientError } from '@trpc/client'
-
+import { type NextRequest, NextResponse } from 'next/server'
 import { api } from './lib/utils/trpc/server'
-
-import { type NextRequest } from 'next/server'
 
 // interface User {
 //   id: string

@@ -1,6 +1,5 @@
-import Link from 'next/link'
-
 import { Button } from '@web/ui/components/button'
+import Link from 'next/link'
 
 interface Props {
   header: string

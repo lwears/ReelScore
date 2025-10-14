@@ -1,15 +1,14 @@
-import Link from 'next/link'
-import { Suspense } from 'react'
-
-import Card from '@web/ui/components/card'
-import CardsContainer from '@web/ui/components/cards-container'
-import Empty from '@web/ui/components/empty'
-import Pagination from '@web/ui/components/pagination'
-import Error from '@web/ui/components/error'
+import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
 import { mapTmdbMedia, mapTmdbToCard } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/server'
 import { AddMovie } from '@web/ui/browse/buttons'
-import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
+import Card from '@web/ui/components/card'
+import CardsContainer from '@web/ui/components/cards-container'
+import Empty from '@web/ui/components/empty'
+import ErrorDisplay from '@web/ui/components/error'
+import Pagination from '@web/ui/components/pagination'
+import Link from 'next/link'
+import { Suspense } from 'react'
 
 interface Props {
   query: string
@@ -27,7 +26,7 @@ export const Movies = async ({ query, page }: Props) => {
   // {"status_code":7,"status_message":"Invalid API key: You must be granted a valid key.","success":false}
 
   if (error) {
-    return <Error message={String(error) || 'An error occurred'} />
+    return <ErrorDisplay message={String(error) || 'An error occurred'} />
   }
 
   if (!data || !data.results || data.results.length === 0) {

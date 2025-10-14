@@ -12,9 +12,12 @@
     "typecheck": "pnpm run typecheck:api && pnpm run typecheck:web",
     "typecheck:api": "pnpm run --filter=@reelscore/api typecheck",
     "typecheck:web": "pnpm run --filter=web typecheck",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "prepare": "husky install",
+    "lint": "biome check . && eslint . --quiet",
+    "lint:biome": "biome check .",
+    "lint:eslint": "eslint .",
+    "lint:fix": "biome check --write . && eslint . --fix",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
     "setup": "docker-compose -f apps/api/docker-compose.yml up -d",
     "setup-podman": "podman-compose -f apps/api/docker-compose.yml up -d"
   },
@@ -26,27 +29,25 @@
   },
   "type": "module",
   "devDependencies": {
+    "@biomejs/biome": "^2.2.6",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@types/node": "^18.19.130",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
-    "@typescript-eslint/parser": "^7.18.0",
     "add": "^2.0.6",
-    "eslint-config-prettier": "^9.1.2",
+    "eslint": "^8.57.1",
     "eslint-plugin-unicorn": "^55.0.0",
-    "eslint-plugin-unused-imports": "^4.2.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
-    "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown",
-    "**/*.{jsx,js,tsx,ts}": "eslint --cache --fix"
+    "**/*.{js,jsx,ts,tsx}": [
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true",
+      "eslint --fix"
+    ]
   },
   "dependencies": {
-    "eslint": "^8.57.1",
     "superjson": "2.2.1",
     "zod": "^4.1.12"
   },

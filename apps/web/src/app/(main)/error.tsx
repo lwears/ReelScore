@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
 import { Button } from '@web/ui/components/button'
+import { useEffect } from 'react'
 
 export default function MainError({
   error,
@@ -23,7 +23,9 @@ export default function MainError({
           {error.message || 'An unexpected error occurred'}
         </p>
         {error.digest && (
-          <p className="mt-1 text-sm text-muted-foreground">Error ID: {error.digest}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Error ID: {error.digest}
+          </p>
         )}
       </div>
       <Button onClick={() => reset()}>Try again</Button>

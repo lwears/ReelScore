@@ -1,16 +1,14 @@
 'use client'
 
-import Link from 'next/link'
-import { useState } from 'react'
-import clsx from 'clsx'
 import { ChevronUpIcon, FilmIcon, TvIcon } from '@heroicons/react/20/solid'
-
 import { useOutsideClick } from '@web/lib/utils'
-import { Search } from '../search/search'
-import { env } from 'apps/web/env'
-
 import type { HeroIcon } from '@web/types'
+import { env } from 'apps/web/env'
+import clsx from 'clsx'
+import Link from 'next/link'
 import type { RefCallback } from 'react'
+import { useState } from 'react'
+import { Search } from '../search/search'
 
 interface NavItem {
   text: string

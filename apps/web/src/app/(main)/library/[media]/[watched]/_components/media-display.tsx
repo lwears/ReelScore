@@ -1,17 +1,16 @@
-import { Suspense } from 'react'
-import Card from '@web/ui/components/card'
-import Empty from '@web/ui/components/empty'
-import CardsContainer from '@web/ui/components/cards-container'
-import Pagination from '@web/ui/components/pagination'
 import { isMovie } from '@web/lib/utils/helpers'
+import type { Media as MediaType, Paginated } from '@web/types'
+import Card from '@web/ui/components/card'
+import CardsContainer from '@web/ui/components/cards-container'
+import Empty from '@web/ui/components/empty'
+import Pagination from '@web/ui/components/pagination'
 import {
   DeleteMovie,
   DeleteSerie,
   UpdateMovie,
   UpdateSerie,
 } from '@web/ui/library/buttons'
-
-import type { Media as MediaType, Paginated } from '@web/types'
+import { Suspense } from 'react'
 
 export const MediaDisplay = async ({
   fetcher,

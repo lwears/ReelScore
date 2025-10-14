@@ -42,4 +42,4 @@ export const ErrorCode = {
   TOO_MANY_REQUESTS: 'TOO_MANY_REQUESTS',
 } as const
 
-export type ErrorCode = typeof ErrorCode[keyof typeof ErrorCode]
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]

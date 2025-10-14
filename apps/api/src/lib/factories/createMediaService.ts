@@ -1,7 +1,7 @@
-import { eq, and, desc, ilike, count, type SQL } from 'drizzle-orm'
-import type { PgTable } from 'drizzle-orm/pg-core'
-import db from '@api/db'
 import { PAGE_SIZE } from '@api/constants'
+import db from '@api/db'
+import { and, count, desc, eq, ilike, type SQL } from 'drizzle-orm'
+import type { PgTable } from 'drizzle-orm/pg-core'
 
 export interface Paginated<T> {
   results: T[]
@@ -60,11 +60,12 @@ export function createMediaService<
   TTable extends PgTable,
   TSelect,
   TCreate,
-  TUpdate extends { id: string }
+  TUpdate extends { id: string },
 >(table: TTable) {
   const create = async (userId: string, data: TCreate): Promise<TSelect> => {
     const [result] = await db
       .insert(table)
+      // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table requires type assertion - see file header
       .values({ ...data, userId } as any)
       .returning()
     return result as TSelect
@@ -73,8 +74,12 @@ export function createMediaService<
   const update = async (userId: string, data: TUpdate): Promise<TSelect> => {
     const [result] = await db
       .update(table)
+      // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table requires type assertion - see file header
       .set({ ...data, updatedAt: new Date() } as any)
-      .where(and(eq((table as any).id, data.id), eq((table as any).userId, userId)))
+      .where(
+        // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table columns require type assertion
+        and(eq((table as any).id, data.id), eq((table as any).userId, userId))
+      )
       .returning()
     return result as TSelect
   }
@@ -83,26 +88,32 @@ export function createMediaService<
     userId: string,
     { page = 1, take = PAGE_SIZE, where }: ListOptions
   ): Promise<Paginated<TSelect>> => {
+    // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table columns require type assertion
     const conditions: SQL[] = [eq((table as any).userId, userId)]
 
     if (where?.watched !== undefined) {
+      // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table columns require type assertion
       conditions.push(eq((table as any).watched, where.watched))
     }
 
     if (where?.title?.contains) {
+      // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table columns require type assertion
       conditions.push(ilike((table as any).title, `%${where.title.contains}%`))
     }
 
     const [totalCount, results] = await Promise.all([
       db
         .select({ count: count() })
+        // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table requires type assertion
         .from(table as any)
         .where(and(...conditions))
         .then((res) => res[0]?.count ?? 0),
       db
         .select()
+        // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table requires type assertion
         .from(table as any)
         .where(and(...conditions))
+        // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table columns require type assertion
         .orderBy(desc((table as any).tmdbScore))
         .limit(take)
         .offset((page - 1) * take),
@@ -118,7 +129,9 @@ export function createMediaService<
 
   const del = async (userId: string, id: string): Promise<TSelect> => {
     const [result] = await db
+      // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table requires type assertion
       .delete(table as any)
+      // biome-ignore lint/suspicious/noExplicitAny: Drizzle generic table columns require type assertion
       .where(and(eq((table as any).id, id), eq((table as any).userId, userId)))
       .returning()
     return result as TSelect

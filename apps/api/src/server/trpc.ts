@@ -1,9 +1,9 @@
+import { env } from '@api/configs/env.config'
 import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import z, { ZodError } from 'zod'
-
-import { env } from '@api/configs/env.config'
 import type { Context } from './context'
+
 export type { AppRouter } from './router'
 
 const t = initTRPC.context<Context>().create({
@@ -32,7 +32,7 @@ const isAuthenticated = t.middleware(({ next, ctx }) => {
 })
 
 // Optional: Simulate lag only in development with specific header
-const simulateLag = t.middleware(async ({ next, ctx }) => {
+const _simulateLag = t.middleware(async ({ next, ctx }) => {
   // Only enable in development AND when explicitly requested
   if (env.NODE_ENV !== 'local' || !ctx.req.headers['x-simulate-lag']) {
     return next()

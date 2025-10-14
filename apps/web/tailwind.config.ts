@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss'
-import defaultTheme from 'tailwindcss/defaultTheme'
 import colors from 'tailwindcss/colors'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
 const fromVariable = (name: string) => `hsl(var(--${name}) / <alpha-value>)`
 
