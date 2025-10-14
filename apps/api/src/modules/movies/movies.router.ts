@@ -1,5 +1,5 @@
 import { privateProcedure, router } from '@api/server/trpc'
-import { z } from 'zod'
+import z from 'zod'
 import type { ListOptions } from './movies.service'
 import { movieService } from './movies.service'
 import { createMovieSchema, updateMovieSchema } from './movies.dtos'
@@ -14,7 +14,7 @@ export const movieRouter = router({
         take: limit,
         where: {
           watched,
-          title: { contains: query, mode: 'insensitive' },
+          ...(query && { title: { contains: query, mode: 'insensitive' } }),
         },
       }
       return movieService.list(ctx.user.id, opts)
@@ -28,6 +28,8 @@ export const movieRouter = router({
   delete: privateProcedure
     .input(z.object({ id: z.string().uuid() }))
     .mutation(({ input, ctx }) => movieService.delete(ctx.user.id, input.id)),
-})
+}) satisfies ReturnType<typeof router>
+
+export type MovieRouter = typeof movieRouter
 
 // https://dev.to/nicklucas/trpc-patterns-router-factories-and-polymorphism-30b0

@@ -1,14 +1,15 @@
-import { z } from 'zod'
+import z from 'zod'
 import { privateProcedure, router } from '@api/server/trpc'
 import { tmdbService } from './tmdb.service'
+import type { inferRouterOutputs } from '@trpc/server'
 
 export const tmdbRouter = router({
   getSerieById: privateProcedure
-    .input(z.object({ id: z.number({ coerce: true }) }))
+    .input(z.object({ id: z.string().pipe(z.coerce.number()) }))
     .query(({ input: { id } }) => tmdbService.getSerieById({ id })),
 
   getMovieById: privateProcedure
-    .input(z.object({ id: z.number({ coerce: true }) }))
+    .input(z.object({ id: z.string().pipe(z.coerce.number()) }))
     .query(({ input: { id } }) => tmdbService.getMovieById({ id })),
 
   searchMulti: privateProcedure
@@ -59,4 +60,6 @@ export const tmdbRouter = router({
       })
     )
     .query(({ input: { page } }) => tmdbService.getPopularSeries({ page })),
-})
+}) satisfies ReturnType<typeof router>
+
+export type TmdbRouter = typeof tmdbRouter

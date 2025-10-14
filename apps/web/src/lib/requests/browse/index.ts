@@ -4,21 +4,21 @@ import type { RouterInputs } from '@api/server/router'
 import { api } from '@web/lib/utils/trpc/server'
 
 export const createMovie = async (
-  m: RouterInputs['movieRouter']['create'],
+  m: RouterInputs['movie']['create'],
   b: boolean
 ) => {
   'use server'
 
-  await api.movieRouter.create
+  await api.movie.create
     .mutate({ ...m, watched: b })
     .then(() => console.log('Success!'))
 }
 
 export const createSerie = async (
-  m: RouterInputs['serieRouter']['create'],
+  m: RouterInputs['series']['create'],
   b: boolean
 ) => {
   'use server'
 
-  await api.serieRouter.create.mutate({ ...m, watched: b })
+  await api.series.create.mutate({ ...m, watched: b })
 }

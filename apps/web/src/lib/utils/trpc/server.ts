@@ -42,7 +42,7 @@ export const api = createTRPCClient<AppRouter>({
     }),
     httpBatchLink({
       transformer: superjson,
-      url: 'http://localhost:4000/trpc',
+      url: `${env.NEXT_PUBLIC_API_URL}/trpc`,
       headers() {
         return {
           cookie: cookies().toString(),

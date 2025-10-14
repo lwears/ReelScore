@@ -1,7 +1,8 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
-import { ZodError } from 'zod'
+import z, { ZodError } from 'zod'
 
+import { env } from '@api/configs/env.config'
 import type { Context } from './context'
 export type { AppRouter } from './router'
 
@@ -30,25 +31,31 @@ const isAuthenticated = t.middleware(({ next, ctx }) => {
   })
 })
 
-// To Simulate lagging
+// Optional: Simulate lag only in development with specific header
 const simulateLag = t.middleware(async ({ next, ctx }) => {
-  if (ctx.req.headers['user-agent']?.includes('Next.js')) return next()
+  // Only enable in development AND when explicitly requested
+  if (env.NODE_ENV !== 'local' || !ctx.req.headers['x-simulate-lag']) {
+    return next()
+  }
+
   const start = Date.now()
   const result = await next()
   const end = Date.now()
   const completionTime = end - start
   const timeRemainder = 1000 - completionTime
+
   if (timeRemainder > 0) {
     await new Promise((resolve) => setTimeout(resolve, timeRemainder))
   }
+
   return result
 })
 
 export const router = t.router
 
-export const privateProcedure = t.procedure
-  .use(isAuthenticated)
-  .use(simulateLag)
+// Removed simulateLag from default privateProcedure
+// Add .use(simulateLag) to specific procedures if needed for testing
+export const privateProcedure = t.procedure.use(isAuthenticated)
 
 export const publicProcedure = t.procedure
 // export const adminProcedure = t.procedure.use(isAdmin)

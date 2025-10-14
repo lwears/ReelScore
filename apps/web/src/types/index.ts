@@ -16,22 +16,22 @@ export type HeroIcon = React.ForwardRefExoticComponent<
 
 export type Media = Movie | Serie
 
-export type Movie = RouterOutputs['movieRouter']['list']['results'][number]
+export type Movie = RouterOutputs['movie']['list']['results'][number]
 
-export type Serie = RouterOutputs['serieRouter']['list']['results'][number]
+export type Serie = RouterOutputs['series']['list']['results'][number]
 
 export type TmdbMedia = TmdbMovie | TmdbSerie
 
 export type TmdbMovie = NonNullable<
-  RouterOutputs['tmdbRouter']['searchMovie']['data']
+  RouterOutputs['tmdb']['searchMovie']['data']
 >['results'][number]
 export type TmdbSerie = NonNullable<
-  RouterOutputs['tmdbRouter']['searchSerie']['data']
+  RouterOutputs['tmdb']['searchSerie']['data']
 >['results'][number]
 
 export type TmdbMediaSearchResult =
-  | RouterOutputs['tmdbRouter']['searchMovie']
-  | RouterOutputs['tmdbRouter']['searchSerie']
+  | RouterOutputs['tmdb']['searchMovie']
+  | RouterOutputs['tmdb']['searchSerie']
 
 export enum ErrorCode {
   CONFLICT = 'CONFLICT',

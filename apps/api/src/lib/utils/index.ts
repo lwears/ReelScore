@@ -1,110 +1,156 @@
 import { TRPCError } from '@trpc/server'
-
-import type { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc'
+import { pino } from 'pino'
 
 import type { Profile as PassportProfile } from 'passport-google-oauth20'
-import type { Prisma, Provider } from '@prisma/client'
+import type { Provider, NewUser } from '@api/drizzle/schema'
 
-// export const prismaErrToTRPCError = (
-//   prismaErrCode: string,
-//   message: string
-// ) => {
-//   const errorMap: Record<string, { code: TRPC_ERROR_CODE_KEY }> = {
-//     P2000: {
-//       code: 'PAYLOAD_TOO_LARGE',
-//     },
-//     P2029: {
-//       code: 'PAYLOAD_TOO_LARGE',
-//     },
-//     P2001: { code: 'NOT_FOUND' },
-//     P2015: { code: 'NOT_FOUND' },
-//     P2021: { code: 'NOT_FOUND' },
-//     P2022: { code: 'NOT_FOUND' },
-//     P2025: { code: 'NOT_FOUND' },
-//     P2002: { code: 'CONFLICT' },
-//     P2003: { code: 'CONFLICT' },
-//     P2004: { code: 'CONFLICT' },
-//     P2011: { code: 'BAD_REQUEST' },
-//     P2012: { code: 'BAD_REQUEST' },
-//     P2013: { code: 'BAD_REQUEST' },
-//     P2014: { code: 'BAD_REQUEST' },
-//     P2019: { code: 'BAD_REQUEST' },
-//     P2020: { code: 'BAD_REQUEST' },
-//     P2033: { code: 'BAD_REQUEST' },
-//     P2024: { code: 'TIMEOUT' },
-//     P2037: { code: 'TOO_MANY_REQUESTS' },
-//   }
+// Create a logger for utility functions
+const logger = pino(
+  process.env.NODE_ENV === 'production'
+    ? { level: 'info' }
+    : {
+        level: 'debug',
+        transport: {
+          target: 'pino-pretty',
+          options: { colorize: true },
+        },
+      }
+)
 
-//   const errorCode = errorMap[prismaErrCode as keyof typeof errorMap]
-//   const error = { ...errorCode }
-
-//   const error_ = error
-//     ? new TRPCError(error)
-//     : new TRPCError({
-//         code: 'INTERNAL_SERVER_ERROR',
-//         message: 'Internal Server Error',
-//         cause: prismaErrCode,
-//       })
-
-//   throw error_
-// }
-
-export const prismaErrToTRPCError = (
-  prismaErrCode: string,
-  message: string
-) => {
-  const errorMap: Record<
-    string,
-    { code: TRPC_ERROR_CODE_KEY; message: string }
-  > = {
-    P2000: {
-      code: 'PAYLOAD_TOO_LARGE',
-      message:
-        "The provided value for the column is too long for the column's type",
-    },
-    P2029: {
-      code: 'PAYLOAD_TOO_LARGE',
-      message: 'Query parameter limit exceeded error',
-    },
-    P2001: { code: 'NOT_FOUND', message: 'Media not found' },
-    P2015: { code: 'NOT_FOUND', message: 'Media not found' },
-    P2021: { code: 'NOT_FOUND', message: 'Media not found' },
-    P2022: { code: 'NOT_FOUND', message: 'Media not found' },
-    P2025: { code: 'NOT_FOUND', message: 'Media not found' },
-    P2002: { code: 'CONFLICT', message: 'Unique constraint failed' },
-    P2003: { code: 'CONFLICT', message: 'Foreign key constraint failed' },
-    P2004: { code: 'CONFLICT', message: 'Constraint failed' },
-    P2011: { code: 'BAD_REQUEST', message: 'Null Constraint Violation' },
-    P2012: { code: 'BAD_REQUEST', message: 'Missing required path value' },
-    P2013: { code: 'BAD_REQUEST', message: 'Missing required argument' },
-    P2014: {
-      code: 'BAD_REQUEST',
-      message: 'Change violates required relation',
-    },
-    P2019: { code: 'BAD_REQUEST', message: 'Input Error' },
-    P2020: { code: 'BAD_REQUEST', message: 'Value out of range' },
-    P2033: { code: 'BAD_REQUEST', message: 'Number does not fit withn range' },
-    P2024: { code: 'TIMEOUT', message: 'Database Timeout' },
-    P2037: { code: 'TOO_MANY_REQUESTS', message: 'Too Many Requests' },
-  }
-
-  const error = errorMap[prismaErrCode as keyof typeof errorMap]
-
-  const error_ = error
-    ? new TRPCError(error)
-    : new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Internal Server Error',
-      })
-
-  throw error_
+// PostgreSQL error interface
+interface PostgresError extends Error {
+  code?: string
+  detail?: string
+  table?: string
+  constraint?: string
+  schema?: string
+  column?: string
 }
 
-export const mapProviderUser = (
-  p: PassportProfile
-): Prisma.UserCreateInput => ({
-  providerId: p.id,
-  provider: p.provider.toUpperCase() as Provider,
-  email: (p.emails?.length && p?.emails[0]?.value) as string,
-  name: p.displayName,
-})
+/**
+ * Handles database errors from Drizzle/PostgreSQL and converts them to tRPC errors
+ * @param error - The error from the database operation
+ * @returns Never (always throws)
+ */
+export const handleDatabaseError = (error: unknown): never => {
+  // Check if it's a PostgreSQL error
+  if (error && typeof error === 'object' && 'code' in error) {
+    const pgError = error as PostgresError
+    const errorCode = pgError.code
+
+    // PostgreSQL error code mappings
+    // Reference: https://www.postgresql.org/docs/current/errcodes-appendix.html
+    const errorMap: Record<
+      string,
+      { code: 'NOT_FOUND' | 'CONFLICT' | 'BAD_REQUEST' | 'TIMEOUT' | 'TOO_MANY_REQUESTS' | 'PAYLOAD_TOO_LARGE' | 'INTERNAL_SERVER_ERROR'; message: string }
+    > = {
+      // Unique constraint violation
+      '23505': {
+        code: 'CONFLICT',
+        message: pgError.detail || 'A record with this value already exists',
+      },
+      // Foreign key constraint violation
+      '23503': {
+        code: 'CONFLICT',
+        message: pgError.detail || 'Referenced record does not exist',
+      },
+      // Not null constraint violation
+      '23502': {
+        code: 'BAD_REQUEST',
+        message: `Required field '${pgError.column || 'unknown'}' is missing`,
+      },
+      // Check constraint violation
+      '23514': {
+        code: 'BAD_REQUEST',
+        message: pgError.detail || 'Value does not meet validation requirements',
+      },
+      // String data right truncation
+      '22001': {
+        code: 'PAYLOAD_TOO_LARGE',
+        message: `Value too long for field '${pgError.column || 'unknown'}'`,
+      },
+      // Numeric value out of range
+      '22003': {
+        code: 'BAD_REQUEST',
+        message: 'Numeric value is out of range',
+      },
+      // Invalid text representation
+      '22P02': {
+        code: 'BAD_REQUEST',
+        message: 'Invalid data format',
+      },
+      // Division by zero
+      '22012': {
+        code: 'BAD_REQUEST',
+        message: 'Division by zero',
+      },
+      // Query timeout
+      '57014': {
+        code: 'TIMEOUT',
+        message: 'Database query timed out',
+      },
+      // Too many connections
+      '53300': {
+        code: 'TOO_MANY_REQUESTS',
+        message: 'Too many database connections',
+      },
+      // Undefined table
+      '42P01': {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Database table not found',
+      },
+      // Undefined column
+      '42703': {
+        code: 'INTERNAL_SERVER_ERROR',
+        message: `Database column '${pgError.column || 'unknown'}' not found`,
+      },
+    }
+
+    if (errorCode && errorMap[errorCode]) {
+      const mappedError = errorMap[errorCode]
+      throw new TRPCError({
+        code: mappedError.code,
+        message: mappedError.message,
+        cause: pgError,
+      })
+    }
+
+    // Log unhandled PostgreSQL error codes for debugging
+    logger.error({
+      errorCode,
+      pgError,
+      service: 'database'
+    }, 'Unhandled PostgreSQL error code')
+  }
+
+  // Generic database error
+  throw new TRPCError({
+    code: 'INTERNAL_SERVER_ERROR',
+    message: 'A database error occurred',
+    cause: error,
+  })
+}
+
+/**
+ * Maps a Passport profile to a user creation object
+ * @param p - Passport profile from OAuth provider
+ * @returns User creation data
+ * @throws {TRPCError} If email is not provided by OAuth provider
+ */
+export const mapProviderUser = (p: PassportProfile): NewUser => {
+  const email = p.emails?.[0]?.value
+
+  if (!email) {
+    throw new TRPCError({
+      code: 'BAD_REQUEST',
+      message: 'Email is required from OAuth provider. Please ensure your account has a verified email address.',
+    })
+  }
+
+  return {
+    providerId: p.id,
+    provider: p.provider.toUpperCase() as Provider,
+    email,
+    name: p.displayName || 'Unknown User',
+  }
+}

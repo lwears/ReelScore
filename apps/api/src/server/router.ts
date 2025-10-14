@@ -7,10 +7,10 @@ import { router } from './trpc'
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 
 export const appRouter = router({
-  userRouter: userRouter,
-  tmdbRouter: tmdbRouter,
-  movieRouter: movieRouter,
-  serieRouter: serieRouter,
+  user: userRouter,
+  tmdb: tmdbRouter,
+  movie: movieRouter,
+  series: serieRouter,
 })
 
 export type AppRouter = typeof appRouter

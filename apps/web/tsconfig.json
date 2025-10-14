@@ -30,7 +30,8 @@
     "src/middleware.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "../api"
   ],
   "typeRoots": [
     "../../node_modules/@heroicons/**/*.d.ts"

@@ -5,7 +5,9 @@ import { privateProcedure, publicProcedure, router } from '@api/server/trpc'
 
 export const userRouter = router({
   getCurrentUser: privateProcedure.query(({ ctx }) => ctx.user ?? null),
-})
+}) satisfies ReturnType<typeof router>
+
+export type UserRouter = typeof userRouter
 
 // export const userRouter = router({
 //   getAll: protectedProcedure

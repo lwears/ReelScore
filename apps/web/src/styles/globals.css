@@ -1,55 +1,79 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: 217 100% 95%;
-    --foreground: 217 5% 10%;
-    --card: 217 50% 90%;
-    --card-foreground: 217 5% 15%;
-    --popover: 217 100% 95%;
-    --popover-foreground: 217 100% 10%;
-    --primary: 217 45% 27%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 30% 70%;
-    --secondary-foreground: 0 0% 0%;
-    --muted: 179 30% 85%;
-    --muted-foreground: 217 5% 35%;
-    --accent: 179 30% 80%;
-    --accent-foreground: 217 5% 15%;
-    --destructive: 0 100% 30%;
-    --destructive-foreground: 217 5% 90%;
-    --border: 217 30% 50%;
-    --input: 217 30% 26%;
-    --ring: 217 45% 27%;
-    --radius: 0.5rem;
-  }
+@theme {
+  /* Rhino color palette */
+  --color-rhino-50: #f1f8fd;
+  --color-rhino-100: #e0eef9;
+  --color-rhino-200: #c8e2f5;
+  --color-rhino-300: #a3cfed;
+  --color-rhino-400: #77b5e3;
+  --color-rhino-500: #579ada;
+  --color-rhino-600: #4380cd;
+  --color-rhino-700: #396cbc;
+  --color-rhino-800: #345999;
+  --color-rhino-900: #263e64;
+  --color-rhino-950: #202f4b;
 
-  .dark {
-    --background: 217 50% 10%;
-    --foreground: 217 5% 90%;
-    --card: 217 50% 10%;
-    --card-foreground: 217 5% 90%;
-    --popover: 217 50% 5%;
-    --popover-foreground: 217 5% 90%;
-    --primary: 217 45% 27%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 30% 20%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 179 30% 25%;
-    --muted-foreground: 217 5% 60%;
-    --accent: 179 30% 25%;
-    --accent-foreground: 217 5% 90%;
-    --destructive: 0 100% 30%;
-    --destructive-foreground: 217 5% 90%;
-    --border: 217 30% 26%;
-    --input: 217 30% 26%;
-    --ring: 217 45% 27%;
-    --radius: 0.5rem;
-  }
+  /* Semantic colors */
+  --color-border: var(--color-rhino-400);
+  --color-input: var(--color-rhino-300);
+  --color-ring: var(--color-rhino-200);
+  --color-background: var(--color-rhino-100);
+  --color-foreground: var(--color-rhino-950);
+  --color-primary: var(--color-rhino-800);
+  --color-primary-foreground: #ffffff;
+  --color-primary-hover: var(--color-rhino-700);
+  --color-secondary: var(--color-rhino-300);
+  --color-secondary-foreground: var(--color-rhino-950);
+  --color-secondary-hover: var(--color-rhino-200);
+  --color-card: var(--color-rhino-100);
+  --color-card-foreground: var(--color-rhino-950);
+
+  /* Breakpoints */
+  --breakpoint-xs: 475px;
+
+  /* Font families */
+  --font-family-roboto: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --background: 217 100% 95%;
+  --foreground: 217 5% 10%;
+  --card: 217 50% 90%;
+  --card-foreground: 217 5% 15%;
+  --popover: 217 100% 95%;
+  --popover-foreground: 217 100% 10%;
+  --primary: 217 45% 27%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 217 30% 70%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 179 30% 85%;
+  --muted-foreground: 217 5% 35%;
+  --accent: 179 30% 80%;
+  --accent-foreground: 217 5% 15%;
+  --destructive: 0 100% 30%;
+  --destructive-foreground: 217 5% 90%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 217 50% 10%;
+  --foreground: 217 5% 90%;
+  --card: 217 50% 10%;
+  --card-foreground: 217 5% 90%;
+  --popover: 217 50% 5%;
+  --popover-foreground: 217 5% 90%;
+  --primary: 217 45% 27%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 217 30% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 179 30% 25%;
+  --muted-foreground: 217 5% 60%;
+  --accent: 179 30% 25%;
+  --accent-foreground: 217 5% 90%;
+  --destructive: 0 100% 30%;
+  --destructive-foreground: 217 5% 90%;
 }
 
 @layer components {

@@ -70,9 +70,10 @@ const mockData = {
   vote_count: 805,
 }
 
-export default function Page({ params: { id } }: { params: { id: number } }) {
+export default function Page({ params }: { params: { id: number } }) {
   const router = useRouter()
   const itemsRef = useOutsideClick<HTMLDivElement>(router.back)
+  const { id } = params
 
   const refCallback: RefCallback<HTMLDivElement> = (el) => {
     if (el) itemsRef.current[0] = el

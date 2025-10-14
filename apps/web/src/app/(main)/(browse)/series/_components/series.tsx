@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Card from '@web/ui/components/card'
 import CardsContainer from '@web/ui/components/cards-container'
 import Empty from '@web/ui/components/empty'
@@ -15,8 +16,8 @@ interface Props {
 export const Series = async ({ query, page }: Props) => {
   const fetchData = async () =>
     query
-      ? api.tmdbRouter.searchSerie.query({ query, page })
-      : api.tmdbRouter.popularSeries.query({ page })
+      ? api.tmdb.searchSerie.query({ query, page })
+      : api.tmdb.popularSeries.query({ page })
 
   const { data, error } = await fetchData()
 
@@ -30,7 +31,9 @@ export const Series = async ({ query, page }: Props) => {
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-3">
-      <Pagination totalPages={data.total_pages} />
+      <Suspense fallback={<div>Loading pagination...</div>}>
+        <Pagination totalPages={data.total_pages} />
+      </Suspense>
       <CardsContainer>
         {data.results.map((s) => {
           const serie = mapTmdbToCard(s)

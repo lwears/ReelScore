@@ -1,58 +1,14 @@
-import { PrismaClient } from '@prisma/client'
-
-import { PAGE_SIZE } from '@api/constants'
-
-import type { Movie, Prisma } from '@prisma/client'
+import { createMediaService } from '@api/lib/factories/createMediaService'
+import { movies, type Movie } from '@api/drizzle/schema'
 import type { CreateMovieSchema, UpdateMovieSchema } from './movies.dtos'
 
-export interface Paginated<A> {
-  results: A[]
-  page: number
-  count: number
-  totalPages: number
-}
+// Re-export shared types for convenience
+export type { Paginated, ListOptions } from '@api/lib/factories/createMediaService'
 
-export interface ListOptions {
-  where?: Prisma.MovieWhereInput
-  page?: number
-  take?: number
-}
-
-const prisma = new PrismaClient()
-
-const create = (userId: string, data: CreateMovieSchema) =>
-  prisma.movie.create({ data: { ...data, User: { connect: { id: userId } } } })
-
-const update = (userId: string, data: UpdateMovieSchema) =>
-  prisma.movie.update({ data, where: { id: data.id, userId } })
-
-const list = async (
-  userId: string,
-  { page = 1, take = PAGE_SIZE, where }: ListOptions
-): Promise<Paginated<Movie>> =>
-  prisma
-    .$transaction([
-      prisma.movie.count({ where: { ...where, userId } }),
-      prisma.movie.findMany({
-        take,
-        where: { ...where, userId },
-        skip: (page - 1) * take,
-        orderBy: { tmdbScore: 'desc' },
-      }),
-    ])
-    .then(([count, results]) => ({
-      results,
-      count,
-      totalPages: Math.ceil(count / take),
-      page,
-    }))
-
-const del = (userId: string, id: Prisma.UserWhereUniqueInput['id']) =>
-  prisma.movie.delete({ where: { id, userId } })
-
-export const movieService = {
-  list,
-  create,
-  update,
-  delete: del,
-}
+// Create the movie service using the generic factory
+export const movieService = createMediaService<
+  typeof movies,
+  Movie,
+  CreateMovieSchema,
+  UpdateMovieSchema
+>(movies)

@@ -46,7 +46,7 @@ import { type NextRequest } from 'next/server'
 // }
 
 export async function middleware(request: NextRequest) {
-  return api.userRouter.getCurrentUser
+  return api.user.getCurrentUser
     .query()
     .then(() => NextResponse.next())
     .catch((error) => {

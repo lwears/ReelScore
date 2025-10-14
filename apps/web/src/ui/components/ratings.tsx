@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { useState } from 'react'
 import { StarIcon } from '@heroicons/react/24/outline'
 
-import type { KeyboardEvent } from 'react'
+import type { KeyboardEvent, ReactElement } from 'react'
 
 export interface RatingProps {
   readOnly?: boolean
@@ -14,7 +14,7 @@ export default function Rating({
   readOnly = false,
   rating,
   setRating,
-}: RatingProps): JSX.Element {
+}: RatingProps): ReactElement {
   const [hoveredRating, setHoveredRating] = useState(0)
   const handleClick = (idx: number) => {
     if (readOnly || !setRating) {

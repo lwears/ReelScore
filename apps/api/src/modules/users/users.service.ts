@@ -1,31 +1,55 @@
-import type { Prisma, User } from '@prisma/client'
-import { PrismaClient } from '@prisma/client'
+import { eq } from 'drizzle-orm'
+import db from '@api/db'
+import { users } from '@api/drizzle/schema'
 
-const prisma = new PrismaClient()
+import type { User, NewUser } from '@api/drizzle/schema'
 
-const create = (data: Prisma.UserCreateInput): Promise<User> =>
-  prisma.user.create({ data })
+const create = async (data: NewUser): Promise<User> => {
+  const [user] = await db.insert(users).values(data).returning()
+  return user
+}
 
-const get = (id: Prisma.UserWhereUniqueInput['id']): Promise<User | null> =>
-  prisma.user.findUnique({ where: { id } })
+const get = async (id: string): Promise<User | null> => {
+  const [user] = await db.select().from(users).where(eq(users.id, id))
+  return user ?? null
+}
 
-const getAll = (): Promise<User[]> => prisma.user.findMany()
+const getAll = async (): Promise<User[]> => {
+  return db.select().from(users)
+}
 
-const update = (
-  id: Prisma.UserWhereUniqueInput['id'],
-  data: Prisma.UserUpdateInput
-): Promise<User> => prisma.user.update({ where: { id }, data })
+const update = async (
+  id: string,
+  data: Partial<Omit<User, 'id'>>
+): Promise<User> => {
+  const [user] = await db
+    .update(users)
+    .set(data)
+    .where(eq(users.id, id))
+    .returning()
+  return user
+}
 
-const del = (id: Prisma.UserWhereUniqueInput['id']) =>
-  prisma.user.delete({ where: { id } })
+const del = async (id: string): Promise<User> => {
+  const [user] = await db.delete(users).where(eq(users.id, id)).returning()
+  return user
+}
 
-const findOrCreate = (
+const findOrCreate = async (
   providerId: string,
-  data: Prisma.UserCreateInput
-): Promise<User> =>
-  prisma.user
-    .findUnique({ where: { providerId } })
-    .then((user) => user ?? create(data))
+  data: NewUser
+): Promise<User> => {
+  const [existingUser] = await db
+    .select()
+    .from(users)
+    .where(eq(users.providerId, providerId))
+
+  if (existingUser) {
+    return existingUser
+  }
+
+  return create(data)
+}
 
 export const userService = {
   findOrCreate,

@@ -2,32 +2,35 @@ import { Suspense } from 'react'
 
 import { CardsSkeleton } from '@web/ui/components/skeletons'
 import { api } from '@web/lib/utils/trpc/server'
-import { MediaDisplay } from './media-display'
-import MediaHeader from './media-header'
+import { MediaDisplay } from './_components/media-display'
+import MediaHeader from './_components/media-header'
 
 import type { Metadata } from 'next'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Search',
 }
 
 interface Props {
-  searchParams: { query: string }
+  searchParams: Promise<{ query: string }>
 }
 
-export default async function Page({ searchParams: { query = '' } }: Props) {
+export default async function Page(props: Props) {
+  const { query = '' } = await props.searchParams
   if (!query) return <p>No Search Query</p>
 
   const sections = [
     {
       header: 'movies',
       pathname: '/movies',
-      fetcher: () => api.tmdbRouter.searchMovie.query({ query }),
+      fetcher: () => api.tmdb.searchMovie.query({ query }),
     },
     {
       header: 'series',
       pathname: '/series',
-      fetcher: () => api.tmdbRouter.searchSerie.query({ query }),
+      fetcher: () => api.tmdb.searchSerie.query({ query }),
     },
   ]
 

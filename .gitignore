@@ -48,6 +48,18 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# TypeScript compiled output (but keep manually written .d.ts files)
+apps/*/src/**/*.js
+apps/*/src/**/*.js.map
+!apps/*/src/types/**/*.d.ts
+
+# Compiled config and seed files (keep only .ts versions)
+apps/*/drizzle.config.js
+apps/*/env.js
+apps/*/tailwind.config.js
+apps/*/prisma/seed.js
+apps/*/prisma/seedData.js
+
 # Optional npm cache directory
 .npm
 

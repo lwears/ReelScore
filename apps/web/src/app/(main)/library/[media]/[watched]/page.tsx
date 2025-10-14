@@ -2,10 +2,12 @@ import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 
 import { api } from '@web/lib/utils/trpc/server'
-import { MediaDisplay } from './media-display'
+import { MediaDisplay } from './_components/media-display'
 import { MediaDisplaySkeleton } from '@web/ui/components/skeletons'
 
 import type { Metadata } from 'next'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Library',
@@ -22,14 +24,14 @@ enum Watched {
 }
 
 interface Props {
-  searchParams: { query: string; page: string }
-  params: { media: Media; watched: Watched }
+  searchParams: Promise<{ query: string; page: string }>
+  params: Promise<{ media: Media; watched: Watched }>
 }
 
-export default async function Page({
-  params: { media, watched },
-  searchParams: { query = '', page = '1' },
-}: Props) {
+export default async function Page(props: Props) {
+  const { media, watched } = await props.params
+  const { query = '', page = '1' } = await props.searchParams
+
   if (!['movies', 'series'].includes(media)) notFound()
   if (!['watched', 'watchlist'].includes(watched)) notFound()
 
@@ -37,14 +39,14 @@ export default async function Page({
 
   const fetchers = {
     [Media.MOVIES]: () =>
-      api.movieRouter.list.query({
+      api.movie.list.query({
         watched: watched === Watched.watched,
         query,
         limit: 27,
         page: currentPage,
       }),
     [Media.SERIES]: () =>
-      api.serieRouter.list.query({
+      api.series.list.query({
         watched: watched === Watched.watched,
         query,
         limit: 27,

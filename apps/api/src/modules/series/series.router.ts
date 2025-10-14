@@ -1,6 +1,7 @@
-import { z } from 'zod'
+import z from 'zod'
 
 import { privateProcedure, router } from '@api/server/trpc'
+import type { ListOptions } from './series.service'
 import { serieService } from './series.service'
 import { createSerieSchema, updateSerieSchema } from './series.dtos'
 import { listSchema } from '@api/shared/dto'
@@ -8,17 +9,17 @@ import { listSchema } from '@api/shared/dto'
 export const serieRouter = router({
   list: privateProcedure
     .input(listSchema)
-    .query(({ input: { watched, query, page, limit }, ctx }) =>
-      serieService.list(
-        ctx.user.id,
-        {
-          watched,
-          title: { contains: query, mode: 'insensitive' },
-        },
+    .query(({ input: { watched, query, page, limit }, ctx }) => {
+      const opts: ListOptions = {
         page,
-        limit
-      )
-    ),
+        take: limit,
+        where: {
+          watched,
+          ...(query && { title: { contains: query, mode: 'insensitive' } }),
+        },
+      }
+      return serieService.list(ctx.user.id, opts)
+    }),
   create: privateProcedure
     .input(createSerieSchema)
     .mutation(({ input, ctx }) => serieService.create(ctx.user.id, input)),
@@ -30,4 +31,6 @@ export const serieRouter = router({
   delete: privateProcedure
     .input(z.object({ id: z.string().uuid() }))
     .mutation(({ input, ctx }) => serieService.delete(ctx.user.id, input.id)),
-})
+}) satisfies ReturnType<typeof router>
+
+export type SerieRouter = typeof serieRouter

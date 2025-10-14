@@ -1,15 +1,16 @@
 import { Suspense } from 'react'
 
 import { MediaDisplaySkeleton } from '@web/ui/components/skeletons'
-import { Series } from './series'
+import { Series } from './_components/series'
+
+export const dynamic = 'force-dynamic'
 
 interface Props {
-  searchParams: { query: string; page: string }
+  searchParams: Promise<{ query: string; page: string }>
 }
 
-export default async function Page({
-  searchParams: { query = '', page = '1' },
-}: Props) {
+export default async function Page(props: Props) {
+  const { query = '', page = '1' } = await props.searchParams
   const currentPage = Number(page)
 
   return (

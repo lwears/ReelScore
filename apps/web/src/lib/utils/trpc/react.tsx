@@ -1,15 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo } from 'react'
 import superjson from 'superjson'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink, loggerLink } from '@trpc/client'
 import { createTRPCReact } from '@trpc/react-query'
 
-import type { AppRouter } from '@api/server/trpc'
+import type { AppRouter } from '@api/server/router'
 import { env } from 'apps/web/env'
 
-const createQueryClient = () => new QueryClient()
+const createQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        // With SSR, we set staleTime above 0 to avoid refetching immediately on the client
+        staleTime: 30 * 1000, // 30 seconds
+        refetchOnWindowFocus: false, // Prevent aggressive refetching in development
+      },
+      mutations: {
+        retry: 1, // Retry failed mutations once
+      },
+    },
+  })
 
 let clientQueryClientSingleton: QueryClient | undefined
 const getQueryClient = () => {
@@ -26,29 +38,31 @@ export const api = createTRPCReact<AppRouter>()
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient()
 
-  const [trpcClient] = useState(() =>
-    api.createClient({
-      links: [
-        loggerLink({
-          enabled: (op) =>
-            process.env.NODE_ENV === 'development' ||
-            (op.direction === 'down' && op.result instanceof Error),
-        }),
-        httpBatchLink({
-          transformer: superjson,
-          url: `${env.NEXT_PUBLIC_API_URL}/trpc`,
-          headers: {
-            'x-trpc-source': 'nextjs-react',
-          },
-          fetch(url, options) {
-            return fetch(url, {
-              ...options,
-              credentials: 'include',
-            })
-          },
-        }),
-      ],
-    })
+  const trpcClient = useMemo(
+    () =>
+      api.createClient({
+        links: [
+          loggerLink({
+            enabled: (op) =>
+              process.env.NODE_ENV === 'development' ||
+              (op.direction === 'down' && op.result instanceof Error),
+          }),
+          httpBatchLink({
+            transformer: superjson,
+            url: `${env.NEXT_PUBLIC_API_URL}/trpc`,
+            headers: {
+              'x-trpc-source': 'nextjs-react',
+            },
+            fetch(url, options) {
+              return fetch(url, {
+                ...options,
+                credentials: 'include',
+              })
+            },
+          }),
+        ],
+      }),
+    []
   )
 
   return (

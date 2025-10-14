@@ -1,24 +1,21 @@
-import { z } from 'zod'
+import z from 'zod'
+import { updateMediaSchema } from '@api/shared/dtos/media.dto'
 
 export const createSerieSchema = z.object({
   tmdbId: z.number({
-    required_error: 'TMDB ID is required',
+    message: 'TMDB ID is required',
   }),
   title: z.string({
-    required_error: 'title is required',
+    message: 'title is required',
   }),
-  posterPath: z.string().nullable(),
-  firstAired: z.coerce.date().nullable(),
+  posterPath: z.string().nullish(),
+  firstAired: z.coerce.date().nullish(),
   watched: z.boolean().default(false),
-  tmdbScore: z.number().nonnegative().max(10),
+  tmdbScore: z.number().min(0).max(10),
 })
 
-// Duplicate with movie or centralise?
-export const updateSerieSchema = z.object({
-  watched: z.boolean().optional(),
-  score: z.number().nonnegative().max(10).optional(),
-  id: z.string().uuid(),
-})
+// Use shared update schema
+export const updateSerieSchema = updateMediaSchema
 
-export type CreateSerieSchema = z.TypeOf<typeof createSerieSchema>
-export type UpdateSerieSchema = z.TypeOf<typeof updateSerieSchema>
+export type CreateSerieSchema = z.infer<typeof createSerieSchema>
+export type UpdateSerieSchema = z.infer<typeof updateSerieSchema>

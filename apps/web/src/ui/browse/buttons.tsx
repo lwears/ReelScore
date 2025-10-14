@@ -12,7 +12,7 @@ import type { RouterInputs } from '@api/server/router'
 import type { ErrorCode } from '@web/types'
 
 interface AddMovieProps {
-  movie: RouterInputs['movieRouter']['create']
+  movie: RouterInputs['movie']['create']
   watched: boolean
   onSuccess?: () => void
   onError?: (e: string) => void
@@ -30,10 +30,10 @@ export const AddMovie = ({
 }: AddMovieProps) => {
   const utils = api.useUtils()
 
-  const addMovie = api.movieRouter.create.useMutation({
+  const addMovie = api.movie.create.useMutation({
     onSuccess: (m) => {
       toast.success('Movie Added', { description: m.title })
-      void utils.movieRouter.invalidate()
+      void utils.movie.invalidate()
       onSuccess && onSuccess()
     },
     onError: (error) => {
@@ -106,14 +106,14 @@ export const AddSerie = ({
   serie,
   watched,
 }: {
-  serie: RouterInputs['serieRouter']['create']
+  serie: RouterInputs['series']['create']
   watched: boolean
 }) => {
   const utils = api.useUtils()
-  const addSerie = api.serieRouter.create.useMutation({
+  const addSerie = api.series.create.useMutation({
     onSuccess: (m) => {
       toast.success('Serie Added', { description: m.title })
-      void utils.serieRouter.invalidate()
+      void utils.series.invalidate()
     },
     onError: (error) => {
       const errorCode = error.data?.code as ErrorCode | undefined

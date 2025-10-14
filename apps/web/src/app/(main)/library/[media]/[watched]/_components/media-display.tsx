@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Card from '@web/ui/components/card'
 import Empty from '@web/ui/components/empty'
 import CardsContainer from '@web/ui/components/cards-container'
@@ -27,7 +28,9 @@ export const MediaDisplay = async ({
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-3">
-      <Pagination totalPages={media.totalPages} />
+      <Suspense fallback={<div>Loading pagination...</div>}>
+        <Pagination totalPages={media.totalPages} />
+      </Suspense>
       <CardsContainer>
         {media.results.map((m) => {
           const DeleteComponent = isMovie(m) ? DeleteMovie : DeleteSerie

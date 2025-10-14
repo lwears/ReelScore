@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 import Card from '@web/ui/components/card'
 import CardsContainer from '@web/ui/components/cards-container'
@@ -18,15 +19,15 @@ interface Props {
 export const Movies = async ({ query, page }: Props) => {
   const fetchData = () =>
     query
-      ? api.tmdbRouter.searchMovie.query({ query, page })
-      : api.tmdbRouter.popularMovies.query({ page })
+      ? api.tmdb.searchMovie.query({ query, page })
+      : api.tmdb.popularMovies.query({ page })
 
   const { data, error } = await fetchData()
 
   // {"status_code":7,"status_message":"Invalid API key: You must be granted a valid key.","success":false}
 
   if (error) {
-    return <Error message={error.status_message} />
+    return <Error message={String(error) || 'An error occurred'} />
   }
 
   if (!data || !data.results || data.results.length === 0) {
@@ -35,7 +36,9 @@ export const Movies = async ({ query, page }: Props) => {
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-3">
-      <Pagination totalPages={data.total_pages} />
+      <Suspense fallback={<div>Loading pagination...</div>}>
+        <Pagination totalPages={data.total_pages} />
+      </Suspense>
       <CardsContainer>
         {data.results.map((m) => {
           const movie = mapTmdbToCard(m)

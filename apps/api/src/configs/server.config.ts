@@ -1,4 +1,4 @@
-import type { TypeOf } from 'zod'
+import type z from 'zod'
 import type { envSchema } from './env.config'
 import { env } from './env.config'
 
@@ -15,12 +15,16 @@ export const serverConfig = {
   tmdbUrl: env.TMDB_URL,
   host: env.HOST,
   clientUrl: env.CLIENT_URL,
+  redisHost: env.REDIS_HOST,
+  redisPort: env.REDIS_PORT,
+  redisPassword: env.REDIS_PASSWORD,
+  redisTls: env.REDIS_TLS,
 }
 
 export type ServerConfig = typeof serverConfig
 
 declare global {
   namespace NodeJS {
-    interface ProcessEnv extends TypeOf<typeof envSchema> {}
+    interface ProcessEnv extends z.infer<typeof envSchema> {}
   }
 }

@@ -42,10 +42,10 @@ import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/20/solid'
 export const DeleteMovie = ({ id }: { id: string }) => {
   const router = useRouter()
   const utils = api.useUtils()
-  const deleteMovie = api.movieRouter.delete.useMutation({
+  const deleteMovie = api.movie.delete.useMutation({
     onSuccess: async (m) => {
       toast.success('Movie Removed', { description: m.title })
-      utils.movieRouter.list.invalidate()
+      utils.movie.list.invalidate()
       router.refresh()
     },
     onError: (error) => toast.error(error.message),
@@ -65,10 +65,10 @@ export const DeleteMovie = ({ id }: { id: string }) => {
 export const DeleteSerie = ({ id }: { id: string }) => {
   const router = useRouter()
   const utils = api.useUtils()
-  const deleteSerie = api.serieRouter.delete.useMutation({
+  const deleteSerie = api.series.delete.useMutation({
     onSuccess: async (s) => {
       toast.success('Serie Removed', { description: s.title })
-      utils.serieRouter.list.invalidate()
+      utils.series.list.invalidate()
       router.refresh()
     },
     onError: (error) => toast(error.message),
@@ -88,10 +88,10 @@ export const DeleteSerie = ({ id }: { id: string }) => {
 export const UpdateMovie = ({ id }: { id: string }) => {
   const router = useRouter()
   const utils = api.useUtils()
-  const update = api.movieRouter.update.useMutation({
+  const update = api.movie.update.useMutation({
     onSuccess: async (s) => {
       toast.success('Movie moved to Watched', { description: s.title })
-      utils.movieRouter.list.invalidate()
+      utils.movie.list.invalidate()
       router.refresh()
     },
     onError: (error) => toast(error.message),
@@ -110,10 +110,10 @@ export const UpdateMovie = ({ id }: { id: string }) => {
 export const UpdateSerie = ({ id }: { id: string }) => {
   const router = useRouter()
   const utils = api.useUtils()
-  const update = api.serieRouter.update.useMutation({
+  const update = api.series.update.useMutation({
     onSuccess: async (s) => {
       toast.success('Serie moved to Watched', { description: s.title })
-      utils.serieRouter.list.invalidate()
+      utils.series.list.invalidate()
       router.refresh()
     },
     onError: (error) => toast(error.message),

@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pnpm run --parallel dev",
+    "build": "pnpm run --filter=api build && pnpm run --filter=web build",
+    "typecheck": "pnpm run --filter=api typecheck && pnpm run --filter=web typecheck",
     "lint": "eslint .",
     "format": "prettier --write .",
     "prepare": "husky install",
@@ -18,34 +20,31 @@
   "engines": {
     "node": ">=18.18.2"
   },
-  "prisma": {
-    "schema": "apps/api/prisma/schema.prisma"
-  },
   "type": "module",
   "devDependencies": {
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@types/node": "^18.19.34",
-    "@typescript-eslint/eslint-plugin": "^7.12.0",
-    "@typescript-eslint/parser": "^7.12.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@types/node": "^18.19.130",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
     "add": "^2.0.6",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-unicorn": "^53.0.0",
-    "eslint-plugin-unused-imports": "^4.0.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.5",
-    "prettier": "^3.3.1",
-    "tsx": "^4.15.1",
-    "typescript": "^5.4.5"
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-unicorn": "^55.0.0",
+    "eslint-plugin-unused-imports": "^4.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
     "**/*.{jsx,js,tsx,ts}": "eslint --cache --fix"
   },
   "dependencies": {
-    "eslint": "8",
+    "eslint": "^8.57.1",
     "superjson": "2.2.1",
-    "zod": "^3.23.8"
+    "zod": "^4.1.12"
   },
-  "packageManager": "pnpm@8.15.5+sha256.4b4efa12490e5055d59b9b9fc9438b7d581a6b7af3b5675eb5c5f447cee1a589"
+  "packageManager": "pnpm@10.18.2+sha512.9fb969fa749b3ade6035e0f109f0b8a60b5d08a1a87fdf72e337da90dcc93336e2280ca4e44f2358a649b83c17959e9993e777c2080879f3801e6f0d999ad3dd"
 }

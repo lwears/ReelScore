@@ -11,18 +11,11 @@ import type {
   FastifyPluginCallback,
   FastifyPluginOptions,
 } from 'fastify'
-import type { User } from '@prisma/client'
+import type { User } from '@api/drizzle/schema'
 import type { Profile, VerifyCallback } from 'passport-google-oauth20'
 import { env } from '@api/configs/env.config'
 
-interface Options {
-  googleClientId: string
-  googleClientSecret: string
-  githubClientId: string
-  githubClientSecret: string
-}
-
-const authPlugin: FastifyPluginCallback<Options> = (
+const authPlugin: FastifyPluginCallback = (
   fastify: FastifyInstance,
   options: FastifyPluginOptions,
   next: (err?: Error) => void
@@ -56,7 +49,7 @@ const authPlugin: FastifyPluginCallback<Options> = (
         clientID: env.GITHUB_CLIENT_ID,
         clientSecret: env.GITHUB_CLIENT_SECRET,
         callbackURL: `${env.HOST}/auth/github/callback`,
-        scope: ['read:user'],
+        scope: ['user:email'],
       },
       async (
         _token: string,
@@ -72,17 +65,17 @@ const authPlugin: FastifyPluginCallback<Options> = (
     )
   )
 
+  fastifyPassport.registerUserSerializer(async (user: User) => user.id)
+
   fastifyPassport.registerUserDeserializer<string, User | null>(
     async (id: string) => userService.get(id)
   )
-
-  fastifyPassport.registerUserSerializer(async (user: Profile) => user.id)
 
   fastify.get(
     '/auth/google/callback',
     {
       preValidation: fastifyPassport.authenticate('google', {
-        scope: ['profile'],
+        failureRedirect: `${env.CLIENT_URL}/login`,
       }),
     },
     async (_req, res) => {
@@ -94,7 +87,7 @@ const authPlugin: FastifyPluginCallback<Options> = (
     '/auth/github/callback',
     {
       preValidation: fastifyPassport.authenticate('github', {
-        scope: ['user:email'],
+        failureRedirect: `${env.CLIENT_URL}/login`,
       }),
     },
     async (_req, res) => {
@@ -112,14 +105,23 @@ const authPlugin: FastifyPluginCallback<Options> = (
     fastifyPassport.authenticate('github', { scope: ['user:email'] })
   )
 
-  fastify.get('/auth/logout', (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.log(err)
-      }
+  fastify.get('/auth/logout', async (req, res) => {
+    try {
+      await new Promise<void>((resolve, reject) => {
+        req.session.destroy((err) => {
+          if (err) reject(err)
+          else resolve()
+        })
+      })
+
       res.clearCookie('session')
       res.redirect(`${env.CLIENT_URL}/login`)
-    })
+    } catch (error) {
+      req.log.error({ error }, 'Failed to destroy session')
+      res.status(500).send({
+        error: 'Failed to logout. Please clear your browser cookies.',
+      })
+    }
   })
 
   // Example: Add a custom decorator to the Fastify instance
