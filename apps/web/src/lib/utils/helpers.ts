@@ -50,6 +50,29 @@ export const mapTmdbMedia = <T extends TmdbMedia>(m: T) => {
   }
 }
 
+// Map detailed TMDB data (from getMovieById/getSerieById) to our format
+export const mapTmdbDetailedData = (m: {
+  id?: number
+  poster_path?: string | null
+  backdrop_path?: string | null
+  vote_average?: number
+  title?: string
+  name?: string
+  release_date?: string
+  first_air_date?: string
+}) => {
+  const isMovie = 'title' in m && m.title !== undefined
+  return {
+    posterPath: m.poster_path ?? null,
+    tmdbId: m.id ?? 0,
+    title: isMovie ? (m.title ?? 'Unknown') : (m.name ?? 'Unknown'),
+    tmdbScore: m.vote_average ? Math.round(m.vote_average * 10) / 10 : 0,
+    releaseDate: isMovie && m.release_date ? new Date(m.release_date) : null,
+    firstAired:
+      !isMovie && m.first_air_date ? new Date(m.first_air_date) : null,
+  }
+}
+
 export const isKnownErrorCode = (
   value: string
 ): value is keyof typeof ErrorCode => {

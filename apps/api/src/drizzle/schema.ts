@@ -1,9 +1,11 @@
 import {
   boolean,
   integer,
+  numeric,
   pgEnum,
   pgTable,
   timestamp,
+  unique,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
@@ -25,38 +27,54 @@ export const users = pgTable('User', {
 // Note: This is handled via unique index in migration
 
 // Movies table
-export const movies = pgTable('Movie', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  tmdbId: integer('tmdbId').notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
-  title: varchar('title', { length: 255 }).notNull(),
-  posterPath: varchar('posterPath', { length: 500 }),
-  releaseDate: timestamp('releaseDate'),
-  tmdbScore: integer('tmdbScore').default(0).notNull(),
-  score: integer('score').default(0).notNull(),
-  watched: boolean('watched').default(false).notNull(),
-  userId: uuid('userId')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-})
+export const movies = pgTable(
+  'Movie',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tmdbId: integer('tmdbId').notNull(),
+    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+    title: varchar('title', { length: 255 }).notNull(),
+    posterPath: varchar('posterPath', { length: 500 }),
+    releaseDate: timestamp('releaseDate'),
+    tmdbScore: numeric('tmdbScore', { precision: 3, scale: 1 })
+      .default('0')
+      .notNull(),
+    score: numeric('score', { precision: 3, scale: 1 }).default('0').notNull(),
+    watched: boolean('watched').default(false).notNull(),
+    userId: uuid('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+  },
+  (table) => ({
+    uniqueUserMovie: unique().on(table.tmdbId, table.userId),
+  })
+)
 
 // Series table
-export const series = pgTable('Serie', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  tmdbId: integer('tmdbId').notNull(),
-  createdAt: timestamp('createdAt').defaultNow().notNull(),
-  updatedAt: timestamp('updatedAt').defaultNow().notNull(),
-  title: varchar('title', { length: 255 }).notNull(),
-  posterPath: varchar('posterPath', { length: 500 }),
-  firstAired: timestamp('firstAired'),
-  tmdbScore: integer('tmdbScore').default(0).notNull(),
-  score: integer('score').default(0).notNull(),
-  watched: boolean('watched').default(false).notNull(),
-  userId: uuid('userId')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-})
+export const series = pgTable(
+  'Serie',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tmdbId: integer('tmdbId').notNull(),
+    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    updatedAt: timestamp('updatedAt').defaultNow().notNull(),
+    title: varchar('title', { length: 255 }).notNull(),
+    posterPath: varchar('posterPath', { length: 500 }),
+    firstAired: timestamp('firstAired'),
+    tmdbScore: numeric('tmdbScore', { precision: 3, scale: 1 })
+      .default('0')
+      .notNull(),
+    score: numeric('score', { precision: 3, scale: 1 }).default('0').notNull(),
+    watched: boolean('watched').default(false).notNull(),
+    userId: uuid('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+  },
+  (table) => ({
+    uniqueUserSerie: unique().on(table.tmdbId, table.userId),
+  })
+)
 
 // Infer types
 export type User = typeof users.$inferSelect

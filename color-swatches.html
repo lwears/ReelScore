@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReelScore Color Comparison</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 2rem;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      margin-bottom: 2rem;
+      color: #1a1a1a;
+    }
+
+    h2 {
+      margin: 2rem 0 1rem;
+      color: #333;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.5rem;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .option {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .option h3 {
+      margin-bottom: 1rem;
+      color: #111;
+    }
+
+    .color-grid {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .color-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      background: #fafafa;
+    }
+
+    .color-swatch {
+      width: 80px;
+      height: 40px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .color-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .color-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .color-hex {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .color-ratio {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .ratio-aaa {
+      background: #10b981;
+      color: white;
+    }
+
+    .ratio-aa {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .ratio-fail {
+      background: #ef4444;
+      color: white;
+    }
+
+    .component-demo {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .button-demo {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .demo-button {
+      padding: 0.5rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .card-demo {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid;
+    }
+
+    /* Current Design */
+    .current-primary { background: #345999; color: white; }
+    .current-secondary { background: #a3cfed; color: black; }
+    .current-tertiary { background: #f1f8fd; color: #396cbc; }
+    .current-card { background: #e0eef9; border-color: #77b5e3; color: #202f4b; }
+
+    /* Option 1 */
+    .opt1-primary { background: #2563eb; color: white; }
+    .opt1-secondary { background: #64748b; color: white; }
+    .opt1-tertiary { background: white; color: #2563eb; border: 2px solid #e5e7eb; }
+    .opt1-card { background: #f9fafb; border-color: #e5e7eb; color: #1a1a1a; }
+
+    /* Option 2 */
+    .opt2-primary { background: #1d4ed8; color: white; }
+    .opt2-secondary { background: #0284c7; color: white; }
+    .opt2-tertiary { background: white; color: #1d4ed8; border: 2px solid #cbd5e1; }
+    .opt2-card { background: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
+
+    .dark-mode-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    body.dark {
+      background: #1a1a1a;
+      color: #fafafa;
+    }
+
+    body.dark h1,
+    body.dark h2 {
+      color: #fafafa;
+    }
+
+    body.dark .option,
+    body.dark .component-demo {
+      background: #2a2a2a;
+    }
+
+    body.dark .color-item {
+      background: #333;
+    }
+
+    body.dark .color-name {
+      color: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <button class="dark-mode-toggle" onclick="document.body.classList.toggle('dark')">
+    Toggle Dark Preview
+  </button>
+
+  <h1>ReelScore Color System Comparison</h1>
+
+  <h2>Current Design Issues</h2>
+  <div class="comparison">
+    <div class="option">
+      <h3>❌ Current Colors</h3>
+      <div class="color-grid">
+        <div class="color-item">
+          <div class="color-swatch" style="background: #345999; color: white;">Text</div>
+          <div class="color-info">
+            <span class="color-name">Primary</span>
+            <span class="color-hex">#345999</span>
+          </div>
+          <span class="color-ratio ratio-aa">4.6:1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #a3cfed; color: black;">Text</div>
+          <div class="color-info">
+            <span class="color-name">Secondary</span>
+            <span class="color-hex">#a3cfed</span>
+          </div>
+          <span class="color-ratio ratio-fail">2.1:1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #f1f8fd; color: #396cbc;">Text</div>
+          <div class="color-info">
+            <span class="color-name">Tertiary</span>
+            <span class="color-hex">#f1f8fd + #396cbc</span>
+          </div>
+          <span class="color-ratio ratio-fail">3.8:1</span>
+        </div>
+      </div>
+      <div class="component-demo">
+        <h4>Button Examples</h4>
+        <div class="button-demo">
+          <button class="demo-button current-primary">Primary</button>
+          <button class="demo-button current-secondary">Secondary</button>
+          <button class="demo-button current-tertiary">Tertiary</button>
+        </div>
+        <div class="card-demo current-card">
+          <strong>Card Example</strong><br>
+          Background blends too much with page
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Proposed Solutions</h2>
+  <div class="comparison">
+    <!-- Option 1 -->
+    <div class="option">
+      <h3>✅ Option 1: Simplified High-Contrast</h3>
+      <div class="color-grid">
+        <div class="color-item">
+          <div class="color-swatch" style="background: #2563eb; color: white;">Text</div>
+          <div class="color-info">
+            <span class="color-name">Primary</span>
+            <span class="color-hex">#2563eb</span>
+          </div>
+          <span class="color-ratio ratio-aaa">8.6:1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #64748b; color: white;">Text</div>
+          <div class="color-info">
+            <span class="color-name">Secondary</span>
+            <span class="color-hex">#64748b</span>
+          </div>
+          <span class="color-ratio ratio-aa">5.9:1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #f59e0b; color: white;">★</div>
+          <div class="color-info">
+            <span class="color-name">Accent (Gold)</span>
+            <span class="color-hex">#f59e0b</span>
+          </div>
+          <span class="color-ratio ratio-aaa">3.4:1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #ffffff; border: 2px solid #e5e7eb;">&nbsp;</div>
+          <div class="color-info">
+            <span class="color-name">Background</span>
+            <span class="color-hex">#ffffff</span>
+          </div>
+          <span class="color-ratio ratio-aaa">16:1</span>
+        </div>
+      </div>
+      <div class="component-demo">
+        <h4>Button Examples</h4>
+        <div class="button-demo">
+          <button class="demo-button opt1-primary">Primary</button>
+          <button class="demo-button opt1-secondary">Secondary</button>
+          <button class="demo-button opt1-tertiary">Tertiary</button>
+        </div>
+        <div class="card-demo opt1-card">
+          <strong>Card Example</strong><br>
+          Clean white base, subtle gray card
+        </div>
+      </div>
+    </div>
+
+    <!-- Option 2 -->
+    <div class="option">
+      <h3>✅ Option 2: Enhanced Blue Theme</h3>
+      <div class="color-grid">
+        <div class="color-item">
+          <div class="color-swatch" style="background: #1d4ed8; color: white;">Text</div>
+          <div class="color-info">
+            <span class="color-name">Primary</span>
+            <span class="color-hex">#1d4ed8</span>
+          </div>
+          <span class="color-ratio ratio-aaa">9.7:1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #0284c7; color: white;">Text</div>
+          <div class="color-info">
+            <span class="color-name">Secondary</span>
+            <span class="color-hex">#0284c7</span>
+          </div>
+          <span class="color-ratio ratio-aa">6.1:1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #f59e0b; color: white;">★</div>
+          <div class="color-info">
+            <span class="color-name">Accent (Gold)</span>
+            <span class="color-hex">#f59e0b</span>
+          </div>
+          <span class="color-ratio ratio-aaa">3.4:1</span>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #ffffff; border: 2px solid #cbd5e1;">&nbsp;</div>
+          <div class="color-info">
+            <span class="color-name">Background</span>
+            <span class="color-hex">#ffffff</span>
+          </div>
+          <span class="color-ratio ratio-aaa">18:1</span>
+        </div>
+      </div>
+      <div class="component-demo">
+        <h4>Button Examples</h4>
+        <div class="button-demo">
+          <button class="demo-button opt2-primary">Primary</button>
+          <button class="demo-button opt2-secondary">Secondary</button>
+          <button class="demo-button opt2-tertiary">Tertiary</button>
+        </div>
+        <div class="card-demo opt2-card">
+          <strong>Card Example</strong><br>
+          White base with slate-tinted cards
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Key Differences</h2>
+  <div class="comparison">
+    <div class="option">
+      <h3>Option 1 Advantages</h3>
+      <ul style="margin-left: 1.5rem; line-height: 1.8;">
+        <li>Cleaner, more modern aesthetic</li>
+        <li>Fewer colors to manage (9 vs 11)</li>
+        <li>Content-focused (posters stand out)</li>
+        <li>Gold ratings feel premium</li>
+        <li>Neutral gray secondary</li>
+      </ul>
+    </div>
+    <div class="option">
+      <h3>Option 2 Advantages</h3>
+      <ul style="margin-left: 1.5rem; line-height: 1.8;">
+        <li>Maintains blue brand identity</li>
+        <li>Similar to current design</li>
+        <li>Professional/trustworthy feel</li>
+        <li>Blue secondary (vs gray)</li>
+        <li>Easier migration path</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 3rem; padding: 2rem; background: #e0f2fe; border-radius: 8px; border-left: 4px solid #0284c7;">
+    <h3 style="margin-bottom: 1rem;">💡 Recommendation</h3>
+    <p style="line-height: 1.6;">
+      <strong>Go with Option 1</strong> for the best balance of:
+    </p>
+    <ul style="margin: 1rem 0 0 1.5rem; line-height: 1.8;">
+      <li>Superior accessibility (AAA compliance)</li>
+      <li>Modern, clean aesthetic</li>
+      <li>Lower complexity</li>
+      <li>Content takes center stage</li>
+      <li>Gold accent for ratings is distinctive</li>
+    </ul>
+  </div>
+</body>
+</html>

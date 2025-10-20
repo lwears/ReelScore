@@ -33,17 +33,12 @@ import superjson from 'superjson'
 
 export const api = createTRPCClient<AppRouter>({
   links: [
-    loggerLink({
-      enabled: (op) =>
-        env.NODE_ENV === 'development' ||
-        (op.direction === 'down' && op.result instanceof Error),
-    }),
     httpBatchLink({
       transformer: superjson,
       url: `${env.NEXT_PUBLIC_API_URL}/trpc`,
-      headers() {
+      async headers() {
         return {
-          cookie: cookies().toString(),
+          cookie: (await cookies()).toString(),
           'x-trpc-source': 'rsc',
         }
       },

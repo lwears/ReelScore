@@ -8,10 +8,9 @@ interface Props {
 }
 
 export default async function MediaHeader({ header, pathname, query }: Props) {
-  console.log(pathname)
   return (
     <div className="flex w-full flex-row justify-between">
-      <p className="text-primary-bg text-2xl font-bold capitalize">{header}</p>
+      <p className="text-primary text-2xl font-bold capitalize">{header}</p>
       <Button asChild size="lg" variant="primary">
         <Link
           replace

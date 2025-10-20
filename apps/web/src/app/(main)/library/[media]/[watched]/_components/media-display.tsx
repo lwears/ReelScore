@@ -10,14 +10,19 @@ import {
   UpdateMovie,
   UpdateSerie,
 } from '@web/ui/library/buttons'
+import Link from 'next/link'
 import { Suspense } from 'react'
 
 export const MediaDisplay = async ({
   fetcher,
   watched,
+  mediaType,
+  watchedType,
 }: {
   fetcher: () => Promise<Paginated<MediaType>>
   watched: boolean
+  mediaType: string
+  watchedType: string
 }) => {
   const media = await fetcher()
 
@@ -35,14 +40,15 @@ export const MediaDisplay = async ({
           const DeleteComponent = isMovie(m) ? DeleteMovie : DeleteSerie
           const UpdateComponent = isMovie(m) ? UpdateMovie : UpdateSerie
           return (
-            <Card
+            <Link
               key={m.id}
-              {...m}
-              date={isMovie(m) ? m.releaseDate : m.firstAired}
+              href={`/library/${mediaType}/${watchedType}/${m.id}`}
             >
-              <DeleteComponent id={m.id} />
-              {!watched && <UpdateComponent id={m.id} />}
-            </Card>
+              <Card {...m} date={isMovie(m) ? m.releaseDate : m.firstAired}>
+                <DeleteComponent id={m.id} />
+                {!watched && <UpdateComponent id={m.id} />}
+              </Card>
+            </Link>
           )
         })}
       </CardsContainer>

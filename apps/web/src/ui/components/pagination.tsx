@@ -70,14 +70,14 @@ function PaginationNumber({
   isActive: boolean
 }) {
   const className = cn(
-    'border-border border text-primary sm:flex size-12 items-center justify-center text-sm',
+    'border-border border text-foreground sm:flex size-12 items-center justify-center text-sm',
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
       'bg-primary text-primary-foreground': isActive,
       'hover:bg-primary/70 hover:text-primary-foreground':
         !isActive && position !== 'middle',
-      'text-primary': position === 'middle',
+      'text-muted-foreground': position === 'middle',
     }
   )
 
@@ -100,9 +100,9 @@ function PaginationArrow({
   isDisabled?: boolean
 }) {
   const className = cn(
-    'border-border text-primary hover:text-primary-foreground flex h-12 sm:w-12 w-full items-center justify-center rounded-md border',
+    'border-border text-foreground hover:text-primary-foreground flex h-12 sm:w-12 w-full items-center justify-center rounded-md border',
     {
-      'pointer-events-none text-primary': isDisabled,
+      'pointer-events-none text-muted-foreground': isDisabled,
       'hover:bg-primary/70 hover:text-primary-foreground': !isDisabled,
       // 'mr-2 md:mr-4': direction === 'left',
       // 'ml-2 md:ml-4': direction === 'right',

@@ -8,25 +8,27 @@ import React from 'react'
 //https://medium.com/@wdswy/how-to-build-highly-reusable-react-components-in-next-js-13-tailwindcss-and-radix-ui-a17cf5fbed99
 
 const buttonVariants = cva(
-  'flex items-center gap-1 rounded-md font-semibold text-white active:opacity-80',
+  'flex items-center gap-2 rounded-lg font-semibold transition-all duration-200 active:scale-95 shadow-sm hover:shadow-md',
   {
     variants: {
       variant: {
-        primary: 'bg-primary hover:bg-primary-hover',
+        primary:
+          'bg-primary text-primary-foreground hover:bg-primary-hover hover:-translate-y-0.5',
         secondary:
-          'border-primary-bg text-primary-bg hover:bg-primary-muted border-2',
-        tiertary:
-          'bg-rhino-50 text-rhino-700 hover:bg-rhino-100 active:bg-rhino-200',
+          'bg-secondary text-secondary-foreground hover:bg-secondary-hover hover:-translate-y-0.5',
+        tertiary:
+          'bg-white text-primary border-2 border-border hover:bg-muted hover:border-primary/30 hover:-translate-y-0.5',
         destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        ghost: 'hover:bg-accent/40',
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:-translate-y-0.5',
+        ghost:
+          'text-white hover:bg-white hover:text-black shadow-none hover:shadow-sm',
       },
       size: {
         sm: 'px-3 py-1.5 text-xs [&_svg]:w-4',
-        md: 'px-4 py-2 text-sm [&_svg]:w-6',
-        lg: 'text-md px-6 py-2 [&_svg]:w-8',
-        icon: 'rounded-full p-1 [&_svg]:w-6',
-        card: 'w-1/2 px-1 py-1.5 text-xs font-normal [&_svg]:w-4 ',
+        md: 'px-4 py-2.5 text-sm [&_svg]:w-5',
+        lg: 'text-base px-6 py-3 [&_svg]:w-6',
+        icon: 'rounded-full p-2 [&_svg]:w-5',
+        card: 'w-1/2 px-2 py-2 text-xs font-medium [&_svg]:w-4',
       },
       defaultVariants: {
         variant: 'primary',

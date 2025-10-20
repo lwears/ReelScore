@@ -1,3 +1,4 @@
+import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
 import { mapTmdbMedia, mapTmdbToCard } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/server'
 import { AddSerie } from '@web/ui/browse/buttons'
@@ -6,6 +7,7 @@ import CardsContainer from '@web/ui/components/cards-container'
 import Empty from '@web/ui/components/empty'
 import ErrorDisplay from '@web/ui/components/error'
 import Pagination from '@web/ui/components/pagination'
+import Link from 'next/link'
 import { Suspense } from 'react'
 
 interface Props {
@@ -37,12 +39,32 @@ export const Series = async ({ query, page }: Props) => {
       <CardsContainer>
         {data.results.map((s) => {
           const serie = mapTmdbToCard(s)
-          const data = mapTmdbMedia(s)
+          const mappedData = mapTmdbMedia(s)
           return (
-            <Card key={s.id} {...serie}>
-              <AddSerie serie={data} watched={true} />
-              <AddSerie serie={data} watched={false} />
-            </Card>
+            <Link key={s.id} href={`/series/${s.id}`}>
+              <Card {...serie}>
+                <AddSerie
+                  buttonProps={{
+                    variant: 'ghost',
+                    size: 'card',
+                    IconBefore: <CheckCircleIcon />,
+                  }}
+                  serie={mappedData}
+                  watched={true}
+                  text="Seen"
+                />
+                <AddSerie
+                  buttonProps={{
+                    variant: 'ghost',
+                    size: 'card',
+                    IconBefore: <PlusCircleIcon />,
+                  }}
+                  serie={mappedData}
+                  watched={false}
+                  text="Watchlist"
+                />
+              </Card>
+            </Link>
           )
         })}
       </CardsContainer>

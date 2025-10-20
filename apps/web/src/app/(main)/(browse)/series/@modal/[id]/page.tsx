@@ -9,7 +9,7 @@ import { StarIcon } from '@heroicons/react/24/outline'
 import { useOutsideClick } from '@web/lib/utils'
 import { buildImgSrc, mapTmdbDetailedData } from '@web/lib/utils/helpers'
 import { api } from '@web/lib/utils/trpc/react'
-import { AddMovie } from '@web/ui/browse/buttons'
+import { AddSerie } from '@web/ui/browse/buttons'
 import { Button } from '@web/ui/components/button'
 import Rating from '@web/ui/components/ratings'
 import Image from 'next/image'
@@ -29,8 +29,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   const [rating, setRating] = useState<number>(0)
 
-  // Fetch movie data from TMDB API
-  const { data, isLoading, error } = api.tmdb.getMovieById.useQuery({ id })
+  // Fetch series data from TMDB API
+  const { data, isLoading, error } = api.tmdb.getSerieById.useQuery({ id })
 
   if (isLoading) {
     return (
@@ -47,18 +47,18 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       <div className="fixed inset-0 z-20 flex size-full items-center justify-center overflow-y-auto backdrop-blur-sm bg-black/20 dark:bg-black/40">
         <div className="bg-card text-card-foreground rounded-md p-8 shadow-lg">
           <p className="text-destructive text-lg">
-            {error?.message || 'Failed to load movie'}
+            {error?.message || 'Failed to load series'}
           </p>
           <Button variant="primary" size="md" asChild className="mt-4">
-            <Link href="/movies">Close</Link>
+            <Link href="/series">Close</Link>
           </Button>
         </div>
       </div>
     )
   }
 
-  const movieData = data.data
-  const movie = mapTmdbDetailedData(movieData)
+  const seriesData = data.data
+  const series = mapTmdbDetailedData(seriesData)
 
   return (
     <div className="fixed inset-0 z-20 flex size-full items-center justify-center overflow-y-auto backdrop-blur-sm bg-black/20 dark:bg-black/40">
@@ -67,10 +67,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <div className="group relative">
             <div className="flex overflow-hidden rounded-t-md">
               <Image
-                src={buildImgSrc(movieData.backdrop_path ?? null)}
+                src={buildImgSrc(seriesData.backdrop_path ?? null)}
                 width={716}
                 height={614}
-                alt={`${movieData.title} backdrop image`}
+                alt={`${seriesData.name} backdrop image`}
                 className="-m-2 max-w-none object-cover group-hover:blur-sm"
               />
             </div>
@@ -82,7 +82,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
                 asChild
                 IconBefore={<XCircleIcon />}
               >
-                <Link href="/movies" />
+                <Link href="/series" />
               </Button>
               <div className="flex size-full items-center justify-center">
                 <Rating rating={rating} setRating={setRating} />
@@ -92,40 +92,40 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           <div className="flex flex-col gap-2 p-5">
             <div className="flex justify-between">
               <h3 className="text-card-foreground text-2xl font-bold">
-                {movieData.title}
+                {seriesData.name}
               </h3>
               <div className="text-muted-foreground flex gap-2">
                 <p>TMDB Score:</p>
                 <p className="font-bold">
-                  {movieData.vote_average &&
-                    Math.round(movieData.vote_average * 10) / 10}
+                  {seriesData.vote_average &&
+                    Math.round(seriesData.vote_average * 10) / 10}
                 </p>
                 <StarIcon className="size-5 fill-accent text-accent" />
               </div>
             </div>
-            <p className="text-muted-foreground">{movieData.overview}</p>
+            <p className="text-muted-foreground">{seriesData.overview}</p>
             <div className="flex justify-end gap-2">
-              <AddMovie
+              <AddSerie
                 buttonProps={{
                   size: 'md',
                   variant: 'primary',
                   IconBefore: <CheckCircleIcon />,
                 }}
-                movie={{ ...movie, score: rating > 0 ? rating : undefined }}
+                serie={{ ...series, score: rating > 0 ? rating : undefined }}
                 watched={true}
                 text="Seen"
-                onSuccess={() => router.push('/movies')}
+                onSuccess={() => router.push('/series')}
               />
-              <AddMovie
+              <AddSerie
                 buttonProps={{
                   size: 'md',
                   variant: 'secondary',
                   IconBefore: <PlusCircleIcon />,
                 }}
-                movie={movie}
+                serie={series}
                 watched={false}
                 text="Watchlist"
-                onSuccess={() => router.push('/movies')}
+                onSuccess={() => router.push('/series')}
               />
             </div>
           </div>

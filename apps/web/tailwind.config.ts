@@ -1,22 +1,5 @@
 import type { Config } from 'tailwindcss'
-import colors from 'tailwindcss/colors'
 import defaultTheme from 'tailwindcss/defaultTheme'
-
-const fromVariable = (name: string) => `hsl(var(--${name}) / <alpha-value>)`
-
-const rhino = {
-  '50': '#f1f8fd',
-  '100': '#e0eef9',
-  '200': '#c8e2f5',
-  '300': '#a3cfed',
-  '400': '#77b5e3',
-  '500': '#579ada',
-  '600': '#4380cd',
-  '700': '#396cbc',
-  '800': '#345999',
-  '900': '#263e64',
-  '950': '#202f4b',
-}
 
 const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
@@ -42,40 +25,6 @@ const config: Config = {
           '0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);',
         'material-5':
           '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);',
-      },
-      colors: {
-        rhino,
-        border: rhino[400],
-        input: rhino[300],
-        ring: rhino[200],
-        background: rhino[100],
-        foreground: rhino[950],
-        primary: {
-          DEFAULT: rhino[800],
-          foreground: colors.white,
-          hover: rhino[700],
-        },
-        secondary: {
-          DEFAULT: rhino[300],
-          foreground: rhino[950],
-          hover: rhino[200],
-        },
-        destructive: {
-          DEFAULT: fromVariable('destructive'),
-          foreground: fromVariable('destructive-foreground'),
-        },
-        accent: {
-          DEFAULT: fromVariable('accent'),
-          foreground: fromVariable('accent-foreground'),
-        },
-        popover: {
-          DEFAULT: fromVariable('popover'),
-          foreground: fromVariable('popover-foreground'),
-        },
-        card: {
-          DEFAULT: rhino[100],
-          foreground: rhino[950],
-        },
       },
     },
     screens: {

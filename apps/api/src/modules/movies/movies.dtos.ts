@@ -12,6 +12,7 @@ export const createMovieSchema = z.object({
   releaseDate: z.coerce.date().nullish(),
   watched: z.boolean().default(false),
   tmdbScore: z.number().min(0).max(10),
+  score: z.number().min(0).max(10).optional(),
 })
 
 // Use shared update schema

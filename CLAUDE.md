@@ -95,42 +95,30 @@ pnpm -w run typecheck:web # Check web only
 
 ### Code Quality
 
-This project uses a **hybrid linting approach** for optimal coverage:
+This project uses **Biome** as the sole linter and formatter:
 
-**Primary Linter: Biome** (95% of rules)
+**Biome** - All-in-one toolchain
 - Fast Rust-based linter and formatter (50-100x faster than ESLint)
-- 340+ migrated rules from ESLint, TypeScript-ESLint, and Prettier
+- 340+ rules covering ESLint, TypeScript-ESLint, and Prettier functionality
 - Automatic import sorting and organization
 - Single-quote strings, 2-space indentation, semicolons as needed
 
-**Supplementary: ESLint** (4 specific Unicorn rules)
-- `unicorn/no-process-exit` - Prevent abrupt process termination
-- `unicorn/prefer-top-level-await` - Encourage modern async patterns
-- `unicorn/prefer-module` - Enforce ESM over CommonJS
-- `unicorn/no-anonymous-default-export` - Require named exports
-
 ```bash
-# Lint everything (runs Biome + ESLint)
+# Lint everything
 pnpm run lint
 
 # Lint and auto-fix issues
 pnpm run lint:fix
 
-# Run individual linters
-pnpm run lint:biome   # Biome only
-pnpm run lint:eslint  # ESLint only
-
-# Format all code (Biome)
+# Format all code
 pnpm run format
 
 # Check formatting without making changes
 pnpm run format:check
 ```
 
-**Configuration Files**:
-- `biome.json` - Main linter and formatter config
-- `.eslintrc.json` - Minimal config with 4 Unicorn rules (all others disabled)
-- `.eslintignore` - Excludes dist, .next, and CommonJS config files
+**Configuration**:
+- `biome.json` - Linter and formatter config
 - VCS integration enabled - Biome respects `.gitignore`
 
 **Intentional `any` Usage**:
@@ -229,11 +217,10 @@ Relations:
 ## Code Style and Conventions
 
 - TypeScript strict mode enabled
-- **Hybrid Linting**: Biome (primary) + ESLint (4 Unicorn rules)
-  - Biome: 340+ migrated rules, automatic import sorting
-  - ESLint: Specific rules for process.exit, top-level await, ESM, named exports
+- **Linting**: Biome for all linting and formatting
+  - 340+ rules, automatic import sorting
   - Single-quote strings, 2-space indentation, semicolons as needed (ASI-safe)
-- Husky v9 pre-commit hooks with lint-staged (runs both linters)
+- Husky v9 pre-commit hooks with lint-staged (runs Biome)
 - Conventional commits enforced via commitlint
 - Use `interface` over `type` (enforced by Biome)
 - Consistent type imports (`import type`)

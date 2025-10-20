@@ -42,32 +42,17 @@ export function createServer(config: ServerConfig) {
     },
   })
   const server = fastify({
-    logger: ['local', 'test'].includes(config.environment)
-      ? {
-          level: 'debug',
-          transport: {
-            target: 'pino-pretty',
-            options: {
-              colorize: true,
-              translateTime: 'HH:MM:ss Z',
-              ignore: 'pid,hostname',
-            },
-          },
-        }
-      : true,
+    logger: false,
   }).withTypeProvider<ZodTypeProvider>()
 
   server.setValidatorCompiler(validatorCompiler)
   server.setSerializerCompiler(serializerCompiler)
 
   client.on('error', (err) => {
-    server.log.error(
-      { err, service: 'redis' },
-      'Could not establish a connection with Redis'
-    )
+    console.error('Redis connection error:', err.message)
   })
   client.on('connect', () => {
-    server.log.info({ service: 'redis' }, 'Connected to Redis successfully')
+    console.log('Connected to Redis successfully')
   })
 
   // Security headers with Helmet

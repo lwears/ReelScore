@@ -1,5 +1,6 @@
 import { env } from '@api/configs/env.config'
 import createClient from 'openapi-fetch'
+import { mockData } from './mock'
 import type { paths } from './v3'
 
 const { GET } = createClient<paths>({
@@ -10,6 +11,9 @@ const { GET } = createClient<paths>({
     },
   },
 })
+
+// Temporary flag to use mock data - set to false once TMDB connectivity is restored
+const USE_MOCK_DATA = false
 
 interface BaseSearchOpts {
   query: string
@@ -73,7 +77,12 @@ const getPopularMovies = async ({
 }: {
   page?: number
   language?: string
-}) => GET('/3/discover/movie', { params: { query: { page, language } } })
+}) => {
+  if (USE_MOCK_DATA) {
+    return { data: mockData, error: undefined, response: {} as Response }
+  }
+  return GET('/3/discover/movie', { params: { query: { page, language } } })
+}
 
 const getPopularSeries = async ({
   page = 1,
@@ -81,7 +90,12 @@ const getPopularSeries = async ({
 }: {
   page?: number
   language?: string
-}) => GET('/3/discover/tv', { params: { query: { page, language } } })
+}) => {
+  if (USE_MOCK_DATA) {
+    return { data: mockData, error: undefined, response: {} as Response }
+  }
+  return GET('/3/discover/tv', { params: { query: { page, language } } })
+}
 
 export const tmdbService = {
   getMovieById,

@@ -43,7 +43,7 @@ export default function Rating({
   return (
     <div
       onMouseLeave={handleMouseLeave}
-      className="flex items-center justify-center text-yellow-500"
+      className="flex items-center justify-center text-amber-500"
     >
       {Array.from({ length: 5 }).map((_, idx) => (
         <StarIcon
@@ -53,7 +53,7 @@ export default function Rating({
           className={clsx(
             'size-10',
             !readOnly && 'cursor-pointer',
-            idx < (hoveredRating || rating) && 'fill-yellow-500'
+            idx < (hoveredRating || rating) && 'fill-amber-500'
           )}
           tabIndex={readOnly ? 0 : -1}
           onKeyDown={(e: KeyboardEvent<SVGSVGElement>) =>

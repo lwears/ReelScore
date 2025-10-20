@@ -12,10 +12,8 @@
     "typecheck": "pnpm run typecheck:api && pnpm run typecheck:web",
     "typecheck:api": "pnpm run --filter=@reelscore/api typecheck",
     "typecheck:web": "pnpm run --filter=web typecheck",
-    "lint": "biome check . && eslint . --quiet",
-    "lint:biome": "biome check .",
-    "lint:eslint": "eslint .",
-    "lint:fix": "biome check --write . && eslint . --fix",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "setup": "docker-compose -f apps/api/docker-compose.yml up -d",
@@ -34,8 +32,6 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@types/node": "^18.19.130",
     "add": "^2.0.6",
-    "eslint": "^8.57.1",
-    "eslint-plugin-unicorn": "^55.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "tsx": "^4.20.6",
@@ -43,8 +39,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true",
-      "eslint --fix"
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   },
   "dependencies": {

@@ -9,9 +9,7 @@ export const createMovie = async (
 ) => {
   'use server'
 
-  await api.movie.create
-    .mutate({ ...m, watched: b })
-    .then(() => console.log('Success!'))
+  await api.movie.create.mutate({ ...m, watched: b })
 }
 
 export const createSerie = async (

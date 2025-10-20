@@ -1,34 +1,72 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap");
 @import "tailwindcss";
 
-@theme {
-  /* Rhino color palette */
-  --color-rhino-50: #f1f8fd;
-  --color-rhino-100: #e0eef9;
-  --color-rhino-200: #c8e2f5;
-  --color-rhino-300: #a3cfed;
-  --color-rhino-400: #77b5e3;
-  --color-rhino-500: #579ada;
-  --color-rhino-600: #4380cd;
-  --color-rhino-700: #396cbc;
-  --color-rhino-800: #345999;
-  --color-rhino-900: #263e64;
-  --color-rhino-950: #202f4b;
+/* Configure dark mode to use class-based toggling */
+@custom-variant dark (&:where(.dark, .dark *));
 
-  /* Semantic colors */
-  --color-border: var(--color-rhino-400);
-  --color-input: var(--color-rhino-300);
-  --color-ring: var(--color-rhino-200);
-  --color-background: var(--color-rhino-100);
-  --color-foreground: var(--color-rhino-950);
-  --color-primary: var(--color-rhino-800);
-  --color-primary-foreground: #ffffff;
-  --color-primary-hover: var(--color-rhino-700);
-  --color-secondary: var(--color-rhino-300);
-  --color-secondary-foreground: var(--color-rhino-950);
-  --color-secondary-hover: var(--color-rhino-200);
-  --color-card: var(--color-rhino-100);
-  --color-card-foreground: var(--color-rhino-950);
+@theme {
+  /* Base Color Palette - Light Mode */
+  --color-white: #ffffff;
+  --color-warm-50: #fefce8;
+  --color-warm-100: #fef9c3;
+  --color-warm-200: #fef08a;
+
+  /* Neutral grays */
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-500: #737373;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+
+  /* Vibrant teal/cyan primary */
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+
+  /* Deep purple secondary */
+  --color-purple-500: #a855f7;
+  --color-purple-600: #9333ea;
+  --color-purple-700: #7e22ce;
+
+  /* Orange accent */
+  --color-orange-400: #fb923c;
+  --color-orange-500: #f97316;
+  --color-orange-600: #ea580c;
+
+  /* Pink destructive */
+  --color-pink-500: #ec4899;
+  --color-pink-600: #db2777;
+
+  /* Dark mode specific grays */
+  --color-slate-800: #1e293b;
+  --color-slate-850: #182032;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+
+  /* Semantic colors - Light mode defaults */
+  --color-background: #f8fafc;
+  --color-foreground: var(--color-neutral-900);
+  --color-card: var(--color-white);
+  --color-card-foreground: var(--color-neutral-900);
+  --color-card-border: #e2e8f0;
+  --color-primary: var(--color-teal-600);
+  --color-primary-foreground: var(--color-white);
+  --color-primary-hover: var(--color-teal-700);
+  --color-secondary: var(--color-purple-600);
+  --color-secondary-foreground: var(--color-white);
+  --color-secondary-hover: var(--color-purple-700);
+  --color-border: #e2e8f0;
+  --color-input: #cbd5e1;
+  --color-ring: var(--color-teal-600);
+  --color-accent: var(--color-orange-500);
+  --color-accent-foreground: var(--color-white);
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: var(--color-white);
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
 
   /* Breakpoints */
   --breakpoint-xs: 475px;
@@ -37,43 +75,24 @@
   --font-family-roboto: "Roboto", ui-sans-serif, system-ui, sans-serif;
 }
 
-:root {
-  --background: 217 100% 95%;
-  --foreground: 217 5% 10%;
-  --card: 217 50% 90%;
-  --card-foreground: 217 5% 15%;
-  --popover: 217 100% 95%;
-  --popover-foreground: 217 100% 10%;
-  --primary: 217 45% 27%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 217 30% 70%;
-  --secondary-foreground: 0 0% 0%;
-  --muted: 179 30% 85%;
-  --muted-foreground: 217 5% 35%;
-  --accent: 179 30% 80%;
-  --accent-foreground: 217 5% 15%;
-  --destructive: 0 100% 30%;
-  --destructive-foreground: 217 5% 90%;
-  --radius: 0.5rem;
-}
-
+/* Dark mode color overrides */
 .dark {
-  --background: 217 50% 10%;
-  --foreground: 217 5% 90%;
-  --card: 217 50% 10%;
-  --card-foreground: 217 5% 90%;
-  --popover: 217 50% 5%;
-  --popover-foreground: 217 5% 90%;
-  --primary: 217 45% 27%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 217 30% 20%;
-  --secondary-foreground: 0 0% 100%;
-  --muted: 179 30% 25%;
-  --muted-foreground: 217 5% 60%;
-  --accent: 179 30% 25%;
-  --accent-foreground: 217 5% 90%;
-  --destructive: 0 100% 30%;
-  --destructive-foreground: 217 5% 90%;
+  --color-background: #0f172a;
+  --color-foreground: #e2e8f0;
+  --color-card: #1e293b;
+  --color-card-foreground: #e2e8f0;
+  --color-card-border: #475569;
+  --color-primary: #1e293b;
+  --color-primary-foreground: #e2e8f0;
+  --color-primary-hover: #334155;
+  --color-secondary: #334155;
+  --color-secondary-foreground: #e2e8f0;
+  --color-secondary-hover: #475569;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+  --color-border: #475569;
+  --color-input: #334155;
+  --color-destructive: #ef4444;
 }
 
 @layer components {
@@ -94,7 +113,7 @@
   }
 
   .nav {
-    @apply size-full z-20 fixed bg-primary overflow-hidden top-[50px] left-0 flex flex-col max-h-0 transition-[max-height] duration-500 ease-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row-reverse md:justify-between [&_search]:border-b-[1px] [&_search]:border-border md:[&_search]:border-none;
+    @apply size-full z-20 fixed bg-primary overflow-hidden top-20 left-0 flex flex-col max-h-0 transition-[max-height] duration-500 ease-in-out md:max-h-none md:top-0 md:static md:bg-transparent md:overflow-visible md:flex-row md:items-center md:justify-end md:h-full md:gap-2 lg:gap-3 flex-1 md:min-w-0 [&_search]:border-b-[1px] [&_search]:border-border md:[&_search]:border-none;
   }
 }
 

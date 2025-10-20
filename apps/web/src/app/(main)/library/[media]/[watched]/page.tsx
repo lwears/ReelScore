@@ -62,6 +62,8 @@ export default async function Page(props: Props) {
         <MediaDisplay
           fetcher={fetchers[media]}
           watched={watched === Watched.WATCHED}
+          mediaType={media}
+          watchedType={watched}
         />
       </Suspense>
     </div>
