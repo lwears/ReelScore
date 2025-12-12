@@ -203,6 +203,9 @@
             "noUnsafeNegation": "off",
             "noVar": "error",
             "useGetterReturn": "off"
+          },
+          "nursery": {
+            "useSortedClasses": "error"
           }
         }
       }
