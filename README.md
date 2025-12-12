@@ -10,13 +10,13 @@ After 1 year working in cyber security I wanted to keep up-to date on the latest
 
 - Fastify - Backend server framework
 - tRPC - end-to-end type safety and api interaction
-- Prisma - DB ORM
+- Drizzle - DB ORM
 - PostgreSQL - DBMS
 - Redis - storage for server-side sessions
 - Zod - Schema validation
-- Next.JS - frontend framework
-- React - frontend framework
-- Tailwind - CSS utility library
+- Next.JS 15 - frontend framework
+- React 19 - frontend framework
+- TailwindCSS 4 - CSS utility library
 - TypeScript
 
 ## Requirements :receipt:
@@ -32,8 +32,8 @@ After 1 year working in cyber security I wanted to keep up-to date on the latest
 - Clone the repository: `git clone https://github.com/lwears/ReelScore.git`
 - Navigate: `cd ReelScore`
 - Install dependencies: `pnpm i`
-- Build docker containers `pnpm run setup / setup-podman`
-- Initialise Prisma `cd apps/api && npx prisma generate && npx prisma migrate dev`
+- Build docker containers `pnpm run setup` or `pnpm run setup-podman`
+- Initialise Database `cd apps/api && pnpm run db:migrate`
 
 ### Step 2: :gear: Environment Configuration
 
